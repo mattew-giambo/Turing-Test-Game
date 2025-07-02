@@ -36,6 +36,12 @@
 - Pagina di inseriemto delle risposte dell'utente
 - Pagina di caricamento
 - pagina dei risultati
+
+### Database
+#### Users (id, nickname, email, hashed_password)
+#### Stats (user_id, n_games, score_part, score_judge, won_part, won_judge, lost_part, lost_judge)
+#### Games (id, user_id, player_role, result)
+#### Q_A (game_id, question_id, question, answer, ai_question: bool, ai_answer: bool)
  
  
 
