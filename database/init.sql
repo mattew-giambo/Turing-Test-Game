@@ -5,7 +5,7 @@ USE turingDB;
 -- Table: Users
 CREATE TABLE Users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nickname VARCHAR(50) NOT NULL UNIQUE,
+    user_name VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     hashed_password TEXT NOT NULL
 );
