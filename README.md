@@ -42,6 +42,20 @@
 #### Stats (user_id, n_games, score_part, score_judge, won_part, won_judge, lost_part, lost_judge)
 #### Games (id, user_id, player_role, result)
 #### Q_A (game_id, question_id, question, answer, ai_question: bool, ai_answer: bool)
+
+
+
+
+L'utente clicca avvia partita e dopo un ruolo. Invia una richiesta post al frontend dove dice sono player_name e voglio giocare come player_role
+il frontend, fa una richiesta post al backend all'url start-game. Il backend avvia la partita e invia il game id al frontend. Quest'ultimo
+rindirizza il client a localhost:port/game/id, il client quindi fa una richiesta get al frontend a questa pagina. Il frontend chiede informazioni
+al backend riguardo al tipo di interfaccia che deve far vedere, quindi o del giudice o del partecipante. Il backend gli risponde con il
+player role dell'utente e quindi il frontend capisce quale pagina fargli visualizzare.
+Quando il player gioca come giudice avrà un form dove deve inserire tre domande, quando invia il form fa una richiesta post al frontend
+che ed inoltra le domande al backend. Questo deciderà poi se far rispondere al database di sessioni vecchie oppure all'ai, restituisce 
+le varie risposte al frontend.
+
+Se il player gioca come partecipante farà una richiesta sulle domande a cui dovra rispondere sempre tramite form.
  
  
 
