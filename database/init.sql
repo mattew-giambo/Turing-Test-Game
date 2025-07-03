@@ -28,6 +28,7 @@ CREATE TABLE Games (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     player_role VARCHAR(20) NOT NULL,
+    date DATE NOT NULL DEFAULT CURRENT_DATE,
     result VARCHAR(20) DEFAULT NULL,
     FOREIGN KEY user_id REFERENCES Users(id) ON DELETE CASCADE,
     CHECK (player_role IN ('judge', 'participant')),
