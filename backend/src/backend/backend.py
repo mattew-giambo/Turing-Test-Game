@@ -3,6 +3,7 @@ from models.user_info import UserInfo
 from models.confirm_game import ConfirmGame
 from models.game_info import GameInfo
 from models.judge_game import JudgeGameInput, JudgeGameOutput
+from models.participant_game import ParticipantGameOutput
 from utility.close_connection import close_connection
 from utility.close_cursor import close_cursor
 from utility.connect_to_database import connect_to_database
@@ -118,3 +119,77 @@ def judge_game_api(judge_game: JudgeGameInput, game_id: int):
                            answer_2= risposte_lista_output[1], 
                            answer_3= risposte_lista_output[2])
         
+@app.post("/participant-game-api/{game_id}", response_model=ParticipantGameOutput)
+def participant_game_api(game_id: int) -> ParticipantGameOutput:
+    if game_id not in active_games.keys():
+        raise HTTPException(status_code= 403, detail= "Partita non trovata")
+    
+    partita = active_games[game_id]
+    if partita["player_role"] != "participant":
+        raise HTTPException(status_code=400, detail="Ruolo non valido per questa richiesta")
+    
+    ai = random.choice([True, False])
+    if ai:
+        ## COLLEGARSI A OLLAMA E FAR RISPONDERE TRAMITE ALLE DOMANDE get_ai_answer for tutte le domande
+        pass
+    else:
+
+        try:
+            connection: mariadb.Connection = connect_to_database()
+            cursor: mariadb.Cursor = get_cursor(connection)
+
+            cursor.execute("SELECT DISTINCT question FROM Q_A")
+            questions = cursor.fetchall()
+
+            if not questions:
+                raise HTTPException(status_code=404, detail="Nessuna domanda trovata nel database")
+            
+            # Estrae le domande e le mescola
+            tutte_le_domande = [question[0].strip() for question in questions]
+            random.shuffle(tutte_le_domande)
+
+            # Filtro fuzzy per evitare duplicati
+            domande_distinte = []
+            for domanda in tutte_le_domande:
+                aggiungi_domanda = True  # supponiamo che la domanda sia valida
+
+                for esistente in domande_distinte:
+                    similarita = fuzz.token_sort_ratio(domanda.lower(), esistente.lower())
+                    
+                    if similarita >= 85:
+                        aggiungi_domanda = False  # troppo simile a una domanda già presente
+                        break  # non serve continuare a confrontare
+
+                if aggiungi_domanda:
+                    domande_distinte.append(domanda)
+
+
+            if len(domande_distinte) < 3:
+                ## COLLEGARSI A OLLAMA E FAR RISPONDERE TRAMITE ALLE DOMANDE get_ai_answer for tutte le domande
+                pass
+
+            # Salva le domande nel database
+            for idx, domanda in enumerate(domande_distinte[:3], start=1):
+                query = "INSERT INTO Q_A (game_id, question_id, question, answer, ai_question, ai_answer) VALUES (%s, %s, %s, %s, %s, %s)"
+                cursor.execute(query, (
+                    game_id,             # ID della partita
+                    idx,                 # question_id: 1, 2, 3
+                    domanda,             # testo della domanda
+                    "",                  # risposta vuota
+                    False,               # ai_question
+                    False                # ai_answer
+                ))
+            connection.commit()
+
+            return ParticipantGameOutput(
+                question_1=domande_distinte[0],
+                question_2=domande_distinte[1],
+                question_3=domande_distinte[2]
+            )
+
+        except mariadb.Error:
+            raise HTTPException(status_code=500, detail="Errore durante la registrazione")
+
+        finally:
+            close_cursor(cursor)
+            close_connection(connection)

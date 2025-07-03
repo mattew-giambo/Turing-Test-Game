@@ -11,8 +11,8 @@ import mariadb
 
 app = FastAPI()
 
-@app.post("/register", response_model=RegisterResponse)
-def register(user: UserRegister) -> RegisterResponse:
+@app.post("/register-api", response_model=RegisterResponse)
+def register_api(user: UserRegister) -> RegisterResponse:
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 
@@ -45,8 +45,8 @@ def register(user: UserRegister) -> RegisterResponse:
 
 sessioni_attive: Dict[int, Dict[str, str]] = {}
 
-@app.post("/login", response_model=LoginResponse)
-def login(user: UserLogin) -> LoginResponse:
+@app.post("/login-api", response_model=LoginResponse)
+def login_api(user: UserLogin) -> LoginResponse:
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 
