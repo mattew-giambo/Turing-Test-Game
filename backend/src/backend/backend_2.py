@@ -1,6 +1,5 @@
 from typing import Dict, Tuple
 from fastapi import FastAPI, HTTPException
-from models.user_info import UserInfo
 from utility.close_connection import close_connection
 from utility.close_cursor import close_cursor
 from utility.connect_to_database import connect_to_database
@@ -18,20 +17,20 @@ def register(user: UserRegister) -> RegisterResponse:
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        query: str = "SELECT id FROM Users WHERE email = ? OR user_name = ?"
+        query: str = "SELECT id FROM Users WHERE email = %s OR user_name = %s"
         cursor.execute(query, (user.email, user.user_name))
         if cursor.fetchone():
             raise HTTPException(status_code=400, detail="Utente già registrato con questa email o username")
 
-        hashing = hash_password(user.password)
+        hashed_password = hash_password(user.password)
 
-        query = "INSERT INTO Users (user_name, email, hashed_password) VALUES (?, ?, ?)"
-        cursor.execute(query, (user.user_name, user.email, hashing))
+        query = "INSERT INTO Users (user_name, email, hashed_password) VALUES (%s, %s, %s)"
+        cursor.execute(query, (user.user_name, user.email, hashed_password))
         connection.commit()
 
         user_id = cursor.lastrowid
 
-        query = "INSERT INTO Stats (user_id) VALUES (?)"
+        query = "INSERT INTO Stats (user_id) VALUES (%s)"
         cursor.execute(query, (user_id,))
         connection.commit()
 
@@ -52,7 +51,7 @@ def login(user: UserLogin) -> LoginResponse:
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        query: str = "SELECT id, user_name, hashed_password FROM Users WHERE email = ?"
+        query: str = "SELECT id, user_name, hashed_password FROM Users WHERE email = %s"
         cursor.execute(query, (user.email,))
         result: Tuple[int, str, str] = cursor.fetchone()
 
