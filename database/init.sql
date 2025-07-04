@@ -39,7 +39,6 @@ CREATE TABLE Games (
 CREATE TABLE Q_A (
     id INT AUTO_INCREMENT PRIMARY KEY,
     game_id INT NOT NULL,
-    question_id INTEGER,
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
     ai_question BOOLEAN DEFAULT FALSE,

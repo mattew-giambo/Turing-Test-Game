@@ -9,6 +9,8 @@ from utility.close_cursor import close_cursor
 from utility.connect_to_database import connect_to_database
 from utility.get_cursor import get_cursor
 from utility.security import hash_password, verify_password
+from utility.judge_game_api_ai import judge_game_api_ai
+from utility.judge_game_api_db import judge_game_api_db
 from models.authentication import UserRegister, UserLogin
 from models.response_models import RegisterResponse, LoginResponse
 import mariadb
@@ -155,40 +157,13 @@ def judge_game_api(judge_game: JudgeGameInput, game_id: int):
     risposte_lista_output = []
 
     ai = random.choice([True, False])
-    if ai:
-        ## COLLEGARSI A OLLAMA E FAR RISPONDERE TRAMITE ALLE DOMANDE get_ai_answer for tutte le domande
-        pass
-    else:
-        connection: mariadb.Connection = connect_to_database()
-        cursor: mariadb.Cursor = get_cursor(connection)
+    if not ai:
+        risposte_lista_output = judge_game_api_db(lista_domande_input)
 
-        cursor.execute("SELECT id, question, answer FROM Q_A")
-        domande = cursor.fetchall()
-
-        close_connection(connection)
-        close_cursor(cursor)
-
-        # Converte in lista di dizionari
-        lista_domande = [{"id": row[0], "question": row[1], "answer": row[2]} for row in domande]
-
-        # Estrai solo i testi delle domande, lista di domande
-        domande_testo = [diz["question"] for diz in lista_domande]
-
-        for i in range(0, len(lista_domande_input)):
-            domanda_input = lista_domande_input[i]
-            # Matching fuzzy
-            match, score, index = process.extractOne(
-                domanda_input,
-                domande_testo,
-                scorer=fuzz.token_sort_ratio
-            )
-            # Se somiglianza >= 80%, prendi la risposta associata
-            if score >= 80:
-                risposte_lista_output.append(lista_domande[index]["answer"])
-
+    if ai or len(risposte_lista_output) != len(lista_domande_input):
+        risposte_lista_output = judge_game_api_ai(lista_domande_input)
         if len(risposte_lista_output) != len(lista_domande_input):
-            ## COLLEGARSI A OLLAMA E FAR RISPONDERE ALLE DOMANDE TRAMITE FUNZIONE get_ai_answer
-            pass
+            raise HTTPException(status_code= 500, detail= "Errore del server")
     
     return JudgeGameOutput(answer_1= risposte_lista_output[0], 
                            answer_2= risposte_lista_output[1], 
