@@ -4,7 +4,7 @@ from models.confirm_game import ConfirmGame
 from models.game_info import GameInfo
 from models.judge_game import JudgeGameInput, JudgeGameOutput, JudgeGameAnswer, EndJudgeGameOutput
 from models.user_stats import UserStats
-from models.participant_game import ParticipantGameOutput
+from models.participant_game import ParticipantGameOutput, AnswerInput, ResponseSubmit
 from utility.close_connection import close_connection
 from utility.close_cursor import close_cursor
 from utility.connect_to_database import connect_to_database
@@ -14,8 +14,6 @@ from utility.judge_game_api_ai import judge_game_api_ai
 from utility.judge_game_api_db import judge_game_api_db
 from utility.insert_q_a_judge_api import insert_q_a_judge_api
 from utility.insert_q_a_participant_api import insert_q_a_participant_api
-from utility.end_game_judge_api import end_game_judge_api
-from utility.end_game_participant_api import end_game_participant_api
 from models.authentication import UserRegister, UserLogin
 from models.response_models import RegisterResponse, LoginResponse
 import mariadb
@@ -279,6 +277,42 @@ def participant_game_api(game_id: int) -> ParticipantGameOutput:
         finally:
             close_cursor(cursor)
             close_connection(connection)
+
+@app.post("/submit-participant-answers-api/{game_id}", response_model=ResponseSubmit)
+def submit_answers_api(game_id: int, input_data: AnswerInput):
+    if game_id not in active_games.keys():
+        raise HTTPException(status_code= 403, detail= "Partita non trovata")
+    
+    partita = active_games[game_id]
+    if partita["player_role"] != "participant":
+        raise HTTPException(status_code=400, detail="Ruolo non valido per questa richiesta")
+    
+    if len(input_data.answers) != 3:
+        raise HTTPException(status_code=422, detail="Devono essere fornite esattamente tre risposte")
+
+    try:
+        connection: mariadb.Connection = connect_to_database()
+        cursor: mariadb.Cursor = get_cursor(connection)
+
+        query: str = """
+            UPDATE Q_A
+            SET answer = %s
+            WHERE game_id = %s AND question_id = %s
+        """
+
+        for idx, answer in enumerate(input_data.answers, start=1):  
+            cursor.execute(query, (answer.strip(), game_id, idx))
+
+        connection.commit()
+        return ResponseSubmit(status="ok")
+
+    except mariadb.Error as e:
+        connection.rollback()
+        raise HTTPException(status_code=500, detail=f"Errore durante l'aggiornamento delle risposte: {e}")
+
+    finally:
+        close_cursor(cursor)
+        close_connection(connection)
 
 @app.post("/end-game-judge-api/{game_id}")
 def end_game_judge_api(judge_answer: JudgeGameAnswer, game_id: int):
