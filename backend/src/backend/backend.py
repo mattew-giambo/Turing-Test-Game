@@ -188,7 +188,8 @@ def participant_game_api(game_id: int) -> ParticipantGameOutput:
             connection: mariadb.Connection = connect_to_database()
             cursor: mariadb.Cursor = get_cursor(connection)
 
-            cursor.execute("SELECT DISTINCT question FROM Q_A")
+            # Prende domande scritte da esseri umani
+            cursor.execute("SELECT DISTINCT question FROM Q_A WHERE ai_question = %s", (False,))
             questions = cursor.fetchall()
 
             if not questions:
