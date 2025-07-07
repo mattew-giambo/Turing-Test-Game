@@ -1,5 +1,5 @@
 from typing import List
-from utility.get_ai_answer import get_ai_answer
+from utility.ai_utils import get_ai_answer
 
 def judge_game_api_ai(lista_domande_input: List[str]):
     lista_risposte_output: List[str] = []

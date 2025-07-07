@@ -12,14 +12,17 @@ from utility.security import hash_password, verify_password
 from utility.judge_game_api_ai import judge_game_api_ai
 from utility.judge_game_api_db import judge_game_api_db
 from utility.insert_q_a_judge_api import insert_q_a_judge_api
+from utility.insert_q_a_participant_api import insert_q_a_participant_api
 from models.authentication import UserRegister, UserLogin
 from models.response_models import RegisterResponse, LoginResponse
 import mariadb
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, List, Tuple
 import time
 from datetime import datetime
 import random
 from rapidfuzz import process, fuzz
+
+from utility.ai_utils import get_ai_answer, parse_ai_questions
 
 app = FastAPI()
 
@@ -191,56 +194,70 @@ def participant_game_api(game_id: int) -> ParticipantGameOutput:
     
     ai = random.choice([True, False])
     if ai:
-        ## COLLEGARSI A OLLAMA E FAR RISPONDERE TRAMITE ALLE DOMANDE get_ai_answer for tutte le domande
-        pass
+        answer = get_ai_answer("", flag_judge=False)
+        questions = parse_ai_questions(answer)
+
+        if len(questions) < 3:
+            raise HTTPException(status_code=500, detail="L'AI non ha generato abbastanza domande")
+
+        insert_q_a_participant_api(game_id, questions[:3], ai_question=True)
+
+        return ParticipantGameOutput(
+            question_1=questions[0],
+            question_2=questions[1],
+            question_3=questions[2]
+        )
+
     else:
 
         try:
             connection: mariadb.Connection = connect_to_database()
             cursor: mariadb.Cursor = get_cursor(connection)
 
-            # Prende domande scritte da esseri umani
-            cursor.execute("SELECT DISTINCT question FROM Q_A WHERE ai_question = %s", (False,))
-            questions = cursor.fetchall()
+            # Prende tutte le domande dal DB, con la flag ai_question
+            cursor.execute("SELECT DISTINCT question, ai_question FROM Q_A")
+            rows = cursor.fetchall()
 
-            if not questions:
+            if not rows:
                 raise HTTPException(status_code=404, detail="Nessuna domanda trovata nel database")
             
             # Estrae le domande e le mescola
-            tutte_le_domande = [question[0].strip() for question in questions]
+            tutte_le_domande = [(row[0].strip(), row[1]) for row in rows]
             random.shuffle(tutte_le_domande)
 
             # Filtro fuzzy per evitare duplicati
-            domande_distinte = []
-            for domanda in tutte_le_domande:
+            domande_distinte: List[str] = []
+            ai_flags: List[bool] = []
+
+            for domanda, flag in tutte_le_domande:
                 aggiungi_domanda = True  # supponiamo che la domanda sia valida
 
                 for esistente in domande_distinte:
                     similarita = fuzz.token_sort_ratio(domanda.lower(), esistente.lower())
-                    
+
                     if similarita >= 85:
                         aggiungi_domanda = False  # troppo simile a una domanda già presente
-                        break  # non serve continuare a confrontare
+                        break  # non serve continuare a confrontare con le altre
 
                 if aggiungi_domanda:
                     domande_distinte.append(domanda)
+                    ai_flags.append(flag)
 
+                if len(domande_distinte) == 3:
+                    break  # abbiamo trovato abbastanza domande distinte
+
+            # Fallback: usa domande generate dall'AI se non ci sono abbastanza distinte
             if len(domande_distinte) < 3:
-                ## COLLEGARSI A OLLAMA E FAR RISPONDERE TRAMITE ALLE DOMANDE get_ai_answer for tutte le domande
-                pass
+                answer = get_ai_answer("", flag_judge=False)
+                domande_distinte: List[str] = []
+                ai_flags: List[bool] = []
 
-            # Salva le domande nel database
-            for idx, domanda in enumerate(domande_distinte[:3], start=1):
-                query = "INSERT INTO Q_A (game_id, question_id, question, answer, ai_question, ai_answer) VALUES (%s, %s, %s, %s, %s, %s)"
-                cursor.execute(query, (
-                    game_id,             # ID della partita
-                    idx,                 # question_id: 1, 2, 3
-                    domanda,             # testo della domanda
-                    "",                  # risposta vuota
-                    False,               # ai_question
-                    False                # ai_answer
-                ))
-            connection.commit()
+                domande_distinte = parse_ai_questions(answer)
+                ai_flags = [True] * len(domande_distinte)
+
+            # Inserisce le domande nel DB con i flag corretti
+            for domanda, ai_flag in zip(domande_distinte[:3], ai_flags[:3]):
+                insert_q_a_participant_api(game_id, [domanda], ai_question=ai_flag)
 
             return ParticipantGameOutput(
                 question_1=domande_distinte[0],
@@ -249,7 +266,7 @@ def participant_game_api(game_id: int) -> ParticipantGameOutput:
             )
 
         except mariadb.Error:
-            raise HTTPException(status_code=500, detail="Errore durante la registrazione")
+            raise HTTPException(status_code=500, detail="Errore durante la generazione delle domande")
 
         finally:
             close_cursor(cursor)
