@@ -11,6 +11,7 @@ from utility.get_cursor import get_cursor
 from utility.security import hash_password, verify_password
 from utility.judge_game_api_ai import judge_game_api_ai
 from utility.judge_game_api_db import judge_game_api_db
+from utility.insert_q_a_judge_api import insert_q_a_judge_api
 from models.authentication import UserRegister, UserLogin
 from models.response_models import RegisterResponse, LoginResponse
 import mariadb
@@ -113,11 +114,21 @@ def start_game_api(payload: UserInfo):
     ##
 
     ## Inserimento della partita nel database e nel dizionario
+   
     user_id = result[0]
     query = "INSERT INTO Games(user_id, player_role) VALUES (%s, %s)"
-    cursor.execute(query, (user_id, player_role))
-    connection.commit()
-    game_id = cursor.lastrowid
+    try:
+        cursor.execute(query, (user_id, player_role))
+        connection.commit()
+        game_id = cursor.lastrowid
+    except mariadb.Error as e:
+        raise HTTPException(
+            status_code= 500,
+            detail= "Errore del server nell'esecuzione della query"
+        )
+    finally:
+        close_cursor(cursor)
+        close_connection(connection)
 
     active_games[game_id] = {
         "player_name": player_name,
@@ -126,9 +137,6 @@ def start_game_api(payload: UserInfo):
         "result": None
     }
     ##
-    close_connection(connection)
-    close_cursor(cursor)
-
     return ConfirmGame(game_id= game_id)
 
 @app.get("/game-info-api/{game_id}")
@@ -154,20 +162,23 @@ def judge_game_api(judge_game: JudgeGameInput, game_id: int):
         judge_game.question_2,
         judge_game.question_3
     ]
-    risposte_lista_output = []
+    lista_risposte_output = []
 
     ai = random.choice([True, False])
     if not ai:
-        risposte_lista_output = judge_game_api_db(lista_domande_input)
+        lista_risposte_output = judge_game_api_db(lista_domande_input)
 
-    if ai or len(risposte_lista_output) != len(lista_domande_input):
-        risposte_lista_output = judge_game_api_ai(lista_domande_input)
-        if len(risposte_lista_output) != len(lista_domande_input):
+    if ai or len(lista_risposte_output) != len(lista_domande_input):
+        lista_risposte_output = judge_game_api_ai(lista_domande_input)
+        if len(lista_risposte_output) != len(lista_domande_input):
             raise HTTPException(status_code= 500, detail= "Errore del server")
+        ai = True
     
-    return JudgeGameOutput(answer_1= risposte_lista_output[0], 
-                           answer_2= risposte_lista_output[1], 
-                           answer_3= risposte_lista_output[2])
+    insert_q_a_judge_api(game_id, ai, lista_domande_input, lista_risposte_output)
+
+    return JudgeGameOutput(answer_1= lista_risposte_output[0], 
+                           answer_2= lista_risposte_output[1], 
+                           answer_3= lista_risposte_output[2])
         
 @app.post("/participant-game-api/{game_id}", response_model=ParticipantGameOutput)
 def participant_game_api(game_id: int) -> ParticipantGameOutput:

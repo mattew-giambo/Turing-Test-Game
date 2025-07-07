@@ -5,9 +5,10 @@ from utility.connect_to_database import connect_to_database
 from utility.get_cursor import get_cursor
 from typing import List
 from rapidfuzz import process, fuzz
+import random
 
 def judge_game_api_db(lista_domande_input: List[str]):
-    risposte_lista_output = []
+    lista_risposte_output = []
 
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
@@ -20,7 +21,8 @@ def judge_game_api_db(lista_domande_input: List[str]):
 
     # Converte in lista di dizionari
     lista_domande = [{"id": row[0], "question": row[1], "answer": row[2]} for row in domande]
-
+    random.shuffle(lista_domande)
+    
     # Estrai solo i testi delle domande, lista di domande
     domande_testo = [diz["question"] for diz in lista_domande]
 
@@ -34,6 +36,6 @@ def judge_game_api_db(lista_domande_input: List[str]):
         )
         # Se somiglianza >= 80%, prendi la risposta associata
         if score >= 80:
-            risposte_lista_output.append(lista_domande[index]["answer"])
+            lista_risposte_output.append(lista_domande[index]["answer"])
     
-    return risposte_lista_output
+    return lista_risposte_output
