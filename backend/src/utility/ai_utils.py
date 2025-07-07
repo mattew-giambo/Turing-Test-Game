@@ -13,10 +13,10 @@ def get_ai_answer(question: str, flag_judge: bool) -> Union[None, str]:
 
     else:
         prompt = "Genera tre domande semplici e naturali, ciascuna su un argomento diverso. " \
-         "Scegli liberamente argomenti comuni che possano emergere in una conversazione informale tra persone. " \
-         "Evita domande tecniche, difficili o filosofiche. " \
-         "Non aggiungere introduzioni, commenti, spiegazioni o riferimenti al motivo per cui le domande sono state generate. " \
-         "Restituisci solo le tre domande, numerate da 1 a 3."
+        "Scegli liberamente argomenti comuni che possano emergere in una conversazione informale tra persone. " \
+        "Evita domande tecniche, difficili o filosofiche. " \
+        "Non aggiungere introduzioni, commenti, spiegazioni o riferimenti al motivo per cui le domande sono state generate. " \
+        "Restituisci solo le tre domande, numerate da 1 a 3."
 
     message = OllamaMessage(role= "user", content= promt)
     ollama_input = OllamaInput(model= MODEL, messages= [message], stream= False)

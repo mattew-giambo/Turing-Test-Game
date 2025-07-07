@@ -2,7 +2,8 @@ from fastapi import FastAPI, HTTPException
 from models.user_info import UserInfo
 from models.confirm_game import ConfirmGame
 from models.game_info import GameInfo
-from models.judge_game import JudgeGameInput, JudgeGameOutput
+from models.judge_game import JudgeGameInput, JudgeGameOutput, JudgeGameAnswer, EndJudgeGameOutput
+from models.user_stats import UserStats
 from models.participant_game import ParticipantGameOutput
 from utility.close_connection import close_connection
 from utility.close_cursor import close_cursor
@@ -13,6 +14,8 @@ from utility.judge_game_api_ai import judge_game_api_ai
 from utility.judge_game_api_db import judge_game_api_db
 from utility.insert_q_a_judge_api import insert_q_a_judge_api
 from utility.insert_q_a_participant_api import insert_q_a_participant_api
+from utility.end_game_judge_api import end_game_judge_api
+from utility.end_game_participant_api import end_game_participant_api
 from models.authentication import UserRegister, UserLogin
 from models.response_models import RegisterResponse, LoginResponse
 import mariadb
@@ -26,7 +29,7 @@ from utility.ai_utils import get_ai_answer, parse_ai_questions
 
 app = FastAPI()
 
-active_games: Dict[str, Dict[Any]] = {}
+active_games: Dict[int, Dict[Any]] = {}
 sessioni_attive: Dict[int, Dict[str, str]] = {}
 
 @app.post("/register-api", response_model=RegisterResponse)
@@ -137,7 +140,7 @@ def start_game_api(payload: UserInfo):
         "player_name": player_name,
         "player_role": player_role,
         "datetime": datetime.now(),
-        "result": None
+        "opponent_ai": None
     }
     ##
     return ConfirmGame(game_id= game_id)
@@ -168,16 +171,21 @@ def judge_game_api(judge_game: JudgeGameInput, game_id: int):
     lista_risposte_output = []
 
     ai = random.choice([True, False])
+
+    # RISPOSTE PRESE DA DB
     if not ai:
         lista_risposte_output = judge_game_api_db(lista_domande_input)
 
+    # RISPOSTE PRESE DA AI
     if ai or len(lista_risposte_output) != len(lista_domande_input):
         lista_risposte_output = judge_game_api_ai(lista_domande_input)
         if len(lista_risposte_output) != len(lista_domande_input):
             raise HTTPException(status_code= 500, detail= "Errore del server")
         ai = True
     
+    # INSERIMENT IN DB
     insert_q_a_judge_api(game_id, ai, lista_domande_input, lista_risposte_output)
+    active_games[game_id]["opponent_ai"] = ai
 
     return JudgeGameOutput(answer_1= lista_risposte_output[0], 
                            answer_2= lista_risposte_output[1], 
@@ -271,3 +279,89 @@ def participant_game_api(game_id: int) -> ParticipantGameOutput:
         finally:
             close_cursor(cursor)
             close_connection(connection)
+
+@app.post("/end-game-judge-api/{game_id}")
+def end_game_judge_api(judge_answer: JudgeGameAnswer, game_id: int):
+    if game_id not in active_games:
+        raise HTTPException(status_code=403, detail="Partita non trovata")
+    
+    player_role = active_games[game_id]["player_role"]
+    if player_role != "judge":
+        raise HTTPException(status_code=400, detail="Ruolo non valido per questa richiesta")
+    
+    player_name = active_games[game_id]["player_name"]
+    connection = connect_to_database()
+    cursor = get_cursor(connection)
+    try:
+        # ID UTENTE
+        cursor.execute("SELECT id FROM users WHERE user_name = %s", (player_name,))
+        result = cursor.fetchone()
+        if result is None:
+            raise HTTPException(status_code=404, detail="Utente non trovato")
+        player_id = result[0]
+
+        # CONTROLLO SE IL GAME E' CHIUSO
+        cursor.execute("SELECT result FROM games WHERE id = %s", (game_id,))
+        game_result = cursor.fetchone()
+        if game_result is not None:
+            raise HTTPException(status_code=400, detail="Questa partita è già stata chiusa.")
+
+        # VERIFICO ESITO
+        if judge_answer.is_ai == active_games[game_id]["opponent_ai"]:
+            cursor.execute("UPDATE games SET result = 'win' WHERE id = %s", (game_id,))
+            cursor.execute("""
+                UPDATE stats
+                SET n_games = n_games + 1,
+                    score_judge = score_judge + 3,
+                    won_judge = won_judge + 1
+                WHERE user_id = %s
+            """, (player_id,))
+        else:
+            cursor.execute("UPDATE games SET result = 'loss' WHERE id = %s", (game_id,))
+            cursor.execute("""
+                UPDATE stats
+                SET n_games = n_games + 1,
+                    lost_judge = lost_judge + 1
+                WHERE user_id = %s
+            """, (player_id,))
+
+        connection.commit()
+    except mariadb.Error as e:
+        raise HTTPException(
+            status_code= 500,
+            detail= "Errore del server"
+        )
+    finally:
+        close_cursor(cursor)
+        close_connection(connection)
+        active_games.pop(game_id) # rimozione della partita attiva
+
+    return EndJudgeGameOutput(message= "Partita terminata, esito registrato con successo!")
+
+@app.get("/user-stats-api/{user_id}")
+def get_user_stats(user_id: int):
+    connection = connect_to_database()
+    cursor = get_cursor(connection)
+
+    cursor.execute("""
+        SELECT user_id, n_games, score_part, score_judge, won_part, won_judge, lost_part, lost_judge
+        FROM stats
+        WHERE user_id = %s
+    """, (user_id,))
+    result = cursor.fetchone()
+    if result is None:
+        raise HTTPException(
+            status_code= 404,
+            detail= "Utente non trovato!"
+        )
+    
+    return UserStats(
+        user_id= result[0],
+        n_games= result[1],
+        score_part= result[2],
+        score_judge= result[3], 
+        won_part= result[4], 
+        won_judge= result[5], 
+        lost_part= result[6], 
+        lost_judge= result[7]
+    )

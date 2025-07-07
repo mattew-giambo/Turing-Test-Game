@@ -9,3 +9,9 @@ class JudgeGameOutput(BaseModel):
     answer_1: str
     answer_2: str
     answer_3: str
+
+class JudgeGameAnswer(BaseModel):
+    is_ai: bool
+
+class EndJudgeGameOutput(BaseModel):
+    message: str
