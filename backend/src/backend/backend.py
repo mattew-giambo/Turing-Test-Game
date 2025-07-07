@@ -225,7 +225,6 @@ def participant_game_api(game_id: int) -> ParticipantGameOutput:
                 if aggiungi_domanda:
                     domande_distinte.append(domanda)
 
-
             if len(domande_distinte) < 3:
                 ## COLLEGARSI A OLLAMA E FAR RISPONDERE TRAMITE ALLE DOMANDE get_ai_answer for tutte le domande
                 pass
