@@ -26,15 +26,21 @@ CREATE TABLE Stats (
 -- Table: Games
 CREATE TABLE Games (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    player_role VARCHAR(20) NOT NULL,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     result VARCHAR(20) DEFAULT NULL,
-    FOREIGN KEY user_id REFERENCES Users(id) ON DELETE CASCADE,
-    CHECK (player_role IN ('judge', 'participant')),
+    terminated BOOLEAN DEFAULT 0,
     CHECK (result IN ('win', 'loss'))
 );
 
+CREATE TABLE UserGames(
+    game_id INT NOT NULL,
+    player_id INT NOT NULL,
+    role VARCHAR(15) NOT NULL,
+    PRIMARY KEY(game_id, player_id),
+    CHECK (role in ('judge', 'participant')),
+    FOREIGN KEY game_id REFERENCES Games(id) ON DELETE CASCADE,
+    FOREIGN KEY player_id REFERENCES Users(id) ON DELETE CASCADE
+)
 -- Table: Q_A
 CREATE TABLE Q_A (
     id INT AUTO_INCREMENT PRIMARY KEY,
