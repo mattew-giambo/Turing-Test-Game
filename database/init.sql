@@ -28,7 +28,7 @@ CREATE TABLE Games (
     id INT AUTO_INCREMENT PRIMARY KEY,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     result VARCHAR(20) DEFAULT NULL,
-    terminated BOOLEAN DEFAULT 0,
+    terminated BOOLEAN DEFAULT FALSE,
     CHECK (result IN ('win', 'loss'))
 );
 
@@ -36,19 +36,19 @@ CREATE TABLE UserGames(
     game_id INT NOT NULL,
     player_id INT NOT NULL,
     role VARCHAR(15) NOT NULL,
-    PRIMARY KEY(game_id, player_id),
+    PRIMARY KEY (game_id, role),
     CHECK (role in ('judge', 'participant')),
     FOREIGN KEY game_id REFERENCES Games(id) ON DELETE CASCADE,
     FOREIGN KEY player_id REFERENCES Users(id) ON DELETE CASCADE
 )
 -- Table: Q_A
 CREATE TABLE Q_A (
-    id INT AUTO_INCREMENT PRIMARY KEY,
     game_id INT NOT NULL,
     question_id INT NOT NULL,
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
     ai_question BOOLEAN DEFAULT FALSE,
     ai_answer BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY (game_id, question_id),
     FOREIGN KEY game_id REFERENCES Games(id) ON DELETE CASCADE
 );
