@@ -14,8 +14,7 @@ from utility.judge_game_api_ai import judge_game_api_ai
 from utility.judge_game_api_db import judge_game_api_db
 from utility.insert_q_a_judge_api import insert_q_a_judge_api
 from utility.insert_q_a_participant_api import insert_q_a_participant_api
-from models.authentication import UserRegister, UserLogin
-from models.response_models import RegisterResponse, LoginResponse
+from models.authentication import UserRegister, UserLogin, RegisterResponse, LoginResponse
 import mariadb
 from typing import Dict, Any, List, Tuple
 import time
@@ -54,7 +53,7 @@ def register_api(user: UserRegister) -> RegisterResponse:
         cursor.execute(query, (user_id,))
         connection.commit()
 
-        return RegisterResponse(message="Registrazione avvenuta con successo", user_id=user_id)
+        return RegisterResponse(message="ok", user_id=user_id)
 
     except mariadb.Error:
         raise HTTPException(status_code=500, detail="Errore durante la registrazione")
@@ -89,7 +88,7 @@ def login_api(user: UserLogin) -> LoginResponse:
         }
 
         return LoginResponse(
-            message="Login riuscito",
+            message="ok",
             user_id=user_id,
             user_name=user_name
         )
@@ -183,62 +182,57 @@ def judge_game_api(payload: JudgeGameInput, game_id: int):
         
 @app.post("/participant-game-api/{game_id}", response_model=ParticipantGameOutput)
 def participant_game_api(game_id: int) -> ParticipantGameOutput:
-    if game_id not in active_games.keys():
-        raise HTTPException(status_code= 403, detail= "Partita non trovata")
-    
-    partita = active_games[game_id]
-    if partita["player_role"] != "participant":
-        raise HTTPException(status_code=400, detail="Ruolo non valido per questa richiesta")
-    
-    ai = random.choice([True, False])
-    if ai:
-        answer = get_ai_answer("", flag_judge=False)
-        questions = parse_ai_questions(answer)
+    connection: mariadb.Connection = connect_to_database()
+    cursor: mariadb.Cursor = get_cursor(connection)
 
-        if len(questions) < 3:
-            raise HTTPException(status_code=500, detail="L'AI non ha generato abbastanza domande")
+    try:
+        query:str = "SELECT id FROM Games WHERE id = %s AND terminated = 0"
+        cursor.execute(query, (game_id,))
+        result = cursor.fetchone()
 
-        insert_q_a_participant_api(game_id, questions[:3], ai_question=True)
+        if not result:
+            raise HTTPException(status_code=404, detail="Partita non trovata o già terminata.")
+        
+        ai = random.choice([True, False])
+        if ai:
+            answer = get_ai_answer(flag_judge=False)
+            questions = parse_ai_questions(answer)
 
-        return ParticipantGameOutput(
-            question_1=questions[0],
-            question_2=questions[1],
-            question_3=questions[2]
-        )
+            if len(questions) < 3:
+                raise HTTPException(status_code=500, detail="L'AI non ha generato abbastanza domande")
 
-    else:
+            insert_q_a_participant_api(game_id, questions[:3], ai_question=True)
 
-        try:
-            connection: mariadb.Connection = connect_to_database()
-            cursor: mariadb.Cursor = get_cursor(connection)
-
-            # Prende tutte le domande dal DB, con la flag ai_question
+            return ParticipantGameOutput(questions=questions[:3])
+        
+        else:
+            # Prende tutte le domande e la relativa flag ai_question dal DB
             cursor.execute("SELECT DISTINCT question, ai_question FROM Q_A")
-            rows = cursor.fetchall()
+            result = cursor.fetchall()
 
-            if not rows:
+            if not result:
                 raise HTTPException(status_code=404, detail="Nessuna domanda trovata nel database")
             
             # Estrae le domande e le mescola
-            tutte_le_domande = [(row[0].strip(), row[1]) for row in rows]
-            random.shuffle(tutte_le_domande)
+            questions = [(elem[0].strip(), elem[1]) for elem in result]
+            random.shuffle(questions)
 
             # Filtro fuzzy per evitare duplicati
             domande_distinte: List[str] = []
             ai_flags: List[bool] = []
 
-            for domanda, flag in tutte_le_domande:
-                aggiungi_domanda = True  # supponiamo che la domanda sia valida
+            for question, flag in questions:
+                add_question = True  # supponiamo che la domanda sia valida
 
                 for esistente in domande_distinte:
-                    similarita = fuzz.token_sort_ratio(domanda.lower(), esistente.lower())
+                    similarita = fuzz.token_sort_ratio(question.lower(), esistente.lower())
 
                     if similarita >= 85:
-                        aggiungi_domanda = False  # troppo simile a una domanda già presente
+                        add_question = False  # troppo simile a una domanda già presente
                         break  # non serve continuare a confrontare con le altre
 
-                if aggiungi_domanda:
-                    domande_distinte.append(domanda)
+                if add_question:
+                    domande_distinte.append(question)
                     ai_flags.append(flag)
 
                 if len(domande_distinte) == 3:
@@ -246,51 +240,39 @@ def participant_game_api(game_id: int) -> ParticipantGameOutput:
 
             # Fallback: usa domande generate dall'AI se non ci sono abbastanza distinte
             if len(domande_distinte) < 3:
-                answer = get_ai_answer("", flag_judge=False)
-                domande_distinte: List[str] = []
-                ai_flags: List[bool] = []
-
+                answer = get_ai_answer(flag_judge=False)
                 domande_distinte = parse_ai_questions(answer)
                 ai_flags = [True] * len(domande_distinte)
 
             # Inserisce le domande nel DB con i flag corretti
-            for domanda, ai_flag in zip(domande_distinte[:3], ai_flags[:3]):
-                insert_q_a_participant_api(game_id, [domanda], ai_question=ai_flag)
+            for question, ai_flag in zip(domande_distinte[:3], ai_flags[:3]):
+                insert_q_a_participant_api(game_id, [question], ai_question=ai_flag)
 
-            return ParticipantGameOutput(
-                question_1=domande_distinte[0],
-                question_2=domande_distinte[1],
-                question_3=domande_distinte[2]
-            )
+            return ParticipantGameOutput(questions=domande_distinte[:3])
 
-        except mariadb.Error:
-            raise HTTPException(status_code=500, detail="Errore durante la generazione delle domande")
-
-        finally:
+    except mariadb.Error as e:
+        raise HTTPException(status_code=500, detail=f"Errore database: {e}")
+    finally:
             close_cursor(cursor)
             close_connection(connection)
 
 @app.post("/submit-participant-answers-api/{game_id}", response_model=ResponseSubmit)
 def submit_answers_api(game_id: int, input_data: AnswerInput):
-    if game_id not in active_games.keys():
-        raise HTTPException(status_code= 403, detail= "Partita non trovata")
-    
-    partita = active_games[game_id]
-    if partita["player_role"] != "participant":
-        raise HTTPException(status_code=400, detail="Ruolo non valido per questa richiesta")
-    
     if len(input_data.answers) != 3:
         raise HTTPException(status_code=422, detail="Devono essere fornite esattamente tre risposte")
+    
+    connection: mariadb.Connection = connect_to_database()
+    cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        connection: mariadb.Connection = connect_to_database()
-        cursor: mariadb.Cursor = get_cursor(connection)
+        query:str = "SELECT id FROM Games WHERE id = %s AND terminated = 0"
+        cursor.execute(query, (game_id,))
+        result = cursor.fetchone()
 
-        query: str = """
-            UPDATE Q_A
-            SET answer = %s
-            WHERE game_id = %s AND question_id = %s
-        """
+        if not result:
+            raise HTTPException(status_code=404, detail="Partita non trovata o già terminata.")
+        
+        query = "UPDATE Q_A SET answer = %s WHERE game_id = %s AND question_id = %s"
 
         for idx, answer in enumerate(input_data.answers, start=1):  
             cursor.execute(query, (answer.strip(), game_id, idx))
