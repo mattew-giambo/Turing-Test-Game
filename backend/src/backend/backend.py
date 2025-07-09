@@ -55,8 +55,9 @@ def register_api(user: UserRegister) -> RegisterResponse:
 
         return RegisterResponse(message="ok", user_id=user_id)
 
-    except mariadb.Error:
-        raise HTTPException(status_code=500, detail="Errore durante la registrazione")
+    except mariadb.Error as e:
+        connection.rollback()
+        raise HTTPException(status_code=500, detail=f"Errore durante la registrazione: {e}")
 
     finally:
         close_cursor(cursor)
