@@ -13,14 +13,14 @@ def judge_game_api_db(lista_domande_input: List[str]):
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 
-    cursor.execute("SELECT id, question, answer FROM Q_A")
+    cursor.execute("SELECT question, answer FROM Q_A WHERE ai_answer = FALSE")
     domande = cursor.fetchall()
 
     close_connection(connection)
     close_cursor(cursor)
 
     # Converte in lista di dizionari
-    lista_domande = [{"id": row[0], "question": row[1], "answer": row[2]} for row in domande]
+    lista_domande = [{"question": row[0], "answer": row[1]} for row in domande]
     random.shuffle(lista_domande)
     
     # Estrai solo i testi delle domande, lista di domande
@@ -32,7 +32,7 @@ def judge_game_api_db(lista_domande_input: List[str]):
         match, score, index = process.extractOne(
             domanda_input,
             domande_testo,
-            scorer=fuzz.token_sort_ratio
+            scorer= fuzz.token_sort_ratio
         )
         # Se somiglianza >= 80%, prendi la risposta associata
         if score >= 80:

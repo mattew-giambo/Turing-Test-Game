@@ -35,8 +35,8 @@ CREATE TABLE Games (
 CREATE TABLE UserGames(
     game_id INT NOT NULL,
     player_id INT NOT NULL,
-    role VARCHAR(15) NOT NULL,
-    PRIMARY KEY (game_id, role),
+    player_role VARCHAR(15) NOT NULL,
+    PRIMARY KEY (game_id, player_role),
     CHECK (role in ('judge', 'participant')),
     FOREIGN KEY game_id REFERENCES Games(id) ON DELETE CASCADE,
     FOREIGN KEY player_id REFERENCES Users(id) ON DELETE CASCADE

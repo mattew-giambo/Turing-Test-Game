@@ -10,10 +10,11 @@ def insert_q_a_judge_api(game_id: int, flag_ai: bool, lista_domande_input: List,
     try:
         connection = connect_to_database()
         cursor = get_cursor(connection)
-        for elem in zip(lista_domande_input, lista_risposte_output):
+        max_id = len(lista_domande_input)
+        for question, answer, q_id in zip(lista_domande_input, lista_risposte_output, range(1, max_id+1)):
             cursor.execute(
-                "INSERT INTO Q_A(game_id, question, answer, ai_answer) VALUES (%s, %s, %s, %s)",
-                (game_id,) + elem + (flag_ai,)
+                "INSERT INTO Q_A(game_id, question, answer, question_id, ai_answer) VALUES (%s, %s, %s, %s, %s)",
+                (game_id, question, answer, q_id, flag_ai)
             )
         connection.commit()
     except mariadb.Error as e:

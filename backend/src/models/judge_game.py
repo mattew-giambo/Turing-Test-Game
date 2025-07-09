@@ -1,17 +1,15 @@
 from pydantic import BaseModel
+from typing import List
 
 class JudgeGameInput(BaseModel):
-    question_1: str
-    question_2: str
-    question_3: str
+    questions_list: List[str]
 
 class JudgeGameOutput(BaseModel):
-    answer_1: str
-    answer_2: str
-    answer_3: str
+    answers_list: List[str]
 
 class JudgeGameAnswer(BaseModel):
     is_ai: bool
 
 class EndJudgeGameOutput(BaseModel):
     message: str
+    is_won: bool

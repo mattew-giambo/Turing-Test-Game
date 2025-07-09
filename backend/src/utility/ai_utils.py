@@ -3,7 +3,7 @@ from config.constants import OLLAMA_CHAT_URL, MODEL
 from models.ollama import OllamaInput, OllamaMessage
 from typing import List, Union, Dict
 
-def get_ai_answer(question: str, flag_judge: bool) -> Union[None, str]:
+def get_ai_answer(question: str= None, flag_judge: bool= True) -> Union[None, str]:
     promt: str = None
     if flag_judge:
         promt = f'Rispondi in modo discorsivo come se fossi un essere umano alla domanda: {question}\
