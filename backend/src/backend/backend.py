@@ -314,6 +314,38 @@ def submit_answers_api(game_id: int, input_data: AnswerInput):
         close_cursor(cursor)
         close_connection(connection)
 
+@app.post("/start-pending-game-api")
+def start_pending_game_api(payload: UserInfo):
+    player_name = payload.player_name
+    player_role = payload.player_role
+
+    try:
+        connection: mariadb.Connection = connect_to_database()
+        cursor: mariadb.Cursor = get_cursor(connection)
+
+        query= "SELECT id FROM Users WHERE user_name = %s"
+        cursor.execute(query, player_name)
+        result = cursor.fetchone()
+        
+        if(result is None):
+            raise HTTPException(status_code= 403, detail= "Utente non trovato")
+    
+        user_id = result[0]
+
+        ai = random.choice([True, False])
+        if ai:
+            pass
+
+        else:
+
+
+    except mariadb.Error:
+        raise HTTPException(status_code=500, detail="Errore durante la generazione della partita")
+
+    finally:
+        close_cursor(cursor)
+        close_connection(connection)
+
 @app.post("/end-game-judge-api/{game_id}")
 def end_game_judge_api(judge_answer: JudgeGameAnswer, game_id: int):
     if game_id not in active_games:
