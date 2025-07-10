@@ -6,7 +6,7 @@ import mariadb
 from typing import List
 from fastapi import HTTPException
 
-def insert_q_a_participant_api(game_id: int, questions: List[str], ai_question: bool):
+def insert_q_a_participant_api(game_id: int, questions: List[str], ai_question: bool, ai_answer: bool):
     try:
         connection: mariadb.Connection = connect_to_database()
         cursor: mariadb.Cursor = get_cursor(connection)
@@ -19,7 +19,7 @@ def insert_q_a_participant_api(game_id: int, questions: List[str], ai_question: 
                 question,
                 "",
                 ai_question,
-                False
+                ai_answer
             ))
         connection.commit()
     except mariadb.Error as db_error:
