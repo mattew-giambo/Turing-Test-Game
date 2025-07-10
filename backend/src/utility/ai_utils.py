@@ -4,9 +4,9 @@ from models.ollama import OllamaInput, OllamaMessage
 from typing import List, Union, Dict
 
 def get_ai_answer(question: str= None, flag_judge: bool= True) -> Union[None, str]:
-    promt: str = None
+    prompt: str = None
     if flag_judge:
-        promt = f'Rispondi in modo discorsivo come se fossi un essere umano alla domanda: {question}\
+        prompt = f'Rispondi in modo discorsivo come se fossi un essere umano alla domanda: {question}\
         Scrivi solo la risposta, in modo emotivo e naturale, senza meta commenti, spiegazioni o riferimenti alla domanda stessa.\
         Limìtati a rispondere come se fosse una conversazione vera, tra due persone. Non usare asterischi per indicare azioni,\
         pensieri o emozioni.'
@@ -18,7 +18,7 @@ def get_ai_answer(question: str= None, flag_judge: bool= True) -> Union[None, st
         "Non aggiungere introduzioni, commenti, spiegazioni o riferimenti al motivo per cui le domande sono state generate. " \
         "Restituisci solo le tre domande, numerate da 1 a 3."
 
-    message = OllamaMessage(role= "user", content= promt)
+    message = OllamaMessage(role= "user", content= prompt)
     ollama_input = OllamaInput(model= MODEL, messages= [message], stream= False)
 
     try:

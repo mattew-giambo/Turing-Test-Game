@@ -8,6 +8,7 @@ class JudgeGameOutput(BaseModel):
     answers_list: List[str]
 
 class JudgeGameAnswer(BaseModel):
+    player_id: int
     is_ai: bool
 
 class EndJudgeGameOutput(BaseModel):
