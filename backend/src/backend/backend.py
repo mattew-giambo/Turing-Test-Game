@@ -565,3 +565,30 @@ def get_user_stats(user_id: int):
     )
 
 # endpoint per ottenere le partite di un player_id e un endpoint per le informazioni della partita
+
+@app.get("/user-games/{user_id}")
+def get_player_games(user_id: int):
+    connection = connect_to_database()
+    cursor = get_cursor(connection) 
+    
+    cursor.execute("""SELECT ug.game_id, ug.player_role
+                    FROM Users as u JOIN UserGames as ug ON u.id = ug.user_id
+                   """)
+    result = cursor.fetchall()
+
+    if not result:
+        raise HTTPException(
+            status_code= 404,
+            detail= "Utente non trovato"
+        )
+    
+    # da aggiustare
+    all_player_games = {
+        user_id:{
+            "game_id": game_id,
+            "player_role": player_role
+            for game_id, player_role in result
+        }
+    }
+
+    return 
