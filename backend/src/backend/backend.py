@@ -5,6 +5,8 @@ from models.judge_game_info import JudgeGameInfo
 from models.judge_game import JudgeGameInput, JudgeGameOutput, JudgeGameAnswer, EndJudgeGameOutput
 from models.user_stats import UserStats
 from models.participant_game import ParticipantGameOutput, AnswerInput, ResponseSubmit
+from models.user_games import UserGames, Game
+from models.game_info import GameInfoInput, GameInfoOutput
 from utility.close_connection import close_connection
 from utility.close_cursor import close_cursor
 from utility.connect_to_database import connect_to_database
@@ -143,18 +145,6 @@ def start_judge_game_api(payload: UserInfo):
     }
     ##
     return ConfirmGame(game_id= game_id, player_id= player_id)
-
-@app.get("/judge-game-info-api/{game_id}")
-def player_role_api(game_id: int):
-    if game_id not in active_judge_games.keys():
-        raise HTTPException(status_code= 403, detail= "Partita non trovata")
-    
-    player_name = active_judge_games[game_id]["player_name"]
-    game_date= active_judge_games[game_id]["datetime"]
-
-    return JudgeGameInfo(
-                    player_name= player_name,
-                    game_date= game_date)
 
 @app.post("/judge-game-api/{game_id}")
 def judge_game_api(payload: JudgeGameInput, game_id: int):
@@ -537,7 +527,7 @@ def end_pending_game_api(judge_answer: JudgeGameAnswer, game_id: int):
     return EndPendingGame(game_id= game_id, is_won = is_won, message= "Partita terminata, esito registrato con successo!")
 
 @app.get("/user-stats-api/{user_id}")
-def get_user_stats(user_id: int):
+def get_user_stats_api(user_id: int):
     connection = connect_to_database()
     cursor = get_cursor(connection)
 
@@ -564,10 +554,10 @@ def get_user_stats(user_id: int):
         lost_judge= result[7]
     )
 
-# endpoint per ottenere le partite di un player_id e un endpoint per le informazioni della partita
+# un endpoint per le informazioni della partita
 
-@app.get("/user-games/{user_id}")
-def get_player_games(user_id: int):
+@app.get("/user-games-api/{user_id}")
+def get_player_games_api(user_id: int):
     connection = connect_to_database()
     cursor = get_cursor(connection) 
     
@@ -581,14 +571,46 @@ def get_player_games(user_id: int):
             status_code= 404,
             detail= "Utente non trovato"
         )
-    
-    # da aggiustare
-    all_player_games = {
-        user_id:{
-            "game_id": game_id,
-            "player_role": player_role
-            for game_id, player_role in result
-        }
-    }
 
-    return 
+    return UserGames(user_id= user_id, 
+                     user_games= [Game(game_id= game_id, player_role= player_role) for game_id, player_role in result])
+
+@app.post("/game-info-api")
+def game_info_api(payload: GameInfoInput):
+    player_id = payload.player_id
+    game_id = payload.game_id
+    connection = connect_to_database()
+    cursor = get_cursor(connection)
+
+    cursor.execute("""
+    SELECT id, date, terminated, player_id, player_role
+    FROM Games as g JOIN UserGames as ug ON g.id = ug.game_id
+    WHERE g.id = %s AND ug.player_id = %s
+    """, (game_id, player_id))
+    result = cursor.fetchone()
+
+    if result is None:
+        raise HTTPException(status_code= 404,
+                            detail= "Nessuna partita trovata con questo id per questo giocatore")
+    
+    return GameInfoOutput(
+        game_id= result[0],
+        data= result[1],
+        terminated= result[2],
+        player_id= result[3],
+        player_role= result[4] 
+    )
+
+# PER ADESSO NON SERVE PIU'
+# @app.get("/judge-game-info-api/{game_id}")
+# def player_role_api(game_id: int):
+#     if game_id not in active_judge_games.keys():
+#         raise HTTPException(status_code= 403, detail= "Partita non trovata")
+    
+#     player_name = active_judge_games[game_id]["player_name"]
+#     game_date= active_judge_games[game_id]["datetime"]
+
+#     return JudgeGameInfo(
+#                     player_name= player_name,
+#                     game_date= game_date)
+
