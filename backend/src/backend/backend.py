@@ -4,7 +4,7 @@ from models.confirm_game import ConfirmGame
 from models.judge_game_info import JudgeGameInfo
 from models.judge_game import JudgeGameInput, JudgeGameOutput, JudgeGameAnswer, EndJudgeGameOutput
 from models.user_stats import UserStats
-from models.participant_game import ParticipantGameOutput, AnswerInput, ResponseSubmit
+from models.participant_game import ParticipantGameOutput, AnswerInput, ResponseSubmit, QADict
 from models.user_games import UserGames, Game
 from models.game_info import GameInfoInput, GameInfoOutput
 from utility.close_connection import close_connection
@@ -179,7 +179,7 @@ def participant_game_api(game_id: int) -> ParticipantGameOutput:
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        query:str = "SELECT id FROM Games WHERE id = %s AND terminated = 0"
+        query:str = "SELECT id FROM Games WHERE id = %s AND terminated = FALSE"
         cursor.execute(query, (game_id,))
         result = cursor.fetchone()
 
@@ -258,7 +258,7 @@ def submit_answers_api(game_id: int, input_data: AnswerInput):
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        query:str = "SELECT id FROM Games WHERE id = %s AND terminated = 0"
+        query:str = "SELECT id FROM Games WHERE id = %s AND terminated = FALSE"
         cursor.execute(query, (game_id,))
         result = cursor.fetchone()
 
