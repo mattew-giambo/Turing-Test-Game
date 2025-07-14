@@ -105,9 +105,10 @@ def login_api(user: UserLogin) -> LoginResponse:
         close_cursor(cursor)
         close_connection(connection)
 
-@app.post("/start-judge-game-api")
-def start_judge_game_api(payload: UserInfo):
+@app.post("/start-game-api")
+def start_game_api(payload: UserInfo):
     player_name = payload.player_name
+    player_role = payload.player_role
 
     ## Verifica dell'utente nel database
     connection: mariadb.Connection = connect_to_database()
@@ -126,7 +127,7 @@ def start_judge_game_api(payload: UserInfo):
     try:
         cursor.execute( "INSERT INTO Games() VALUES ()")
         game_id = cursor.lastrowid()
-        cursor.execute( "INSERT INTO UserGames(game_id, player_id, player_role) VALUES (%s)", (game_id, player_id, 'judge'))
+        cursor.execute( "INSERT INTO UserGames(game_id, player_id, player_role) VALUES (%s)", (game_id, player_id, player_role))
         connection.commit()
     except mariadb.Error as e:
         print(e)
@@ -138,13 +139,14 @@ def start_judge_game_api(payload: UserInfo):
         close_cursor(cursor)
         close_connection(connection)
 
-    active_judge_games[game_id] = {
-        "player_name": player_name,
-        "datetime": datetime.now(),
-        "opponent_ai": None
-    }
+    if player_role == 'judge':
+        active_judge_games[game_id] = {
+            "player_name": player_name,
+            "datetime": datetime.now(),
+            "opponent_ai": None
+        }
     ##
-    return ConfirmGame(game_id= game_id, player_id= player_id)
+    return ConfirmGame(game_id= game_id, player_id= player_id, player_name= player_name, player_role= player_role)
 
 @app.post("/judge-game-api/{game_id}")
 def judge_game_api(payload: JudgeGameInput, game_id: int):
@@ -160,7 +162,7 @@ def judge_game_api(payload: JudgeGameInput, game_id: int):
     if not ai:
         lista_risposte_output = judge_game_api_db(lista_domande_input)
 
-    # RISPOSTE PRESE DA AI
+    # RISPOSTE PRESE DA AI - FALLBACK NEL CASO IN CUI LE RISPOSTE PRESE DAL DB NON SIANO SUFFICIENTI
     if ai or len(lista_risposte_output) != len(lista_domande_input):
         lista_risposte_output = judge_game_api_ai(lista_domande_input)
         if len(lista_risposte_output) != len(lista_domande_input):
@@ -607,8 +609,6 @@ def get_user_stats_api(user_id: int):
         lost_part= result[6], 
         lost_judge= result[7]
     )
-
-# un endpoint per le informazioni della partita
 
 @app.get("/user-games-api/{user_id}")
 def get_player_games_api(user_id: int):

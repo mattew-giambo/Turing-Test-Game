@@ -16,7 +16,7 @@ def generate_full_ai_session(user_id: int) -> GameReviewOutput:
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        query: str = "INSERT INTO Games (terminated) VALUES (FALSE)"
+        query: str = "INSERT INTO Games () VALUES ()"
         # 1. Crea una nuova partita 
         cursor.execute(query)
         game_id: int = cursor.lastrowid
