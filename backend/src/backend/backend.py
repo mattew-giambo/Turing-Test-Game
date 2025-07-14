@@ -179,6 +179,7 @@ def participant_game_api(game_id: int) -> ParticipantGameOutput:
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
+        # 1. Verifica validità della partita
         query:str = "SELECT id FROM Games WHERE id = %s AND terminated = FALSE"
         cursor.execute(query, (game_id,))
         result = cursor.fetchone()
@@ -186,62 +187,115 @@ def participant_game_api(game_id: int) -> ParticipantGameOutput:
         if not result:
             raise HTTPException(status_code=404, detail="Partita non trovata o già terminata.")
         
+        # 2. Decide la fonte delle domande
         ai = random.choice([True, False])
+
         if ai:
-            answer = get_ai_answer(flag_judge=False)
-            questions = parse_ai_questions(answer)
+            # 3A. Generazione AI
+            answer: str = get_ai_answer(flag_judge=False)
+            questions: List[str] = parse_ai_questions(answer)
 
             if len(questions) < 3:
                 raise HTTPException(status_code=500, detail="L'AI non ha generato abbastanza domande")
 
-            insert_q_a_participant_api(game_id, questions[:3], ai_question=True, ai_answer=False)
+            # Costruzione oggetti da inserire nel DB
+            qa_list: List[QADict] = [
+                QADict(
+                    question=question,
+                    answer="",
+                    ai_question=True,
+                    ai_answer=False
+                ) for question in questions
+            ]
 
-            return ParticipantGameOutput(questions=questions[:3])
+            insert_q_a_participant_api(game_id, qa_list)
+
+            return ParticipantGameOutput(questions=questions)
         
         else:
-            # Prende tutte le domande e la relativa flag ai_question dal DB
+            # 3B. Domande dal DB
             cursor.execute("SELECT DISTINCT question, ai_question FROM Q_A")
             result = cursor.fetchall()
 
+            # Se non ci sono abbastanza domande nel db le genera l'AI
             if not result:
-                raise HTTPException(status_code=404, detail="Nessuna domanda trovata nel database")
+                answer: str = get_ai_answer(flag_judge=False)
+                questions: List[str] = parse_ai_questions(answer)
+
+                if len(questions) < 3:
+                    raise HTTPException(status_code=500, detail="AI fallback fallito: domande insufficienti.")
+
+                qa_list: List[QADict] = [
+                    QADict(
+                        question=question,
+                        answer="",
+                        ai_question=True,
+                        ai_answer=False
+                    ) for question in questions
+                ]
+
+                insert_q_a_participant_api(game_id, qa_list)
+
+                return ParticipantGameOutput(questions=questions)
             
-            # Estrae le domande e le mescola
-            questions = [(elem[0].strip(), elem[1]) for elem in result]
-            random.shuffle(questions)
+            # Filtro fuzzy per domande distinte
+            all_questions = [(elem[0].strip(), elem[1]) for elem in result]
+            random.shuffle(all_questions)
 
-            # Filtro fuzzy per evitare duplicati
-            domande_distinte: List[str] = []
-            ai_flags: List[bool] = []
+            selected_questions: List[str] = []
+            selected_flags: List[bool] = []
 
-            for question, flag in questions:
-                add_question = True  # supponiamo che la domanda sia valida
+            for question, flag in all_questions:
+                is_distinct = True # supponiamo che la domanda sia valida
 
-                for esistente in domande_distinte:
-                    similarita = fuzz.token_sort_ratio(question.lower(), esistente.lower())
+                for existing in selected_questions:
+                    similarity = fuzz.token_sort_ratio(question.lower(), existing.lower())
 
-                    if similarita >= 85:
-                        add_question = False  # troppo simile a una domanda già presente
-                        break  # non serve continuare a confrontare con le altre
+                    if similarity >= 85:
+                        is_distinct = False # troppo simile a una domanda già presente
+                        break # non serve continuare a confrontare con le altre
 
-                if add_question:
-                    domande_distinte.append(question)
-                    ai_flags.append(flag)
+                if is_distinct:
+                    selected_questions.append(question)
+                    selected_flags.append(flag)
 
-                if len(domande_distinte) == 3:
-                    break  # abbiamo trovato abbastanza domande distinte
+                if len(selected_questions) == 3:
+                    break # abbiamo trovato abbastanza domande distinte
 
-            # Fallback: usa domande generate dall'AI se non ci sono abbastanza distinte
-            if len(domande_distinte) < 3:
-                answer = get_ai_answer(flag_judge=False)
-                domande_distinte = parse_ai_questions(answer)
-                ai_flags = [True] * len(domande_distinte)
+            # Se meno di 3 domande distinte, fallback all’AI
+            if len(selected_questions) < 3:
+                ai_answer: str = get_ai_answer(flag_judge=False)
+                ai_questions: List[str] = parse_ai_questions(ai_answer)
 
-            # Inserisce le domande nel DB con i flag corretti
-            for question, ai_flag in zip(domande_distinte[:3], ai_flags[:3]):
-                insert_q_a_participant_api(game_id, [question], ai_question=ai_flag, ai_answer=False)
+                if len(ai_questions) < 3:
+                    raise HTTPException(status_code=500, detail="AI fallback fallito: domande insufficienti.")
+                
+                qa_list: List[QADict] = [
+                    QADict(
+                        question=question,
+                        answer="",
+                        ai_question=True,
+                        ai_answer=False
+                    ) for question in ai_questions
+                ]
 
-            return ParticipantGameOutput(questions=domande_distinte[:3])
+                insert_q_a_participant_api(game_id, qa_list)
+
+                return ParticipantGameOutput(questions=ai_questions)
+
+            # Inserisce le 3 domande selezionate dal DB
+            qa_list: List[QADict] = [
+                QADict(
+                    question=q,
+                    answer="",
+                    ai_question=flag,
+                    ai_answer=False
+                ) for q, flag in zip(selected_questions, selected_flags)
+            ]
+
+            insert_q_a_participant_api(game_id, qa_list)
+
+            return ParticipantGameOutput(questions=selected_questions)
 
     except mariadb.Error as e:
         raise HTTPException(status_code=500, detail=f"Errore database: {e}")
