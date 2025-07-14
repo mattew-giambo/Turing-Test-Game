@@ -194,10 +194,10 @@ def participant_game_api(game_id: int) -> ParticipantGameOutput:
 
         if ai:
             # 3A. Generazione AI
-            answer: str = get_ai_answer(flag_judge=False)
-            questions: List[str] = parse_ai_questions(answer)
+            ai_answer: str = get_ai_answer(flag_judge=False)
+            ai_questions: List[str] = parse_ai_questions(ai_answer)
 
-            if len(questions) < 3:
+            if len(ai_questions) < 3:
                 raise HTTPException(status_code=500, detail="L'AI non ha generato abbastanza domande")
 
             # Costruzione oggetti da inserire nel DB
@@ -207,12 +207,12 @@ def participant_game_api(game_id: int) -> ParticipantGameOutput:
                     answer="",
                     ai_question=True,
                     ai_answer=False
-                ) for question in questions
+                ) for question in ai_questions
             ]
 
             insert_q_a_participant_api(game_id, qa_list)
 
-            return ParticipantGameOutput(questions=questions)
+            return ParticipantGameOutput(questions=ai_questions)
         
         else:
             # 3B. Domande dal DB
@@ -221,10 +221,10 @@ def participant_game_api(game_id: int) -> ParticipantGameOutput:
 
             # Se non ci sono abbastanza domande nel db le genera l'AI
             if not result:
-                answer: str = get_ai_answer(flag_judge=False)
-                questions: List[str] = parse_ai_questions(answer)
+                ai_answer: str = get_ai_answer(flag_judge=False)
+                ai_questions: List[str] = parse_ai_questions(ai_answer)
 
-                if len(questions) < 3:
+                if len(ai_questions) < 3:
                     raise HTTPException(status_code=500, detail="AI fallback fallito: domande insufficienti.")
 
                 qa_list: List[QADict] = [
@@ -233,12 +233,12 @@ def participant_game_api(game_id: int) -> ParticipantGameOutput:
                         answer="",
                         ai_question=True,
                         ai_answer=False
-                    ) for question in questions
+                    ) for question in ai_questions
                 ]
 
                 insert_q_a_participant_api(game_id, qa_list)
 
-                return ParticipantGameOutput(questions=questions)
+                return ParticipantGameOutput(questions=ai_questions)
             
             # Filtro fuzzy per domande distinte
             all_questions = [(elem[0].strip(), elem[1]) for elem in result]
@@ -337,27 +337,28 @@ def submit_answers_api(game_id: int, input_data: AnswerInput):
         close_cursor(cursor)
         close_connection(connection)
 
-@app.post("/start-pending-game-api")
-def start_pending_game_api(payload: UserInfo):
+@app.post("/start-pending-game-api", response_model=GameReviewOutput)
+def start_pending_game_api(payload: UserInfo) -> GameReviewOutput:
     player_name: str = payload.player_name
     player_role: str = "judge"
 
-    try:
-        connection: mariadb.Connection = connect_to_database()
-        cursor: mariadb.Cursor = get_cursor(connection)
+    connection: mariadb.Connection = connect_to_database()
+    cursor: mariadb.Cursor = get_cursor(connection)
 
+    try:
         query: str = "SELECT id FROM Users WHERE user_name = %s"
-        cursor.execute(query, player_name)
+        cursor.execute(query, (player_name,))
         result = cursor.fetchone()
         
         if not result:
             raise HTTPException(status_code= 403, detail= "Utente non trovato")
     
-        user_id = result[0]
+        user_id: int = result[0]
 
-        ai = random.choice([True, False])
+        ai: bool = random.choice([True, False])
         if ai:
-            return generate_full_ai_session(user_id)
+            ai_result = generate_full_ai_session(user_id)
+            return GameReviewOutput(game_id=ai_result["game_id"], session=ai_result["session"])
 
         else:
             # Selezionare solo le partite “appese”:
@@ -389,7 +390,8 @@ def start_pending_game_api(payload: UserInfo):
 
             if not pending_games:
                 # se non ci sono pending games generane uno con AI
-                return generate_full_ai_session(user_id) 
+                ai_result = generate_full_ai_session(user_id)
+                return GameReviewOutput(game_id=ai_result["game_id"], session=ai_result["session"])
 
             random_game = random.choice(pending_games)
             game_id = random_game[0]
@@ -398,6 +400,7 @@ def start_pending_game_api(payload: UserInfo):
             cursor.execute(query, (game_id, user_id, player_role))
             connection.commit()
 
+            # Recupera le domande della partita
             query = "SELECT question_id, question, answer FROM Q_A WHERE game_id = %s"
             cursor.execute(query, (game_id,))
             game: List[Tuple[int, str, str]] = cursor.fetchall()

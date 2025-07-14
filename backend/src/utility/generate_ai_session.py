@@ -1,6 +1,6 @@
 from typing import List, Dict
 from fastapi import HTTPException
-from rapidfuzz import process, fuzz
+from rapidfuzz import fuzz
 import random
 import mariadb
 
@@ -8,10 +8,10 @@ from utility.close_connection import close_connection
 from utility.close_cursor import close_cursor
 from utility.connect_to_database import connect_to_database
 from utility.get_cursor import get_cursor
-from models.pending_game import GameReviewOutput, QA
+from models.pending_game import QA
 from utility.ai_utils import get_ai_answer, parse_ai_questions
 
-def generate_full_ai_session(user_id: int) -> GameReviewOutput:
+def generate_full_ai_session(user_id: int) -> Dict[str, int | Dict[int, QA]]:
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 
@@ -34,52 +34,63 @@ def generate_full_ai_session(user_id: int) -> GameReviewOutput:
         result = cursor.fetchall()
 
         if not result:
-            raise HTTPException(status_code=404, detail="Nessuna domanda trovata nel database")
+            ai_answer: str = get_ai_answer(flag_judge=False)
+            selected_questions: List[str] = parse_ai_questions(ai_answer)
 
-        questions = [q[0].strip() for q in result]
-        random.shuffle(questions)
+            if len(selected_questions) < 3:
+                raise HTTPException(status_code=500, detail="L'AI non ha generato abbastanza domande")
+            
+            ai_flags: List[bool] = [True] * len(selected_questions)
+        
+        else:
+            # 4. Filtra domande con fuzzy match
+            all_questions = [(elem[0].strip(), elem[1]) for elem in result]
+            random.shuffle(all_questions)
 
-        # 4. Filtra domande con fuzzy match
-        domande_distinte: List[str] = []
-        ai_flags: List[bool] = []
+            selected_questions: List[str] = []
+            ai_flags: List[bool] = []
 
-        for question, flag in questions:
-            add_question = True  # supponiamo che la domanda sia valida
+            for question, flag in all_questions:
+                is_distinct = True # supponiamo che la domanda sia valida
 
-            for esistente in domande_distinte:
-                similarita = fuzz.token_sort_ratio(question.lower(), esistente.lower())
+                for existing in selected_questions:
+                    similarity = fuzz.token_sort_ratio(question.lower(), existing.lower())
 
-                if similarita >= 85:
-                    add_question = False  # troppo simile a una domanda già presente
-                    break  # non serve continuare a confrontare con le altre
+                    if similarity >= 85:
+                        is_distinct = False # troppo simile a una domanda già presente
+                        break # non serve continuare a confrontare con le altre
 
-            if add_question:
-                domande_distinte.append(question)
-                ai_flags.append(flag)
+                if is_distinct:
+                    selected_questions.append(question)
+                    ai_flags.append(flag)
 
-            if len(domande_distinte) == 3:
-                break  # abbiamo trovato abbastanza domande distinte
+                if len(selected_questions) == 3:
+                    break # abbiamo trovato abbastanza domande distinte
 
-        # Fallback: usa domande generate dall'AI se non ci sono abbastanza distinte
-        if len(domande_distinte) < 3:
-            answer = get_ai_answer(flag_judge=False)
-            domande_distinte = parse_ai_questions(answer)
-            ai_flags = [True] * len(domande_distinte)
+            # Se meno di 3 domande distinte, fallback all’AI
+            if len(selected_questions) < 3:
+                ai_answer: str = get_ai_answer(flag_judge=False)
+                selected_questions: List[str] = parse_ai_questions(ai_answer)
+
+                if len(selected_questions) < 3:
+                    raise HTTPException(status_code=500, detail="AI fallback fallito: domande insufficienti.")
+                
+                ai_flags = [True] * len(selected_questions)
 
         # 5. Ottieni risposte AI
         risposte_ai: List[str] = []
-        for domanda in domande_distinte:
-            risposta = get_ai_answer(question=domanda, flag_judge=True)
-            if not risposta:
+        for question in selected_questions:
+            risposta_ai = get_ai_answer(question=question, flag_judge=True)
+            if not risposta_ai:
                 raise HTTPException(status_code=500, detail="Errore nella risposta dell'AI")
-            risposte_ai.append(risposta.strip())
+            risposte_ai.append(risposta_ai.strip())
 
         # 6. Inserisci triple domanda-risposta nella Q_A
         query = """
         INSERT INTO Q_A (game_id, question_id, question, answer, ai_question, ai_answer)
         VALUES (%s, %s, %s, %s, %s, %s)
         """
-        for idx, (question, answer, ai_flag) in enumerate(zip(domande_distinte, risposte_ai, ai_flags), start=1):
+        for idx, (question, answer, ai_flag) in enumerate(zip(selected_questions, risposte_ai, ai_flags), start=1):
             cursor.execute(query, (
                 game_id,
                 idx,
@@ -91,13 +102,16 @@ def generate_full_ai_session(user_id: int) -> GameReviewOutput:
 
         connection.commit()
 
-        # 7. Costruisci oggetto Pydantic per risposta
+        # 7. Costruisce dizionario sessione con gli oggetti QA
         session_data: Dict[int, QA] = {
-            idx: QA(question=q, answer=a)
-            for idx, (q, a) in enumerate(zip(domande_distinte, risposte_ai), start=1)
+            idx: QA(question=question, answer=answer)
+            for idx, (question, answer) in enumerate(zip(selected_questions, risposte_ai), start=1)
         }
 
-        return GameReviewOutput(game_id=game_id, session=session_data)
+        return {
+            "game_id": game_id,
+            "session": session_data
+        }
 
     except mariadb.Error as e:
         connection.rollback()
