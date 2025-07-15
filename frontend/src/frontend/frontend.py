@@ -213,24 +213,6 @@ def get_user_info(user_id: int, request: Request):
     
     return UserInfo.model_validate(response.json())
 
-@app.post("/send-pending-verdict/{game_id}")
-def send_pending_verdict(game_id: int, request: Request, payload: JudgeGameAnswer):
-    try:
-        response = requests.post(os.path.join(API_BASE_URL, f"/end-pending-game-api/{game_id}"), json=payload.model_dump())
-        response.raise_for_status()
-        result = EndPendingGame.model_validate(response.json())
-
-    except requests.RequestException as e:
-        try:
-            detail = e.response.json().get("detail", "Errore nella richiesta")
-        except Exception:
-            detail = str(e)
-        if e.response and e.response.status_code == 404:
-            return templates.TemplateResponse("game_not_found.html", {"request": request})
-        raise HTTPException(status_code=e.response.status_code if e.response else 500, detail=detail)
-
-    return result
-
 @app.get("/participant-game/{game_id}")
 def get_participant_game(game_id: int, player_id: int, request: Request):
     # 1 Ottiene info sulla partita
@@ -324,3 +306,21 @@ def start_pending_game(player_name: int, request: Request):
         "game_id": game_data.game_id,
         "session": game_data.session
     })
+
+@app.post("/send-pending-verdict/{game_id}")
+def send_pending_verdict(game_id: int, request: Request, payload: JudgeGameAnswer):
+    try:
+        response = requests.post(os.path.join(API_BASE_URL, f"/end-pending-game-api/{game_id}"), json=payload.model_dump())
+        response.raise_for_status()
+        result = EndPendingGame.model_validate(response.json())
+
+    except requests.RequestException as e:
+        try:
+            detail = e.response.json().get("detail", "Errore nella richiesta")
+        except Exception:
+            detail = str(e)
+        if e.response and e.response.status_code == 404:
+            return templates.TemplateResponse("game_not_found.html", {"request": request})
+        raise HTTPException(status_code=e.response.status_code if e.response else 500, detail=detail)
+
+    return result
