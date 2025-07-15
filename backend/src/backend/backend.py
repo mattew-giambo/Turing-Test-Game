@@ -23,7 +23,7 @@ import time
 from datetime import datetime
 import random
 from rapidfuzz import process, fuzz
-from config.constants import JUDGE_WON_POINTS, PART_WON_POINTS
+from config.constants import JUDGE_WON_POINTS, JUDGE_LOST_POINTS, PART_WON_POINTS
 
 from utility.ai_utils import get_ai_answer, parse_ai_questions
 from models.pending_game import QA, GameReviewOutput, EndPendingGame
@@ -151,7 +151,7 @@ def start_game_api(payload: UserInfo):
 @app.post("/judge-game-api/{game_id}")
 def judge_game_api(payload: JudgeGameInput, game_id: int):
     if game_id not in active_judge_games.keys():
-        raise HTTPException(status_code= 403, detail= "Partita non trovata")
+        raise HTTPException(status_code= 404, detail= "Partita non trovata")
     
     lista_domande_input = payload.questions_list
     lista_risposte_output = []
@@ -427,7 +427,7 @@ def start_pending_game_api(payload: UserInfo) -> GameReviewOutput:
 @app.post("/end-judge-game-api/{game_id}")
 def end_judge_game_api(judge_answer: JudgeGameAnswer, game_id: int):
     if game_id not in active_judge_games:
-        raise HTTPException(status_code=403, detail="Partita non trovata")
+        raise HTTPException(status_code=404, detail="Partita non trovata")
     
     player_name = active_judge_games[game_id]["player_name"]
     connection = connect_to_database()
@@ -447,7 +447,9 @@ def end_judge_game_api(judge_answer: JudgeGameAnswer, game_id: int):
             raise HTTPException(status_code=400, detail="Questa partita è già stata chiusa.")
 
         # VERIFICO ESITO
-        is_won: bool = False
+        is_won: bool
+        points: int = 0
+        message: str
         if judge_answer.is_ai == active_judge_games[game_id]["opponent_ai"]:
             cursor.execute("UPDATE games SET result = 'win', terminated= TRUE WHERE id = %s", (game_id,))
             cursor.execute("""
@@ -458,15 +460,20 @@ def end_judge_game_api(judge_answer: JudgeGameAnswer, game_id: int):
                 WHERE user_id = %s
             """, (JUDGE_WON_POINTS, player_id,))
             is_won= True
+            points = JUDGE_WON_POINTS
+            message= "Congratulazioni hai vinto!"
         else:
             cursor.execute("UPDATE games SET result = 'loss', terminated= TRUE WHERE id = %s", (game_id,))
             cursor.execute("""
                 UPDATE stats
                 SET n_games = n_games + 1,
                     lost_judge = lost_judge + 1
+                    score_judge = score_judge + %s,
                 WHERE user_id = %s
-            """, (player_id,))
-
+            """, (JUDGE_LOST_POINTS, player_id,))
+            is_won = False
+            points = JUDGE_LOST_POINTS
+            message= "Ooohh Noo, hai perso!"
         connection.commit()
     except mariadb.Error as e:
         raise HTTPException(
@@ -478,7 +485,7 @@ def end_judge_game_api(judge_answer: JudgeGameAnswer, game_id: int):
         close_connection(connection)
         active_judge_games.pop(game_id) # rimozione della partita attiva
 
-    return EndJudgeGameOutput(message= "Partita terminata, esito registrato con successo!", is_won= is_won)
+    return EndJudgeGameOutput(message= message, is_won= is_won, points= points)
 
 # L'UTENTE DEVE FAR IN MODO DI RISPONDERE AL MEGLIO POSSIBILE PER FAR VINCERE IL GIUDICE
 # IN QUESTO SENSO, IL PARTECIPANTE VINCE SOLO SE IL GIUDICE VINCE

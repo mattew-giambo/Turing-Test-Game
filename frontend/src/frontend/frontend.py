@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -7,6 +7,7 @@ import requests
 from models.user_info import UserInfo
 from models.confirm_game import ConfirmGame
 from models.game_info import GameInfoInput, GameInfoOutput
+from models.judge_game import JudgeGameInput, JudgeGameOutput, JudgeGameAnswer, EndJudgeGameOutput
 from config.constants import API_BASE_URL
 from typing import *
 
@@ -73,10 +74,11 @@ def get_game(game_id: int, player_id: int, request: Request):
                 "request": request
             }
         )
-        raise HTTPException(
-            status_code= error_data.get("status_code", 500),
-            detail= error_data.get("detail", "Errore sconosciuto")
-        )
+        else:
+            raise HTTPException(
+                status_code= error_data.get("status_code", 500),
+                detail= error_data.get("detail", "Errore sconosciuto")
+            )
     response_data = GameInfoOutput.model_validate(response.json())
 
     if response_data.terminated == True or response_data.player_role == "participant":
@@ -93,6 +95,50 @@ def get_game(game_id: int, player_id: int, request: Request):
             "data": response_data.data,
             "player_id": response_data.player_id}
         )
+
+@app.post("/send-questions-judge-game/{game_id}")
+def send_questions_judge_game(game_id: int, request: Request, question1: str = Form(...), question2: str = Form(...), question3: str = Form(...)):
+    try:
+        payload = JudgeGameInput(questions_list= [question1, question2, question3])
+        response = requests.post(os.path.join(API_BASE_URL, f"/judge-game-api/{game_id}"), json= payload.model_dump())
+        response.raise_for_status()
+    except requests.RequestException as e:
+        error_data: Dict = response.json()
+        if response.status_code == 404:
+            return templates.TemplateResponse(
+            "game_not_found.html", {
+                "request": request
+            }
+        )
+        else:
+            raise HTTPException(
+                status_code= error_data.get("status_code", 500),
+                detail= error_data.get("detail", "Errore sconosciuto")
+            )
+    
+    return JudgeGameOutput.model_validate(response.json())
+
+@app.post("/send-judge-answer/{game_id}")
+def send_judge_answer(game_id: int, request: Request, payload: JudgeGameAnswer):
+    try:
+        response = requests.post(os.path.join(API_BASE_URL, f"/judge-game-api/{game_id}"), json= payload.model_dump())
+        response.raise_for_status()
+    except requests.RequestException as e:
+        error_data: Dict = response.json()
+        if response.status_code == 404:
+            return templates.TemplateResponse(
+            "game_not_found.html", {
+                "request": request
+            }
+        )
+        else:
+            raise HTTPException(
+                status_code= error_data.get("status_code", 500),
+                detail= error_data.get("detail", "Errore sconosciuto")
+            )
+        
+    return EndJudgeGameOutput.model_validate(response.json())
+
 
 
 
