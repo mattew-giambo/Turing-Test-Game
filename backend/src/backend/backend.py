@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
-from models.user_info import UserInfo
+from models.player_info import PlayerInfo
 from models.confirm_game import ConfirmGame
+from models.user_info import UserInfo
 from models.judge_game_info import JudgeGameInfo
 from models.judge_game import JudgeGameInput, JudgeGameOutput, JudgeGameAnswer, EndJudgeGameOutput
 from models.user_stats import UserStats
@@ -106,7 +107,7 @@ def login_api(user: UserLogin) -> LoginResponse:
         close_connection(connection)
 
 @app.post("/start-game-api")
-def start_game_api(payload: UserInfo):
+def start_game_api(payload: PlayerInfo):
     player_name = payload.player_name
     player_role = payload.player_role
 
@@ -338,7 +339,7 @@ def submit_answers_api(game_id: int, input_data: AnswerInput):
         close_connection(connection)
 
 @app.post("/start-pending-game-api", response_model=GameReviewOutput)
-def start_pending_game_api(payload: UserInfo) -> GameReviewOutput:
+def start_pending_game_api(payload: PlayerInfo) -> GameReviewOutput:
     player_name: str = payload.player_name
     player_role: str = "judge"
 
@@ -625,7 +626,7 @@ def get_player_games_api(user_id: int):
     connection = connect_to_database()
     cursor = get_cursor(connection) 
     
-    cursor.execute("""SELECT ug.game_id, ug.player_role
+    cursor.execute("""SELECT ug.game_id, date, ug.player_role, terminated
                     FROM Users as u JOIN UserGames as ug ON u.id = ug.user_id
                    """)
     result = cursor.fetchall()
@@ -637,7 +638,7 @@ def get_player_games_api(user_id: int):
         )
 
     return UserGames(user_id= user_id, 
-                     user_games= [Game(game_id= game_id, player_role= player_role) for game_id, player_role in result])
+                     user_games= [Game(game_id= game_id, data= data, player_role= player_role, terminated= terminated) for game_id, data, player_role, terminated in result])
 
 @app.post("/game-info-api")
 def game_info_api(payload: GameInfoInput):
@@ -678,3 +679,29 @@ def game_info_api(payload: GameInfoInput):
 #                     player_name= player_name,
 #                     game_date= game_date)
 
+@app.get("/user-info-api/{user_id}")
+def get_user_info_api(user_id: int):
+    connection = connect_to_database()
+    cursor = get_cursor(connection) 
+    
+    cursor.execute("""
+                   SELECT user_name, email
+                   FROM Users
+                   WHERE id = %s
+                   """, (user_id,))
+    result = cursor.fetchone()
+
+    if result is None:
+        raise HTTPException(
+            status_code= 404,
+            detail= "Utente non trovato"
+        )
+    close_cursor(cursor)
+    close_connection(connection)
+
+    return UserInfo(
+        id= user_id,
+        user_name= result[0],
+        email= result[1]
+    )
+    

@@ -6,7 +6,7 @@ def close_cursor(cursor: mariadb.Cursor) -> None:
         Chiude il cursore di mariadb
 
         Return
-            - `cursor`: mariadb.Cursor
+        `None`
     """
     try:
         cursor.close()

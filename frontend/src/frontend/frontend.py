@@ -4,10 +4,13 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 import os
 import requests
-from models.user_info import UserInfo
+from models.player_info import PlayerInfo
 from models.confirm_game import ConfirmGame
 from models.game_info import GameInfoInput, GameInfoOutput
 from models.judge_game import JudgeGameInput, JudgeGameOutput, JudgeGameAnswer, EndJudgeGameOutput
+from models.user_stats import UserStats
+from models.user_games import UserGames
+from models.user_info import UserInfo
 from config.constants import API_BASE_URL
 from typing import *
 
@@ -47,7 +50,7 @@ def get_start_game_page(request: Request):
 
 # Endpoint per gestire l'avvio effettivo della partita classica
 @app.post("/start-classic-game")
-def start_game(payload: UserInfo, request: Request):
+def start_game(payload: PlayerInfo, request: Request):
     try:
         response = requests.post(os.path.join(API_BASE_URL, "/start-game-api"), json= payload.model_dump())
         response.raise_for_status()
@@ -138,6 +141,79 @@ def send_judge_answer(game_id: int, request: Request, payload: JudgeGameAnswer):
             )
         
     return EndJudgeGameOutput.model_validate(response.json())
+
+@app.get("/user-stats/{user_id}")
+def get_user_stats(user_id: int, request: Request):
+    try:
+        response = requests.get(os.path.join(API_BASE_URL, f"/user-stats-api/{user_id}"))
+        response.raise_for_status()
+    except requests.RequestException as e:
+        error_data: Dict = response.json()
+        if response.status_code == 404:
+            return templates.TemplateResponse(
+            "game_not_found.html", {
+                "request": request
+            }
+        )
+        else:
+            raise HTTPException(
+                status_code= error_data.get("status_code", 500),
+                detail= error_data.get("detail", "Errore sconosciuto")
+            )
+        
+    response_data = UserStats.model_validate(response.json())
+
+    return templates.TemplateResponse(
+        "user_stats.html", {
+            "request": request,
+            "user_id": response_data.user_id,
+            "n_games": response_data.n_games,
+            "score_part": response_data.score_part,
+            "score_judge": response_data.score_judge,
+            "won_part": response_data.won_part,
+            "won_judge": response_data.won_judge,
+            "lost_part": response_data.lost_part,
+            "lost_judge": response_data.lost_judge
+        })
+
+@app.get("/user-games/{user_id}")
+def get_user_games(user_id: int, request: Request):
+    try:
+        response = requests.get(os.path.join(API_BASE_URL, f"/user-games-api/{user_id}"))
+        response.raise_for_status()
+    except requests.RequestException as e:
+        error_data: Dict = response.json()
+        raise HTTPException(
+            status_code= error_data.get("status_code", 500),
+            detail= error_data.get("detail", "Errore sconosciuto")
+        )
+
+    response_data = UserGames.model_validate(response.json())
+    return templates.TemplateResponse(
+        "user_games.html",{
+            "request": request,
+            "user_id": response_data.user_id,
+            "user_games": response_data.user_games
+        }
+    )
+
+@app.get("/user-info/{user_id}")
+def get_user_info(user_id: int, request: Request):
+    try:
+        response = requests.get(os.path.join(API_BASE_URL, f"/user-info-api/{user_id}"))
+        response.raise_for_status()
+    except requests.RequestException as e:
+        error_data: Dict = response.json()
+        raise HTTPException(
+            status_code= error_data.get("status_code", 500),
+            detail= error_data.get("detail", "Errore sconosciuto")
+        )
+    
+    return UserInfo.model_validate(response.json())
+    
+
+
+
 
 
 

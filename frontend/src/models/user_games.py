@@ -7,7 +7,7 @@ class Game(BaseModel):
     player_role: str
     data: date
     terminated: bool
-
+    
 class UserGames(BaseModel):
     user_id: int
     user_games: List[Game]
