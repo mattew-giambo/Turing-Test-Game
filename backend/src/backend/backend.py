@@ -424,8 +424,8 @@ def start_pending_game_api(payload: UserInfo) -> GameReviewOutput:
         close_cursor(cursor)
         close_connection(connection)
 
-@app.post("/end-game-judge-api/{game_id}")
-def end_game_judge_api(judge_answer: JudgeGameAnswer, game_id: int):
+@app.post("/end-judge-game-api/{game_id}")
+def end_judge_game_api(judge_answer: JudgeGameAnswer, game_id: int):
     if game_id not in active_judge_games:
         raise HTTPException(status_code=403, detail="Partita non trovata")
     

@@ -6,6 +6,7 @@ import os
 import requests
 from models.user_info import UserInfo
 from models.confirm_game import ConfirmGame
+from models.game_info import GameInfoInput, GameInfoOutput
 from config.constants import API_BASE_URL
 from typing import *
 
@@ -55,27 +56,43 @@ def start_game(payload: UserInfo, request: Request):
             status_code= error_data.get("status_code", 500),
             detail= error_data.get("detail", "Errore sconosciuto")
         )
-    response_data = ConfirmGame.model_validate(response.json())
+    return ConfirmGame.model_validate(response.json())
 
-    # DA MODIFICARE PERCHE NON DOBBIAMO METTERE CHE RESTITUISCE IL TEMPLATE, MA SOLO IL GAME ID, IN QUANTO 
-    # SUCCESSIVAMENTE IL CLIENT FARA' UNA GET ALLA PARTITA 
-    if response_data.player_role == "judge":
-        return templates.TemplateResponse(
-            "judge_game.html", {
-                "request": request,  
-                "game_id": response_data.game_id, 
-                "player_id": response_data.player_id, 
-                "player_name": response_data.player_name}
+# player_id è query param /game/{game_id}?player_id={}
+@app.get("/judge-game/{game_id}")
+def get_game(game_id: int, player_id: int, request: Request):
+    try:
+        payload = GameInfoInput(player_id= player_id, game_id= game_id)
+        response = requests.post(os.path.join(API_BASE_URL, "/game-info-api"), json= payload.model_dump())
+        response.raise_for_status()
+    except requests.RequestException as e:
+        error_data: Dict = response.json()
+        if response.status_code == 404:
+            return templates.TemplateResponse(
+            "game_not_found.html", {
+                "request": request
+            }
         )
-    else:
-        return templates.TemplateResponse(
-            "participant_game.html", {
-                "request": request,  
-                "game_id": response_data.game_id, 
-                "player_id": response_data.player_id, 
-                "player_name": response_data.player_name}
+        raise HTTPException(
+            status_code= error_data.get("status_code", 500),
+            detail= error_data.get("detail", "Errore sconosciuto")
         )
+    response_data = GameInfoOutput.model_validate(response.json())
 
+    if response_data.terminated == True or response_data.player_role == "participant":
+        return templates.TemplateResponse(
+            "partita_terminata.html", {
+                "request": request
+            }
+        )
+    
+    return templates.TemplateResponse(
+        "judge_game.html", {
+            "request": request,  
+            "game_id": response_data.game_id,
+            "data": response_data.data,
+            "player_id": response_data.player_id}
+        )
 
 
 
