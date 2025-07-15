@@ -212,10 +212,6 @@ def get_user_info(user_id: int, request: Request):
         )
     
     return UserInfo.model_validate(response.json())
-    
-
-
-
 
 @app.post("/send-pending-verdict/{game_id}")
 def send_pending_verdict(game_id: int, request: Request, payload: JudgeGameAnswer):
