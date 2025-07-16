@@ -11,7 +11,7 @@ from utility.get_cursor import get_cursor
 from models.pending_game import QA
 from utility.ai_utils import get_ai_answer, parse_ai_questions
 
-def generate_full_ai_session(user_id: int) -> Dict[str, int | Dict[int, QA]]:
+def generate_full_ai_session(player_id: int) -> Dict[str, int | Dict[int, QA]]:
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 
@@ -23,7 +23,7 @@ def generate_full_ai_session(user_id: int) -> Dict[str, int | Dict[int, QA]]:
 
         # 2. Inserisce nella UserGames: utente come judge, AI (id=1) come participant
         query = "INSERT INTO UserGames (game_id, player_id, player_role) VALUES (%s, %s, 'judge')"
-        cursor.execute(query, (game_id, user_id))
+        cursor.execute(query, (game_id, player_id))
 
         query = "INSERT INTO UserGames (game_id, player_id, player_role) VALUES (%s, %s, 'participant')"
         cursor.execute(query, (game_id, 1))
