@@ -18,6 +18,7 @@ from endpoints.get_user_stats_api import get_user_stats_api
 from endpoints.get_player_games_api import get_player_games_api
 from endpoints.game_info_api import game_info_api
 from endpoints.get_user_info_api import get_user_info_api
+from endpoints.user_disconnect_api import user_disconnect_api
 from typing import *
 
 app = FastAPI()
@@ -78,7 +79,10 @@ def game_info_endpoint(payload: GameInfoInput):
 @app.get("/user-info-api/{user_id}")
 def get_user_info_endpoint(user_id: int):
     return get_user_info_api(user_id)
-    
+
+@app.post("user-disconnect-api/{user_id}")
+def user_disconnect_endpoint(user_id: int):
+    return user_disconnect_api(user_id, sessioni_attive)
 # PER ADESSO NON SERVE PIU'
 # @app.get("/judge-game-info-api/{game_id}")
 # def player_role_api(game_id: int):

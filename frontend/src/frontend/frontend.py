@@ -15,6 +15,8 @@ from models.participant_game import ParticipantGameOutput, AnswerInput, Response
 from models.pending_game import QA, GameReviewOutput, JudgeGameAnswer, EndPendingGame
 from config.constants import API_BASE_URL
 from typing import *
+from urllib.parse import urljoin
+from models.disconnect_response import DisconnectResponse
 
 app = FastAPI()
 BASE_DIR = os.path.dirname(__file__)
@@ -54,10 +56,10 @@ def get_start_game_page(request: Request):
 @app.post("/start-classic-game")
 def start_game(payload: PlayerInfo, request: Request):
     try:
-        response = requests.post(os.path.join(API_BASE_URL, "/start-game-api"), json= payload.model_dump())
+        response = requests.post(urljoin(API_BASE_URL, "/start-game-api"), json= payload.model_dump())
         response.raise_for_status()
     except requests.RequestException as e:
-        error_data: Dict = response.json()
+        error_data: Dict =  e.response.json()
         raise HTTPException(
             status_code= error_data.get("status_code", 500),
             detail= error_data.get("detail", "Errore sconosciuto")
@@ -69,11 +71,11 @@ def start_game(payload: PlayerInfo, request: Request):
 def get_game(game_id: int, player_id: int, request: Request):
     try:
         payload = GameInfoInput(player_id= player_id, game_id= game_id)
-        response = requests.post(os.path.join(API_BASE_URL, "/game-info-api"), json= payload.model_dump())
+        response = requests.post(urljoin(API_BASE_URL, "/game-info-api"), json= payload.model_dump())
         response.raise_for_status()
     except requests.RequestException as e:
-        error_data: Dict = response.json()
-        if response.status_code == 404:
+        error_data: Dict =  e.response.json()
+        if error_data.status_code == 404:
             return templates.TemplateResponse(
             "game_not_found.html", {
                 "request": request
@@ -86,7 +88,7 @@ def get_game(game_id: int, player_id: int, request: Request):
             )
     response_data = GameInfoOutput.model_validate(response.json())
 
-    if response_data.terminated == True or response_data.player_role == "participant":
+    if response_data.terminated == True:
         return templates.TemplateResponse(
             "partita_terminata.html", {
                 "request": request
@@ -105,11 +107,11 @@ def get_game(game_id: int, player_id: int, request: Request):
 def send_questions_judge_game(game_id: int, request: Request, question1: str = Form(...), question2: str = Form(...), question3: str = Form(...)):
     try:
         payload = JudgeGameInput(questions_list= [question1, question2, question3])
-        response = requests.post(os.path.join(API_BASE_URL, f"/judge-game-api/{game_id}"), json= payload.model_dump())
+        response = requests.post(urljoin(API_BASE_URL, f"/judge-game-api/{game_id}"), json= payload.model_dump())
         response.raise_for_status()
     except requests.RequestException as e:
-        error_data: Dict = response.json()
-        if response.status_code == 404:
+        error_data: Dict =  e.response.json()
+        if error_data.status_code == 404:
             return templates.TemplateResponse(
             "game_not_found.html", {
                 "request": request
@@ -126,11 +128,11 @@ def send_questions_judge_game(game_id: int, request: Request, question1: str = F
 @app.post("/send-judge-answer/{game_id}")
 def send_judge_answer(game_id: int, request: Request, payload: JudgeGameAnswer):
     try:
-        response = requests.post(os.path.join(API_BASE_URL, f"/judge-game-api/{game_id}"), json= payload.model_dump())
+        response = requests.post(urljoin(API_BASE_URL, f"/judge-game-api/{game_id}"), json= payload.model_dump())
         response.raise_for_status()
     except requests.RequestException as e:
-        error_data: Dict = response.json()
-        if response.status_code == 404:
+        error_data: Dict =  e.response.json()
+        if error_data.status_code == 404:
             return templates.TemplateResponse(
             "game_not_found.html", {
                 "request": request
@@ -149,12 +151,12 @@ def get_participant_game(game_id: int, player_id: int, request: Request):
     # 1 Ottiene info sulla partita
     try:
         payload = GameInfoInput(player_id=player_id, game_id=game_id)
-        response = requests.post(os.path.join(API_BASE_URL, "/game-info-api"), json=payload.model_dump())
+        response = requests.post(urljoin(API_BASE_URL, "/game-info-api"), json=payload.model_dump())
         response.raise_for_status()
         game_info = GameInfoOutput.model_validate(response.json())
     except requests.RequestException as e:
-        error_data: Dict = response.json()
-        if response.status_code == 404:
+        error_data: Dict =  e.response.json()
+        if error_data.status_code == 404:
             return templates.TemplateResponse(
             "game_not_found.html", {
                 "request": request
@@ -172,7 +174,7 @@ def get_participant_game(game_id: int, player_id: int, request: Request):
 
     # 3 Ottiene/genera le domande via /participant-game-api/{game_id}
     try:
-        response = requests.post(os.path.join(API_BASE_URL, f"/participant-game-api/{game_id}"))
+        response = requests.post(urljoin(API_BASE_URL, f"/participant-game-api/{game_id}"))
         response.raise_for_status()
         game_data = ParticipantGameOutput.model_validate(response.json())
     except requests.RequestException as e:
@@ -202,7 +204,7 @@ def get_participant_game(game_id: int, player_id: int, request: Request):
 def send_answers_participant_game(game_id: int, request: Request, answer1: str = Form(...), answer2: str = Form(...), answer3: str = Form(...)):
     try:
         payload = AnswerInput(answers=[answer1, answer2, answer3])
-        response = requests.post(os.path.join(API_BASE_URL, f"/submit-participant-answers-api/{game_id}"), json=payload.model_dump())
+        response = requests.post(urljoin(API_BASE_URL, f"/submit-participant-answers-api/{game_id}"), json=payload.model_dump())
         response.raise_for_status()
         response_submit = ResponseSubmit.model_validate(response.json())
     except requests.RequestException as e:
@@ -222,7 +224,7 @@ def send_answers_participant_game(game_id: int, request: Request, answer1: str =
 def start_pending_game(player_id: int, request: Request):
     payload = PlayerInfo(player_id=player_id, player_role="judge")
     try:
-        response = requests.post(os.path.join(API_BASE_URL, "/start-pending-game-api"), json= payload.model_dump())
+        response = requests.post(urljoin(API_BASE_URL, "/start-pending-game-api"), json= payload.model_dump())
         response.raise_for_status()
         game_data = GameReviewOutput.model_validate(response.json())
     except requests.RequestException as e:
@@ -243,7 +245,7 @@ def start_pending_game(player_id: int, request: Request):
 @app.post("/send-pending-verdict/{game_id}")
 def send_pending_verdict(game_id: int, request: Request, payload: JudgeGameAnswer):
     try:
-        response = requests.post(os.path.join(API_BASE_URL, f"/end-pending-game-api/{game_id}"), json=payload.model_dump())
+        response = requests.post(urljoin(API_BASE_URL, f"/end-pending-game-api/{game_id}"), json=payload.model_dump())
         response.raise_for_status()
         result = EndPendingGame.model_validate(response.json())
 
@@ -264,11 +266,11 @@ def send_pending_verdict(game_id: int, request: Request, payload: JudgeGameAnswe
 @app.get("/user-stats/{user_id}")
 def get_user_stats(user_id: int, request: Request):
     try:
-        response = requests.get(os.path.join(API_BASE_URL, f"/user-stats-api/{user_id}"))
+        response = requests.get(urljoin(API_BASE_URL, f"/user-stats-api/{user_id}"))
         response.raise_for_status()
     except requests.RequestException as e:
-        error_data: Dict = response.json()
-        if response.status_code == 404:
+        error_data: Dict = e.response.json()
+        if error_data.status_code == 404:
             return templates.TemplateResponse(
             "game_not_found.html", {
                 "request": request
@@ -298,10 +300,10 @@ def get_user_stats(user_id: int, request: Request):
 @app.get("/user-games/{user_id}")
 def get_user_games(user_id: int, request: Request):
     try:
-        response = requests.get(os.path.join(API_BASE_URL, f"/user-games-api/{user_id}"))
+        response = requests.get(urljoin(API_BASE_URL, f"/user-games-api/{user_id}"))
         response.raise_for_status()
     except requests.RequestException as e:
-        error_data: Dict = response.json()
+        error_data: Dict = e.response.json()
         raise HTTPException(
             status_code= error_data.get("status_code", 500),
             detail= error_data.get("detail", "Errore sconosciuto")
@@ -319,13 +321,27 @@ def get_user_games(user_id: int, request: Request):
 @app.get("/user-info/{user_id}")
 def get_user_info(user_id: int, request: Request):
     try:
-        response = requests.get(os.path.join(API_BASE_URL, f"/user-info-api/{user_id}"))
+        response = requests.get(urljoin(API_BASE_URL, f"/user-info-api/{user_id}"))
         response.raise_for_status()
     except requests.RequestException as e:
-        error_data: Dict = response.json()
+        error_data: Dict = e.response.json()
         raise HTTPException(
             status_code= error_data.get("status_code", 500),
             detail= error_data.get("detail", "Errore sconosciuto")
         )
     
     return UserInfo.model_validate(response.json())
+
+@app.post("/user-disconnect/{user_id}")
+def user_disconnect(user_id: int):
+    try:
+        response = requests.post(urljoin(API_BASE_URL, f"/user-disconnect-api/{user_id}"))
+        response.raise_for_status()
+    except requests.RequestException as e:
+        error_data: Dict = e.response.json()
+        raise HTTPException(
+            status_code= error_data.get("status_code", 500),
+            detail= error_data.get("detail", "Errore sconosciuto")
+        )
+    return DisconnectResponse.model_validate(response.json())
+
