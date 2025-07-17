@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List
 from fastapi import HTTPException
 from rapidfuzz import fuzz
 import random
@@ -8,10 +8,9 @@ from utility.close_connection import close_connection
 from utility.close_cursor import close_cursor
 from utility.connect_to_database import connect_to_database
 from utility.get_cursor import get_cursor
-from models.pending_game import QA
 from utility.ai_utils import get_ai_answer, parse_ai_questions
 
-def generate_full_ai_session(player_id: int) -> Dict[str, int | Dict[int, QA]]:
+def generate_full_ai_session(player_id: int) -> int:
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 
@@ -91,27 +90,11 @@ def generate_full_ai_session(player_id: int) -> Dict[str, int | Dict[int, QA]]:
         VALUES (%s, %s, %s, %s, %s, %s)
         """
         for idx, (question, answer, ai_flag) in enumerate(zip(selected_questions, risposte_ai, ai_flags), start=1):
-            cursor.execute(query, (
-                game_id,
-                idx,
-                question,
-                answer,
-                ai_flag,
-                True  # le risposte sono sempre generate dall'AI
-            ))
+            cursor.execute(query, (game_id, idx, question, answer, ai_flag, True))
 
         connection.commit()
 
-        # 7. Costruisce dizionario sessione con gli oggetti QA
-        session_data: Dict[int, QA] = {
-            idx: QA(question=question, answer=answer)
-            for idx, (question, answer) in enumerate(zip(selected_questions, risposte_ai), start=1)
-        }
-
-        return {
-            "game_id": game_id,
-            "session": session_data
-        }
+        return game_id
 
     except mariadb.Error as e:
         connection.rollback()

@@ -5,13 +5,15 @@ from models.participant_game import ParticipantGameOutput, AnswerInput, Response
 from models.game_info import GameInfoInput
 from models.authentication import UserRegister, UserLogin, RegisterResponse, LoginResponse
 from models.pending_game import GameReviewOutput
+from models.confirm_game import ConfirmGame
 from endpoints.register_api import register_api
 from endpoints.login_api import login_api
 from endpoints.start_game_api import start_game_api
 from endpoints.judge_game_api import judge_game_api
 from endpoints.participant_game_api import participant_game_api
 from endpoints.submit_answers_api import submit_answers_api
-from endpoints.start_pending_game import start_pending_game_api
+from endpoints.start_pending_game_api import start_pending_game_api
+from endpoints.get_pending_game_api import get_pending_game_api
 from endpoints.end_judge_game_api import end_judge_game_api
 from endpoints.end_pending_game import end_pending_game_api
 from endpoints.get_user_stats_api import get_user_stats_api
@@ -50,9 +52,13 @@ def participant_game_endpoint(game_id: int):
 def submit_answers_endpoint(game_id: int, input_data: AnswerInput):
     return submit_answers_api(game_id, input_data)
 
-@app.post("/start-pending-game-api", response_model=GameReviewOutput)
-def start_pending_game_endpoint(payload: PlayerInfo) -> GameReviewOutput:
+@app.post("/start-pending-game-api", response_model=ConfirmGame)
+def start_pending_game_endpoint(payload: PlayerInfo) -> ConfirmGame:
     return start_pending_game_api(payload)
+
+@app.get("/pending-game-session/{game_id}", response_model=GameReviewOutput)
+def get_pending_game_endpoint(game_id: int) -> GameReviewOutput:
+    return get_pending_game_api(game_id)
 
 @app.post("/end-judge-game-api/{game_id}")
 def end_judge_game_endpoint(judge_answer: JudgeGameAnswer, game_id: int):
