@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Dict, Any
 
 
-def start_game_api(payload: PlayerInfo, active_judge_games: Dict[int, Dict[str, Any]]):
+def start_game_api(payload: PlayerInfo):
     player_id = payload.player_id
     player_role = payload.player_role
 
@@ -41,12 +41,5 @@ def start_game_api(payload: PlayerInfo, active_judge_games: Dict[int, Dict[str, 
     finally:
         close_cursor(cursor)
         close_connection(connection)
-
-    if player_role == 'judge':
-        active_judge_games[game_id] = {
-            "player_name": player_name,
-            "datetime": datetime.now(),
-            "opponent_ai": None
-        }
     ##
     return ConfirmGame(game_id= game_id, player_id= player_id, player_name= player_name, player_role= player_role)

@@ -3,12 +3,25 @@ from models.judge_game import JudgeGameInput, JudgeGameOutput
 from utility.judge_game_api_ai import judge_game_api_ai
 from utility.judge_game_api_db import judge_game_api_db
 from utility.insert_q_a_judge_api import insert_q_a_judge_api
+from utility.connect_to_database import connect_to_database
+from utility.close_connection import close_connection
+from utility.get_cursor import get_cursor
+from utility.close_cursor import close_cursor
 from typing import Dict
+import mariadb
 import random
 
-def judge_game_api(payload: JudgeGameInput, game_id: int, active_judge_games: Dict):
-    if game_id not in active_judge_games.keys():
+def judge_game_api(payload: JudgeGameInput, game_id: int):
+    connection: mariadb.Connection = connect_to_database()
+    cursor: mariadb.Cursor = get_cursor(connection)
+
+    cursor.execute("SELECT id, terminated FROM Games WHERE id = %s", (game_id,))
+    res = cursor.fetchone()
+
+    if res is None:
         raise HTTPException(status_code= 404, detail= "Partita non trovata")
+    if res[1] == True:
+        raise HTTPException(status_code= 403, detail= "Partita già terminata")
     
     lista_domande_input = payload.questions_list
     lista_risposte_output = []
@@ -27,7 +40,18 @@ def judge_game_api(payload: JudgeGameInput, game_id: int, active_judge_games: Di
         ai = True
     
     # INSERIMENT IN DB
-    insert_q_a_judge_api(game_id, ai, lista_domande_input, lista_risposte_output)
-    active_judge_games[game_id]["opponent_ai"] = ai
+    if ai:
+        try:
+            cursor.execute( "INSERT INTO UserGames(game_id, player_id, player_role) VALUES (%s)", (game_id, 1, "participant"))
+            connection.commit()
+        except mariadb.Error as e:
+            raise HTTPException(
+                status_code= 500,
+                detail= "Errore del server"
+            )
+        
+    close_cursor(cursor)
+    close_connection(connection)
 
+    insert_q_a_judge_api(game_id, ai, lista_domande_input, lista_risposte_output)
     return JudgeGameOutput(answers_list= lista_risposte_output)

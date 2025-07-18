@@ -25,7 +25,6 @@ from typing import *
 
 app = FastAPI()
 
-active_judge_games: Dict[int, Dict[Any]] = {}
 sessioni_attive: Dict[int, Dict[str, str]] = {}
 
 @app.post("/register-api", response_model=RegisterResponse)
@@ -38,11 +37,11 @@ def login_api_endpoint(user: UserLogin):
 
 @app.post("/start-game-api")
 def start_game_endpoint(payload: PlayerInfo):
-    return start_game_api(payload, )
+    return start_game_api(payload)
 
 @app.post("/judge-game-api/{game_id}")
 def judge_game_endpoint(payload: JudgeGameInput, game_id: int):
-    return judge_game_api(payload, game_id, active_judge_games)
+    return judge_game_api(payload, game_id)
         
 @app.post("/participant-game-api/{game_id}", response_model=ParticipantGameOutput)
 def participant_game_endpoint(game_id: int):
