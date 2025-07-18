@@ -102,7 +102,7 @@ def get_verdict_game_endpoint(game_id: int, player_id: int, request: Request):
 
 @app.post("/send-pending-verdict/{game_id}")
 def send_pending_verdict_endpoint(game_id: int, request: Request, payload: JudgeGameAnswer):
-    return send_pending_verdict/game_id, request, payload, templates
+    return send_pending_verdict(game_id, request, payload, templates)
 
 # USER 
 @app.get("/user-stats/{user_id}")
