@@ -12,7 +12,7 @@ from models.user_stats import UserStats
 from models.user_games import UserGames
 from models.user_info import UserInfo
 from models.participant_game import ParticipantGameOutput, AnswerInput, ResponseSubmit
-from models.pending_game import QA, GameReviewOutput, JudgeGameAnswer, EndPendingGame
+from models.pending_game import GameReviewOutput, JudgeGameAnswer, EndPendingGame
 from config.constants import API_BASE_URL
 from typing import *
 from urllib.parse import urljoin
