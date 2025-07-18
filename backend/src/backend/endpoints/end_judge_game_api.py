@@ -53,7 +53,7 @@ def end_judge_game_api(judge_answer: JudgeGameAnswer, game_id: int, active_judge
                     UPDATE stats
                     SET n_games = n_games + 1,
                         lost_part = lost_part + 1,
-                        score_part = %s
+                        score_part = score_part + %s
                     WHERE user_id = %s
                 """, (PART_LOST_POINTS, 1,))
 
@@ -72,8 +72,8 @@ def end_judge_game_api(judge_answer: JudgeGameAnswer, game_id: int, active_judge
             """, (JUDGE_LOST_POINTS, player_id,))
 
             if active_judge_games[game_id]["opponent_ai"]:
-                # SE L'OPPONENT E' AI ALLORA RESGISTRO UNA SCONFITTA
-                cursor.execute("UPDATE UserGames SET is_won = FALSE, points = %s WHERE game_id = %s AND player_id = %s", (PART_WON_POINTS, game_id, 1))
+                # SE L'OPPONENT E' AI ALLORA RESGISTRO UNA VITTORIA
+                cursor.execute("UPDATE UserGames SET is_won = TRUE, points = %s WHERE game_id = %s AND player_id = %s", (PART_WON_POINTS, game_id, 1))
                 cursor.execute("""
                     UPDATE stats
                     SET n_games = n_games + 1,
