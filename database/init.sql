@@ -27,15 +27,15 @@ CREATE TABLE Stats (
 CREATE TABLE Games (
     id INT AUTO_INCREMENT PRIMARY KEY,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
-    result VARCHAR(20) DEFAULT NULL,
-    terminated BOOLEAN DEFAULT FALSE,
-    CHECK (result IN ('win', 'loss'))
+    terminated BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE UserGames(
     game_id INT NOT NULL,
     player_id INT NOT NULL,
     player_role VARCHAR(15) NOT NULL,
+    is_won BOOLEAN DEFAULT NULL,
+    points int DEFAULT 0,
     PRIMARY KEY (game_id, player_role),
     CHECK (role in ('judge', 'participant')),
     FOREIGN KEY game_id REFERENCES Games(id) ON DELETE CASCADE,

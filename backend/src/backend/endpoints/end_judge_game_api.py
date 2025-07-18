@@ -5,7 +5,7 @@ from utility.close_cursor import close_cursor
 from utility.connect_to_database import connect_to_database
 from utility.get_cursor import get_cursor
 import mariadb
-from config.constants import JUDGE_WON_POINTS, JUDGE_LOST_POINTS
+from config.constants import JUDGE_WON_POINTS, JUDGE_LOST_POINTS, PART_WON_POINTS, PART_LOST_POINTS
 from typing import Dict
 
 def end_judge_game_api(judge_answer: JudgeGameAnswer, game_id: int, active_judge_games: Dict):
@@ -29,12 +29,15 @@ def end_judge_game_api(judge_answer: JudgeGameAnswer, game_id: int, active_judge
         if game_result == True:
             raise HTTPException(status_code=400, detail="Questa partita è già stata chiusa.")
 
+        cursor.execute("UPDATE games SET terminated= TRUE WHERE id = %s", (game_id,))
+
         # VERIFICO ESITO
         is_won: bool
         points: int = 0
         message: str
         if judge_answer.is_ai == active_judge_games[game_id]["opponent_ai"]:
-            cursor.execute("UPDATE games SET result = 'win', terminated= TRUE WHERE id = %s", (game_id,))
+            # IL GIUDICE HA VINTO
+            cursor.execute("UPDATE UserGames SET is_won = TRUE, points = %s WHERE game_id = %s AND player_id = %s", (JUDGE_WON_POINTS, game_id, player_id))
             cursor.execute("""
                 UPDATE stats
                 SET n_games = n_games + 1,
@@ -42,11 +45,24 @@ def end_judge_game_api(judge_answer: JudgeGameAnswer, game_id: int, active_judge
                     won_judge = won_judge + 1
                 WHERE user_id = %s
             """, (JUDGE_WON_POINTS, player_id,))
+
+            if active_judge_games[game_id]["opponent_ai"]:
+                # SE L'OPPONENT E' AI ALLORA RESGISTRO UNA SCONFITTA
+                cursor.execute("UPDATE UserGames SET is_won = FALSE, points = %s WHERE game_id = %s AND player_id = %s", (PART_LOST_POINTS, game_id, 1))
+                cursor.execute("""
+                    UPDATE stats
+                    SET n_games = n_games + 1,
+                        lost_part = lost_part + 1,
+                        score_part = %s
+                    WHERE user_id = %s
+                """, (PART_LOST_POINTS, 1,))
+
             is_won= True
             points = JUDGE_WON_POINTS
             message= "Congratulazioni hai vinto!"
         else:
-            cursor.execute("UPDATE games SET result = 'loss', terminated= TRUE WHERE id = %s", (game_id,))
+            # IL GIUDICE HA PERSO
+            cursor.execute("UPDATE UserGames SET is_won = = FALSE, points = %s WHERE game_id = %s AND player_id = %s", (JUDGE_LOST_POINTS, game_id, player_id))
             cursor.execute("""
                 UPDATE stats
                 SET n_games = n_games + 1,
@@ -54,6 +70,18 @@ def end_judge_game_api(judge_answer: JudgeGameAnswer, game_id: int, active_judge
                     score_judge = score_judge + %s,
                 WHERE user_id = %s
             """, (JUDGE_LOST_POINTS, player_id,))
+
+            if active_judge_games[game_id]["opponent_ai"]:
+                # SE L'OPPONENT E' AI ALLORA RESGISTRO UNA SCONFITTA
+                cursor.execute("UPDATE UserGames SET is_won = FALSE, points = %s WHERE game_id = %s AND player_id = %s", (PART_WON_POINTS, game_id, 1))
+                cursor.execute("""
+                    UPDATE stats
+                    SET n_games = n_games + 1,
+                        won_part = won_part + 1,
+                        score_part = score_part + %s
+                    WHERE user_id = %s
+                """, (PART_LOST_POINTS, 1))
+
             is_won = False
             points = JUDGE_LOST_POINTS
             message= "Ooohh Noo, hai perso!"
