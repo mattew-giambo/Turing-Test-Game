@@ -8,7 +8,7 @@ from models.authentication import UserLogin, LoginResponse
 import mariadb
 from typing import Tuple, Dict
 
-def login_api(user: UserLogin, sessioni_attive: Dict[int, Dict[str, str]]) -> LoginResponse:
+def login_api(user: UserLogin) -> LoginResponse:
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 

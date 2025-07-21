@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content="Inizio del gioco: The Imitation Game" />
+        <meta name="author" content="Matteo Giamberardini & Ilaria Casolino" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+        <title>Ruolo | The Imitation Game</title>
+    
+        <!-- CSS -->
+
+        <!-- JavaScript -->
+
+    </head>
+    <body>
+        <!-- Header -->
+        <header>
+            <div class="header-container">
+                <div class="logo">
+                    <h2>The Imitation Game</h2>
+                </div>
+
+                <nav id="nav"> 
+                    <ul>
+                        <li> <a href="/profilo">Avvia una partita</a> </li>
+                        <li> <a href="/">Esci</a> </li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+    
+        <!-- Main -->
+        <main  class="main-content">
+            <!-- Hero Section -->
+            <section class="hero-text">
+                <div class="msg-benvenuto">Benvenuto nella tua area riservata, {{ username }}.</div>
+
+                <div class="email-text">Email: {{ email }}</div>
+            </section>
+
+            <section class="statistiche">
+                <div id="partite-giocate" class="statistiche-gruppo">
+                    <div id="partite-giocate-tot" class="statistiche-elem">
+                        <h3>Partite giocate Totali</h3>
+                        <p>{{ n_games }}</p>
+                    </div>
+                    <div id="partite-giocate-judge" class="statistiche-elem">
+                        <h3>Partite giocate da Giudice</h3>
+                        <p>{{ n_games_judge }}</p>
+                    </div>
+                    <div id="partite-giocate-part" class="statistiche-elem">
+                        <h3>Partite giocate da Partecipante</h3>
+                        <p>{{ n_games_part }}</p>
+                    </div>
+                </div>
+                <div id="partite-vinte" class="statistiche-gruppo">
+                    <div id="partite-vinte-judge" class="statistiche-elem">
+                        <h3>Partite vinte da Giudice</h3>
+                        <p>{{ won_judge }}</p>
+                    </div>
+                    <div id="partite-vinte-part" class="statistiche-elem">
+                        <h3>Partite vinte da Partecipante</h3>
+                        <p>{{ won_part }}</p>
+                    </div>
+                </div>
+                <div id="partite-perse" class="statistiche-gruppo">
+                    <div id="partite-perse-judge" class="statistiche-elem">
+                        <h3>Partite perse da Giudice</h3>
+                        <p>{{ lost_judge }}</p>
+                    </div>
+                    <div id="partite-perse-part" class="statistiche-elem">
+                        <h3>Partite perse da Partecipante</h3>
+                        <p>{{ lost_part }}</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-logo">
+                <h2>The Imitation Game</h2>
+            </div>
+        </footer>
+    </body>
+</html>

@@ -6,7 +6,12 @@ from config.constants import API_BASE_URL
 from typing import Dict
 from urllib.parse import urljoin
 
-def get_judge_game(game_id: int, player_id: int, request: Request, templates: Jinja2Templates):
+def get_judge_game(game_id: int, player_id: int, request: Request, templates: Jinja2Templates, sessioni_attive: Dict[int, Dict[str, str]]):
+    if player_id not in sessioni_attive.keys():
+        return templates.TemplateResponse(
+            "login.html", {"request": request}
+        )
+     
     try:
         payload = GameInfoInput(player_id= player_id, game_id= game_id)
         response = requests.post(urljoin(API_BASE_URL, "/game-info-api"), json= payload.model_dump())

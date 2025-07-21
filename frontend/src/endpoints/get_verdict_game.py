@@ -5,8 +5,13 @@ import requests
 from models.game_info import GameInfoInput, GameInfoOutput
 from models.pending_game import GameReviewOutput
 from config.constants import API_BASE_URL
+from typing import Dict
 
-def get_verdict_game(game_id: int, player_id: int, request: Request, templates: Jinja2Templates):
+def get_verdict_game(game_id: int, player_id: int, request: Request, templates: Jinja2Templates, sessioni_attive: Dict[int, Dict[str, str]]):
+    if player_id not in sessioni_attive.keys():
+        return templates.TemplateResponse(
+            "login.html", {"request": request}
+        )
     # 1 Ottiene info sulla partita
     try:
         payload = GameInfoInput(player_id=player_id, game_id=game_id)

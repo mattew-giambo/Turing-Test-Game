@@ -2,6 +2,7 @@ from fastapi import Request, HTTPException
 import requests
 from models.authentication import UserLogin, LoginResponse
 from typing import Dict
+from datetime import datetime
 
 def user_login(email: str, password: str, request: Request, sessioni_attive: Dict[int, Dict[str, str]]) -> LoginResponse:
     user_cred = UserLogin(email= email, password= password)
@@ -18,7 +19,8 @@ def user_login(email: str, password: str, request: Request, sessioni_attive: Dic
     response_data = LoginResponse.model_validate(response.json())
     sessioni_attive[response_data.user_id] = {
             "user_name": response_data.user_name,
-            "email": email
+            "email": email,
+            "timestamp": datetime.now()
         }
     
     return response_data

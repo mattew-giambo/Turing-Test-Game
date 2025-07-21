@@ -25,15 +25,13 @@ from typing import *
 
 app = FastAPI()
 
-sessioni_attive: Dict[int, Dict[str, str]] = {}
-
 @app.post("/register-api", response_model=RegisterResponse)
 def register_api_endpoint(user: UserRegister):
     return register_api(user)
 
 @app.post("/login-api", response_model=LoginResponse)
 def login_api_endpoint(user: UserLogin):
-    return login_api(user, sessioni_attive)
+    return login_api(user)
 
 @app.post("/start-game-api")
 def start_game_endpoint(payload: PlayerInfo):
@@ -82,7 +80,3 @@ def game_info_endpoint(payload: GameInfoInput):
 @app.get("/user-info-api/{user_id}")
 def get_user_info_endpoint(user_id: int):
     return get_user_info_api(user_id)
-
-@app.post("user-disconnect-api/{user_id}")
-def user_disconnect_endpoint(user_id: int):
-    return user_disconnect_api(user_id, sessioni_attive)
