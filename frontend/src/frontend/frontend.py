@@ -27,10 +27,11 @@ from endpoints.send_answers_participant_game import send_answers_participant_gam
 from endpoints.start_pending_game import start_pending_game
 from endpoints.get_verdict_game import get_verdict_game
 from endpoints.send_pending_verdict import send_pending_verdict
-from endpoints.get_user_stats import get_user_stats
-from endpoints.get_user_games import get_user_games
-from endpoints.get_user_info import get_user_info
 from endpoints.user_disconnect import user_disconnect
+from endpoints.user_login import user_login
+from endpoints.get_profilo import get_profilo
+
+
 
 app = FastAPI()
 BASE_DIR = os.path.dirname(__file__)
@@ -40,6 +41,8 @@ templates = Jinja2Templates(directory= os.path.join(BASE_DIR, "../public/templat
 app.mount("/assets", StaticFiles(directory= os.path.join(BASE_DIR, "../public/assets")))
 app.mount("/css", StaticFiles(directory= os.path.join(BASE_DIR, "../public/css")))
 app.mount("/js", StaticFiles(directory= os.path.join(BASE_DIR, "../public/js")))
+
+sessioni_attive: Dict[int, Dict[str, str]] = {}
 
 @app.get("/")
 def get_home_page(request: Request):
@@ -60,11 +63,20 @@ def get_register_page(request: Request):
     )
 
 # start_game.html, contiene la schermata con AVVIA PARTITA GIUDICE PARTECIPANTE
-@app.get("/start-game")
-def get_start_game_page(request: Request):
-    return templates.TemplateResponse(
-        "start_game.html", {"request": request}
-    )
+@app.get("/start-game/{user_id}")
+def get_start_game_page(request: Request, user_id: int):
+    if user_id in sessioni_attive.keys():
+        return templates.TemplateResponse(
+            "start_game.html", {"request": request}
+        )
+    else:
+        return templates.TemplateResponse(
+            "login.html", {"request": request}
+        )
+
+@app.post("/login")
+def login_endpoint(request: Request, email: str = Form(...), password: str = Form(...)):
+    return user_login(email, password, request, sessioni_attive)
 
 # Endpoint per gestire l'avvio effettivo della partita classica
 @app.post("/start-game")
@@ -105,17 +117,22 @@ def send_pending_verdict_endpoint(game_id: int, request: Request, payload: Judge
     return send_pending_verdict(game_id, request, payload, templates)
 
 # USER 
-@app.get("/user-stats/{user_id}")
-def get_user_stats_endpoint(user_id: int, request: Request):
-    return get_user_stats(user_id, request, templates)
+@app.get("/profilo/{user_id}")
+def get_profilo_endpoint(user_id: int, request: Request):
+    return get_profilo(user_id, request, sessioni_attive)
 
-@app.get("/user-games/{user_id}")
-def get_user_games_endpoint(user_id: int, request: Request):
-    return get_user_games(user_id, request, templates)
+        
+# @app.get("/user-stats/{user_id}")
+# def get_user_stats_endpoint(user_id: int, request: Request):
+#     return get_user_stats(user_id, request, templates)
 
-@app.get("/user-info/{user_id}")
-def get_user_info_endpoint(user_id: int, request: Request):
-    return get_user_info(user_id, request)
+# @app.get("/user-games/{user_id}")
+# def get_user_games_endpoint(user_id: int, request: Request):
+#     return get_user_games(user_id, request, templates)
+
+# @app.get("/user-info/{user_id}")
+# def get_user_info_endpoint(user_id: int, request: Request):
+#     return get_user_info(user_id, request)
 
 @app.post("/user-disconnect/{user_id}")
 def user_disconnect_endpoint(user_id: int):

@@ -9,7 +9,7 @@ def get_player_games_api(user_id: int):
     connection = connect_to_database()
     cursor = get_cursor(connection) 
     
-    cursor.execute("""SELECT ug.game_id, date, ug.player_role, terminated
+    cursor.execute("""SELECT g.game_id, g.date, ug.player_role, g.terminated, ug.is_won, ug.points
                     FROM Users as u JOIN UserGames as ug ON u.id = ug.user_id
                    """)
     result = cursor.fetchall()
@@ -24,4 +24,4 @@ def get_player_games_api(user_id: int):
     close_connection(connection)
 
     return UserGames(user_id= user_id, 
-                     user_games= [Game(game_id= game_id, data= data, player_role= player_role, terminated= terminated) for game_id, data, player_role, terminated in result])
+                     user_games= [Game(game_id= game_id, data= data, player_role= player_role, terminated= terminated, is_won= is_won, points= points) for game_id, data, player_role, terminated, is_won, points in result])

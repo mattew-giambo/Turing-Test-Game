@@ -8,7 +8,7 @@ from models.authentication import UserLogin, LoginResponse
 import mariadb
 from typing import Tuple, Dict
 
-def login_api(user: UserLogin, sessioni_attive: Dict[str, str]) -> LoginResponse:
+def login_api(user: UserLogin, sessioni_attive: Dict[int, Dict[str, str]]) -> LoginResponse:
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 
@@ -26,11 +26,6 @@ def login_api(user: UserLogin, sessioni_attive: Dict[str, str]) -> LoginResponse
 
         if not verify_password(user.password, hashed_password):
             raise HTTPException(status_code=401, detail="Password errata")
-
-        sessioni_attive[user_id] = {
-            "user_name": user_name,
-            "email": user.email
-        }
 
         return LoginResponse(
             message="ok",

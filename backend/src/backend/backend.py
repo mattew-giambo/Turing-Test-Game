@@ -63,8 +63,6 @@ def get_pending_game_endpoint(game_id: int) -> GameReviewOutput:
 def end_judge_game_endpoint(judge_answer: JudgeGameAnswer, game_id: int):
     return end_judge_game_api(judge_answer, game_id)
 
-# L'UTENTE DEVE FAR IN MODO DI RISPONDERE AL MEGLIO POSSIBILE PER FAR VINCERE IL GIUDICE
-# IN QUESTO SENSO, IL PARTECIPANTE VINCE SOLO SE IL GIUDICE VINCE
 @app.post("/end-pending-game-api/{game_id}")
 def end_pending_game_endpoint(judge_answer: JudgeGameAnswer, game_id: int):
     return end_pending_game_api(judge_answer, game_id)
@@ -88,15 +86,3 @@ def get_user_info_endpoint(user_id: int):
 @app.post("user-disconnect-api/{user_id}")
 def user_disconnect_endpoint(user_id: int):
     return user_disconnect_api(user_id, sessioni_attive)
-# PER ADESSO NON SERVE PIU'
-# @app.get("/judge-game-info-api/{game_id}")
-# def player_role_api(game_id: int):
-#     if game_id not in active_judge_games.keys():
-#         raise HTTPException(status_code= 403, detail= "Partita non trovata")
-    
-#     player_name = active_judge_games[game_id]["player_name"]
-#     game_date= active_judge_games[game_id]["datetime"]
-
-#     return JudgeGameInfo(
-#                     player_name= player_name,
-#                     game_date= game_date)
