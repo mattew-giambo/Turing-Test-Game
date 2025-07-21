@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content="Registrazione di The Imitation Game" />
+        <meta name="author" content="Matteo Giamberardini & Ilaria Casolino" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+        <title>Registrazione | The Imitation Game</title>
+    
+        <!-- CSS -->
+
+        <!-- JavaScript -->
+
+    </head>
+    <body>
+        <!-- Header -->
+        <header>
+            <div class="header-container">
+                <div class="logo"></div>
+
+                <nav id="nav"> 
+                    <ul>
+                        <li> <a href="/">Home</a> </li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+    
+        <!-- Main -->
+        <main  class="main-content">
+            <div class="login-container">
+                <div class="login-header">
+                    <h1>Bentornato a The Imitation Game</h1>
+                    <p>Sei a un passo dal metterti alla prova</p>
+                </div>
+            </div>
+
+            <!-- Form di login -->
+            <form id="login-form" class="login-form" method="POST">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="mario_rossi" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Inserisci la password" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="accedi-btn">Accedi</button>
+                </div>
+
+                <div class="register-group">
+                    <p>Non hai un account? <a href="/register">Registrati ora</a></p>
+                </div>
+            </form>
+
+            <!-- Contenitore per eventuali messaggi di errore -->
+            <div id="error-wrapper">
+                <p class="errore-messaggio" id="msg-error"></p>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-logo">
+                <h2>The Imitation Game</h2>
+            </div>
+        </footer>
+    </body>
+</html>

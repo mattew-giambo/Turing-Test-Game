@@ -2,11 +2,11 @@
 <html lang="it">
     <head>
         <meta charset="UTF-8" />
-        <meta name="description" content="Home Page di The Imitation Game" />
+        <meta name="description" content="Login di The Imitation Game" />
         <meta name="author" content="Matteo Giamberardini & Ilaria Casolino" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-        <title>Login | The Imitation Game</title>
+        <title>Accesso | The Imitation Game</title>
     
         <!-- CSS -->
 
@@ -21,75 +21,59 @@
 
                 <nav id="nav"> 
                     <ul>
-                        <li> <a href="/register">Registrati</a> </li>
+                        <li> <a href="/">Home</a> </li>
                     </ul>
                 </nav>
             </div>
         </header>
     
         <!-- Main -->
-        <main>
-            <!-- Hero Section -->
-            <section class="hero">
-                <div class="hero-text">
-                    <h1>THE <br> IMITATION <br> GAME</h1>
-                    <a href="/login">Gioca ora</a>
+        <main  class="main-content">
+            <div class="registration-container">
+                <div class="registration-header">
+                    <h1>Inserisci i tuoi dati</h1>
+                    <p>La partita tra uomo e intelligenza artificiale sta per iniziare, e l’umanità ha bisogno di un nuovo giocatore.</p>
                 </div>
-            </section>
 
-            <!-- Istructions Section -->
-            <section class="instructions">
-                <div class="container">
-                    <h2>Guida al Gioco</h2>
-                    <p>
-                        Nel 1950, il matematico Alan Turing si pose una domanda: <strong>“Le macchine possono pensare?”</strong> <br>
-                        Per scoprirlo, immaginò un esperimento: un giudice conversa alla cieca con due entità – un umano e una macchina. 
-                        Se non riesce a distinguere chi è chi… la macchina ha superato il test!
-                    </p>
-                    <p>
-                        Nel nostro gioco, la sfida è più semplice: ci sono due ruoli principali – un giudice umano e un partecipante, che può essere umano o un'AI. 
-                        <strong>Starà al giudice capire con chi ha davvero parlato.</strong>
-                    </p>
+                <!-- Form di registrazione -->
+                <form id="registration-form" class="registration-form" method="post" enctype="multipart/form-data">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" maxlength="30" placeholder="Inserisci il tuo username">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="example@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" placeholder="Inserisci la password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="conferma_password">Conferma Password</label>
+                            <input type="password" id="conferma_password" name="conferma_password" placeholder="Conferma la password" required>
+                        </div>
+                    </div>
 
-                    <h3>Scegli il tuo ruolo</h3>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Inizia Subito</button>
+                        <button type="reset" class="btn-secondary">Reset</button>
+                    </div>
 
-                    <article class="role">
-                        <h4>Giudice</h4>
-                        <p>Hai il compito più delicato: scoprire se il tuo interlocutore è umano o macchina. Puoi scegliere tra due modalità:</p>
-                        <ul>
-                            <li>
-                                <strong>Modalità Classica:</strong><br>
-                                Fai 3 domande al partecipante e, dopo aver letto le risposte, arriva il momento della verità: 
-                                <em>"Ho parlato con un essere umano o con una macchina?"</em><br>
-                                <small>Se indovini: +3 Turingcoin | Se sbagli: -2 Turingcoin</small>
-                            </li>
-                            <li>
-                                <strong>Modalità Verdetto:</strong><br>
-                                Ricevi una sessione già completata con 3 domande e le risposte. Il tuo compito? 
-                                Emettere il verdetto finale.<br>
-                                <small>Se indovini: +3 Turingcoin | Se sbagli: -2 Turingcoin</small>
-                            </li>
-                        </ul>
-                    </article>
-
-                    <article class="role">
-                        <h4>Partecipante</h4>
-                        <p>
-                            Rispondi a 3 domande poste da un giudice. Ma attenzione: non sai se lui saprà riconoscere la tua vera natura. <br>
-                            Dopo l'invio, la partita entra in fase di attesa: un giudice valuterà le tue risposte e deciderà.
-                        </p>
-                        <ul>
-                            <li>Se il giudice <strong>indovina che sei umano</strong>: +1 Turingcoin</li>
-                            <li>Se il giudice <strong>sbaglia</strong>: 0 Turingcoin</li>
-                        </ul>
-                        <p><em>Consiglio:</em> Se giochi come partecipante, sii autentico. La vera sfida è dimostrare che nessuna macchina può imitare la nostra umanità.</p>
-                    </article>
-                </div>
-            </section>
+                    <!-- Contenitore per eventuali messaggi di errore -->
+                    <div id="error-wrapper">
+                        <p class="errore-messaggio" id="msg-error"></p>
+                    </div>
+                </form>            
+            </div>
+        </main>
 
         <!-- Footer -->
-        <footer></footer>
-        
-        </main>
+        <footer>
+            <div class="footer-logo">
+                <h2>The Imitation Game</h2>
+            </div>
+        </footer>
     </body>
 </html>
