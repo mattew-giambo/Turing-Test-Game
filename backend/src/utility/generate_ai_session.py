@@ -11,23 +11,38 @@ from utility.get_cursor import get_cursor
 from utility.ai_utils import get_ai_answer, parse_ai_questions
 
 def generate_full_ai_session(player_id: int) -> int:
+    """
+    Genera una sessione di gioco completamente gestita dall'intelligenza artificiale (AI).
+    La funzione viene usata quando non esistono partite pendenti adeguate, o si vuole 
+    simulare un'intera sessione con domande e risposte generate dall'AI.
+
+    Il giudice sarà il giocatore specificato tramite `player_id`, il partecipante sarà l'AI (id = 1).
+    Le domande e risposte AI vengono inserite nella tabella Q_A associate al nuovo game.
+
+    Args:
+        player_id (int): ID del giocatore che ricopre il ruolo di giudice.
+
+    Returns:
+        Dict[str, int]: Un dizionario contenente l'ID della partita creata.
+    
+    Raises:
+        HTTPException: In caso di errore nella generazione delle domande/risposte
+                       o in caso di problemi col database.
+    """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
         query: str = "INSERT INTO Games () VALUES ()"
-        # 1. Crea una nuova partita 
         cursor.execute(query)
         game_id: int = cursor.lastrowid
 
-        # 2. Inserisce nella UserGames: utente come judge, AI (id=1) come participant
         query = "INSERT INTO UserGames (game_id, player_id, player_role) VALUES (%s, %s, 'judge')"
         cursor.execute(query, (game_id, player_id))
 
         query = "INSERT INTO UserGames (game_id, player_id, player_role) VALUES (%s, %s, 'participant')"
         cursor.execute(query, (game_id, 1))
 
-        # 3. Recupera domande distinte dal DB
         query = "SELECT DISTINCT question, ai_question FROM Q_A"
         cursor.execute(query)
         result = cursor.fetchall()
@@ -42,7 +57,6 @@ def generate_full_ai_session(player_id: int) -> int:
             ai_flags: List[bool] = [True] * len(selected_questions)
         
         else:
-            # 4. Filtra domande con fuzzy match
             all_questions = [(elem[0].strip(), elem[1]) for elem in result]
             random.shuffle(all_questions)
 
@@ -66,7 +80,6 @@ def generate_full_ai_session(player_id: int) -> int:
                 if len(selected_questions) == 3:
                     break # abbiamo trovato abbastanza domande distinte
 
-            # Se meno di 3 domande distinte, fallback all’AI
             if len(selected_questions) < 3:
                 ai_answer: str = get_ai_answer(flag_judge=False)
                 selected_questions: List[str] = parse_ai_questions(ai_answer)
@@ -76,7 +89,6 @@ def generate_full_ai_session(player_id: int) -> int:
                 
                 ai_flags = [True] * len(selected_questions)
 
-        # 5. Ottieni risposte AI
         risposte_ai: List[str] = []
         for question in selected_questions:
             risposta_ai = get_ai_answer(question=question, flag_judge=True)
@@ -84,7 +96,6 @@ def generate_full_ai_session(player_id: int) -> int:
                 raise HTTPException(status_code=500, detail="Errore nella risposta dell'AI")
             risposte_ai.append(risposta_ai.strip())
 
-        # 6. Inserisci triple domanda-risposta nella Q_A
         query = """
         INSERT INTO Q_A (game_id, question_id, question, answer, ai_question, ai_answer)
         VALUES (%s, %s, %s, %s, %s, %s)
@@ -94,7 +105,7 @@ def generate_full_ai_session(player_id: int) -> int:
 
         connection.commit()
 
-        return game_id
+        return {"game_id": game_id}
 
     except mariadb.Error as e:
         connection.rollback()

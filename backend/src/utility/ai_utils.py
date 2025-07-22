@@ -1,18 +1,39 @@
+from fastapi import HTTPException
 import requests
 from config.constants import OLLAMA_CHAT_URL, MODEL
 from models.ollama import OllamaInput, OllamaMessage
-from typing import List, Union, Dict
+from typing import List, Optional, Dict
 
-def get_ai_answer(question: str= None, flag_judge: bool= True) -> Union[None, str]:
-    prompt: str = None
+def get_ai_answer(question: Optional[str] = None, flag_judge: bool= True) -> Optional[str]:
+    """
+    Richiede una risposta dall'AI Ollama. 
+    Il comportamento cambia a seconda del ruolo (giudice o partecipante).
+
+    - Se `flag_judge` è True, l'AI risponde a una domanda simulando un essere umano.
+    - Se `flag_judge` è False, l'AI genera 3 domande semplici e naturali per l'interrogatorio.
+
+    Args:
+        question (Optional[str]): Domanda a cui l'AI deve rispondere (necessaria se flag_judge=True).
+        flag_judge (bool): Flag che indica il ruolo (True = giudice; False = generatore domande AI).
+
+    Returns:
+        Optional[str]: Risposta testuale dell'AI, o None in caso di errore.
+
+    Raises:
+        HTTPException: In caso di errore irreversibile nella comunicazione con l'AI.
+    """
+    
     if flag_judge:
-        prompt = f'Rispondi in modo discorsivo come se fossi un essere umano alla domanda: {question}\
+        if not question:
+            raise HTTPException(status_code=400, detail="Domanda mancante per la risposta del giudice AI.")
+        
+        prompt: str = f'Rispondi in modo discorsivo come se fossi un essere umano alla domanda: {question}\
         Scrivi solo la risposta, in modo emotivo e naturale, senza meta commenti, spiegazioni o riferimenti alla domanda stessa.\
         Limìtati a rispondere come se fosse una conversazione vera, tra due persone. Non usare asterischi per indicare azioni,\
         pensieri o emozioni.'
 
     else:
-        prompt = "Genera tre domande semplici e naturali, ciascuna su un argomento diverso. " \
+        prompt: str = "Genera tre domande semplici e naturali, ciascuna su un argomento diverso. " \
         "Scegli liberamente argomenti comuni che possano emergere in una conversazione informale tra persone. " \
         "Evita domande tecniche, difficili o filosofiche. " \
         "Non aggiungere introduzioni, commenti, spiegazioni o riferimenti al motivo per cui le domande sono state generate. " \
@@ -29,10 +50,8 @@ def get_ai_answer(question: str= None, flag_judge: bool= True) -> Union[None, st
         print(f"Errore nella chiamata API: {e}")
         return None
     
-    answer = result.get("message").get("content")
+    answer: Optional[str] = result.get("message", {}).get("content")
     return answer
-
-from typing import List
 
 def parse_ai_questions(answer: str) -> List[str]:
     """

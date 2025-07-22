@@ -65,29 +65,28 @@ def start_pending_game_api(payload: PlayerInfo) -> ConfirmGame:
         # 4. Nessun giudice è stato ancora assegnato alla partita (assenza di ruolo 'judge' in UserGames)
 
         query = """
-        SELECT g.id
-        FROM Games AS g
-        WHERE g.terminated = FALSE
-        AND EXISTS (
-            SELECT *
-            FROM Q_A AS qa
-            WHERE qa.game_id = g.id AND qa.ai_answer = FALSE AND TRIM(qa.answer) != ''
-        )
-        AND NOT EXISTS (
-            SELECT *
-            FROM UserGames AS ug
-            WHERE ug.game_id = g.id AND ug.player_id = %s
-        )
-        AND NOT EXISTS (
-            SELECT *
-            FROM UserGames AS ug2
-            WHERE ug2.game_id = g.id AND ug2.player_role = 'judge'
-        )
-        """
+            SELECT g.id
+            FROM Games AS g
+            WHERE g.terminated = FALSE
+            AND EXISTS (
+                SELECT *
+                FROM Q_A AS qa
+                WHERE qa.game_id = g.id AND qa.ai_answer = FALSE AND TRIM(qa.answer) != ''
+            )
+            AND NOT EXISTS (
+                SELECT *
+                FROM UserGames AS ug
+                WHERE ug.game_id = g.id AND ug.player_id = %s
+            )
+            AND NOT EXISTS (
+                SELECT *
+                FROM UserGames AS ug2
+                WHERE ug2.game_id = g.id AND ug2.player_role = 'judge'
+            )
+            """
         cursor.execute(query, (player_id,))
         pending_games: List[Tuple[int]] = cursor.fetchall()
 
-        # Se non ci sono partite disponibili, crea una nuova sessione AI
         if not pending_games:
             ai_result = generate_full_ai_session(player_id)
             return ConfirmGame(
@@ -97,10 +96,8 @@ def start_pending_game_api(payload: PlayerInfo) -> ConfirmGame:
                 player_role=player_role
             )
 
-        # Seleziona una partita casuale
         game_id: int = random.choice([row[0] for row in pending_games])
 
-        # Assegna l'utente come giudice alla partita
         cursor.execute(
             "INSERT INTO UserGames(game_id, player_id, player_role) VALUES (%s, %s, %s)",
             (game_id, player_id, player_role)

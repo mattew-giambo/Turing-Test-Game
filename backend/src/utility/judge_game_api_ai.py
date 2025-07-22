@@ -1,10 +1,13 @@
 from typing import List
 from utility.ai_utils import get_ai_answer
 
-def judge_game_api_ai(lista_domande_input: List[str]):
-    lista_risposte_output: List[str] = []
-    for domanda_input in lista_domande_input:
-        risposta = get_ai_answer(domanda_input)
-        if risposta is not None:
-            lista_risposte_output.append(risposta)
-    return lista_risposte_output
+def judge_game_api_ai(questions_input: List[str]) -> List[str]:
+    """
+    Genera risposte alle domande tramite AI.
+    """
+    answers_output: List[str] = []
+    for question in questions_input:
+        ai_answer = get_ai_answer(question)
+        if ai_answer:
+            answers_output.append(ai_answer)
+    return answers_output

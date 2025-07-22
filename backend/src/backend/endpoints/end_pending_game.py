@@ -1,3 +1,4 @@
+from typing import Dict
 from fastapi import HTTPException
 from models.judge_game import JudgeGameAnswer
 from utility.close_connection import close_connection
@@ -9,126 +10,110 @@ from config.constants import JUDGE_WON_POINTS, PART_WON_POINTS, PART_LOST_POINTS
 
 from models.pending_game import EndPendingJudgeGameOutput
 
-def end_pending_game_api(judge_answer: JudgeGameAnswer, game_id: int):
-    connection = connect_to_database()
-    cursor = get_cursor(connection)
+def end_pending_game_api(judge_answer: JudgeGameAnswer, game_id: int) -> EndPendingJudgeGameOutput:
+    """
+    Gestisce la conclusione di una partita pending, valutando se il giudice ha correttamente
+    identificato il partecipante come umano o AI, aggiornando le statistiche di entrambi.
+
+    Args:
+        judge_answer (JudgeGameAnswer): Verdetto del giudice.
+        game_id (int): ID della partita da terminare.
+
+    Returns:
+        EndPendingJudgeGameOutput: Esito della valutazione, punteggio e messaggio da mostrare al giudice.
+
+    Raises:
+        HTTPException: Se la partita non esiste, è già terminata o c'è un errore del database.
+    """
+    connection: mariadb.Connection = connect_to_database()
+    cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        cursor.execute("""SELECT ug.player_id, ug.player_role 
-                    FROM Games as g JOIN UserGames as ug ON g.id = ug.game_id
-                    WHERE g.terminated = FALSE AND g.id = game_id""")
+        cursor.execute("""
+            SELECT ug.player_id, ug.player_role
+            FROM Games AS g
+            JOIN UserGames AS ug ON g.id = ug.game_id
+            WHERE g.terminated = FALSE AND g.id = %s
+        """, (game_id,))
         result = cursor.fetchall()
 
-        if result is None:
-            raise HTTPException(status_code= 404,
-                                detail= "Partita non trovata")
+        if not result:
+            raise HTTPException(status_code= 404, detail= "Partita non trovata")
         if len(result) < 2:
-            raise HTTPException(status_code= 403,
-                                detail= f"Nessuna partita con {game_id} è stata avviata")
+            raise HTTPException(status_code= 403, detail= f"Nessuna partita con {game_id} è stata avviata")
         
-        players = {p_role: p_id for p_id, p_role in result} # dizionario[ruolo: id] per salvare i due utenti
+        # Crea dizionario con ruoli: {"judge": id, "participant": id}
+        players: Dict[str, int] = {p_role: p_id for p_id, p_role in result}
+
+        query: str = "UPDATE Games SET terminated = TRUE WHERE id = %s"
+        cursor.execute(query, (game_id,))
+
+        verdetto: bool = judge_answer.is_ai
+        participant_is_ai: bool = (players["participant"] == 1)
+        is_won: bool = verdetto == participant_is_ai
+
+        message: str = "Congratulazioni, hai vinto!" if is_won else "Ohh Noo, hai perso!"
+        judge_points: int = JUDGE_WON_POINTS if is_won else JUDGE_LOST_POINTS
+
+        # Aggiorna UserGames e Stats del giudice
+        query = """
+            UPDATE UserGames SET is_won = %s, points = %s
+            WHERE game_id = %s AND player_id = %s
+        """
+        cursor.execute(query, (is_won, judge_points, game_id, players["judge"]))
         
-        cursor.execute("UPDATE games SET terminated= TRUE WHERE id = %s", (game_id,))
-        
-        is_won: bool = False
-        message: str = ""
-        points: int = 0
-        if players["participant"] == 1 and judge_answer.is_ai == True:
-            # IL PARTECIPANTE E' AI E IL GIUDICE INDOVINA e VINCE
-            cursor.execute("UPDATE UserGames SET is_won = TRUE, points = %s WHERE game_id = %s AND player_id = %s", (JUDGE_WON_POINTS, game_id, players["judge"]))
-            cursor.execute("""
-                UPDATE stats
-                SET n_games = n_games + 1,
-                    score_judge = score_judge + %s,
-                    won_judge = won_judge + 1
-                WHERE user_id = %s
-            """, (JUDGE_WON_POINTS, players["judge"],))
+        query = """
+            UPDATE Stats
+            SET n_games = n_games + 1,
+                score_judge = score_judge + %s,
+                won_judge = won_judge + %s,
+                lost_judge = lost_judge + %s
+            WHERE user_id = %s
+        """
+        cursor.execute(query, (
+            judge_points,
+            1 if is_won else 0,
+            0 if is_won else 1,
+            players["judge"]
+        ))
 
-            cursor.execute("UPDATE UserGames SET is_won = FALSE points = %s WHERE game_id = %s AND player_id = %s", (PART_LOST_POINTS, game_id, 1))
-            cursor.execute("""
-                UPDATE stats
-                SET n_games = n_games + 1,
-                    lost_part = lost_part + 1,
-                    score_part = score_part + %s
-                WHERE user_id = %s
-            """, (PART_LOST_POINTS, 1))
-            is_won = True
-            message = "Congratulazione, hai vinto!"
-            points = JUDGE_WON_POINTS
-        elif players["participant"] == 1 and judge_answer.is_ai == False:
-            # IL PARTECIPANTE E' AI E IL GIUDICE SBAGLIA
-            cursor.execute("UPDATE UserGames SET is_won = FALSE, points = %s WHERE game_id = %s AND player_id = %s", (JUDGE_LOST_POINTS, game_id, players["judge"]))
-            cursor.execute("""
-                UPDATE stats
-                SET n_games = n_games + 1,
-                    lost_judge = lost_judge + 1
-                    score_judge = score_judge + %s
-                WHERE user_id = %s
-            """, (JUDGE_LOST_POINTS, players["judge"]))
+        # Aggiorna UserGames e Stats del partecipante
+        participant_id: int = players["participant"]
+        participant_won: bool = not is_won if participant_is_ai else is_won
+        participant_points: int = PART_WON_POINTS if participant_won else PART_LOST_POINTS
 
-            cursor.execute("UPDATE UserGames SET is_won = TRUE, points = %s WHERE game_id = %s AND player_id = %s", (PART_WON_POINTS, game_id, 1))
-            cursor.execute("""
-                UPDATE stats
-                SET n_games = n_games + 1,
-                    score_part = score_part + %s,
-                    won_part = won_part + 1
-                WHERE user_id = %s
-            """, (PART_WON_POINTS, 1))
+        query = """
+            UPDATE UserGames SET is_won = %s, points = %s
+            WHERE game_id = %s AND player_id = %s
+        """
+        cursor.execute(query, (participant_won, participant_points, game_id, participant_id))
 
-            message = "Ohh Noo, hai perso!"
-            points = JUDGE_LOST_POINTS
-        elif players["participant"] != 1 and judge_answer.is_ai == True:
-            # IL PARTECIPANTE E' UMANO E IL GIUDICE SBAGLIA, QUINDI PERDONO ENTRAMBI
-            cursor.execute("UPDATE UserGames SET is_won = FALSE, points = %s WHERE game_id = %s AND player_id = %s", (JUDGE_LOST_POINTS, game_id, players["judge"]))
-            cursor.execute("""
-                UPDATE stats
-                SET n_games = n_games + 1,
-                    lost_judge = lost_judge + 1
-                WHERE user_id = %s
-            """, (JUDGE_LOST_POINTS, players["judge"]))
+        query = """
+            UPDATE Stats
+            SET n_games = n_games + 1,
+                score_part = score_part + %s,
+                won_part = won_part + %s,
+                lost_part = lost_part + %s
+            WHERE user_id = %s
+        """
+        cursor.execute(query, (
+            participant_points,
+            1 if participant_won else 0,
+            0 if participant_won else 1,
+            participant_id
+        ))
 
-            cursor.execute("UPDATE UserGames SET is_won = FALSE, points = %s WHERE game_id = %s AND player_id = %s", (PART_LOST_POINTS, game_id, players["participant"]))
-            cursor.execute("""
-                UPDATE stats
-                SET n_games = n_games + 1,
-                    lost_part = lost_part + 1,
-                    score_part = score_part + %s
-                WHERE user_id = %s
-            """, (PART_LOST_POINTS, players["participant"]))
-
-            message = "Ohh Noo, hai perso!"
-            points = JUDGE_LOST_POINTS
-        else:
-            # IL PARTECIPANTE E' UMANO E IL GIUDICE VINCE
-            cursor.execute("UPDATE UserGames SET is_won = TRUE, points = %s WHERE game_id = %s AND player_id = %s", (JUDGE_WON_POINTS, game_id, players["judge"]))
-            cursor.execute("""
-                UPDATE stats
-                SET n_games = n_games + 1,
-                    score_judge = score_judge + %s,
-                    won_judge = won_judge + 1
-                WHERE user_id = %s
-            """, (JUDGE_WON_POINTS, players["judge"],))
-
-            cursor.execute("UPDATE UserGames SET is_won = TRUE, points = %s WHERE game_id = %s AND player_id = %s", (PART_WON_POINTS, game_id, players["participant"]))
-            cursor.execute("""
-                UPDATE stats
-                SET n_games = n_games + 1,
-                    score_part = score_part + %s,
-                    won_part = won_part + 1
-                WHERE user_id = %s
-            """, (PART_WON_POINTS, players["participant"],))
-
-            is_won = True
-            message = "Congratulazioni, hai vinto!"
-            points = JUDGE_WON_POINTS
         connection.commit()
-    except mariadb.Error as e:
-        raise HTTPException(
-            status_code= 500,
-            detail= "Errore del server"
+
+        return EndPendingJudgeGameOutput(
+            game_id=game_id,
+            is_won=is_won,
+            message=message,
+            points=judge_points
         )
+
+    except mariadb.Error as e:
+        raise HTTPException(status_code=500, detail="Errore del server.")
     finally:
         close_cursor(cursor)
         close_connection(connection)
-
-    return EndPendingJudgeGameOutput(game_id= game_id, is_won = is_won, message= message, points = points)

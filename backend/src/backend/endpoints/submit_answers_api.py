@@ -21,7 +21,7 @@ def submit_answers_api(game_id: int, input_data: AnswerInput):
         if not result:
             raise HTTPException(status_code=404, detail="Partita non trovata o già terminata.")
         
-        query = "UPDATE Q_A SET answer = %s WHERE game_id = %s AND question_id = %s"
+        query: str = "UPDATE Q_A SET answer = %s WHERE game_id = %s AND question_id = %s"
 
         for idx, answer in enumerate(input_data.answers, start=1):  
             cursor.execute(query, (answer.strip(), game_id, idx))

@@ -7,35 +7,30 @@ from typing import List
 from rapidfuzz import process, fuzz
 import random
 
-def judge_game_api_db(lista_domande_input: List[str]):
-    lista_risposte_output = []
-
+def judge_game_api_db(questions_input: List[str]) -> List[str]:
+    """
+    Recupera risposte umane esistenti dal database usando fuzzy matching sulle domande.
+    """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 
-    cursor.execute("SELECT question, answer FROM Q_A WHERE ai_answer = FALSE")
-    domande = cursor.fetchall()
+    try:
+        query: str = "SELECT question, answer FROM Q_A WHERE ai_answer = FALSE"
+        cursor.execute(query)
+        result = cursor.fetchall()
 
-    close_connection(connection)
-    close_cursor(cursor)
+        qa_list = [{"question": q, "answer": a} for q, a in result]
+        random.shuffle(qa_list)
+        questions_db = [qa["question"] for qa in qa_list]
 
-    # Converte in lista di dizionari
-    lista_domande = [{"question": row[0], "answer": row[1]} for row in domande]
-    random.shuffle(lista_domande)
-    
-    # Estrai solo i testi delle domande, lista di domande
-    domande_testo = [diz["question"] for diz in lista_domande]
+        answers_output: List[str] = []
+        for question_input in questions_input:
+            # Fuzzy matching con domande esistenti
+            match, score, index = process.extractOne(question_input, questions_db, scorer=fuzz.token_sort_ratio)
+            if score >= 80:
+                answers_output.append(qa_list[index]["answer"])
 
-    for i in range(0, len(lista_domande_input)):
-        domanda_input = lista_domande_input[i]
-        # Matching fuzzy
-        match, score, index = process.extractOne(
-            domanda_input,
-            domande_testo,
-            scorer= fuzz.token_sort_ratio
-        )
-        # Se somiglianza >= 80%, prendi la risposta associata
-        if score >= 80:
-            lista_risposte_output.append(lista_domande[index]["answer"])
-    
-    return lista_risposte_output
+        return answers_output
+    finally:
+        close_cursor(cursor)
+        close_connection(connection)

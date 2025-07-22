@@ -6,16 +6,32 @@ from utility.get_cursor import get_cursor
 from utility.security import verify_password
 from models.authentication import UserLogin, LoginResponse
 import mariadb
-from typing import Tuple, Dict
+from typing import Optional, Tuple
 
 def login_api(user: UserLogin) -> LoginResponse:
+    """
+    Esegue l'autenticazione dell'utente sulla base dell'email e della password forniti.
+    Verifica l'esistenza dell'utente e la corrispondenza dell'hash della password.
+    
+    Args:
+        user (UserLogin): Oggetto contenente email e password dell'utente.
+
+    Returns:
+        LoginResponse: Oggetto con messaggio di successo, ID e username dell’utente autenticato.
+
+    Raises:
+        HTTPException:
+            - 404 se l'utente non è registrato con l'email fornita.
+            - 401 se la password non è corretta.
+            - 500 in caso di errore interno durante l’accesso al database.
+    """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
         query: str = "SELECT id, user_name, hashed_password FROM Users WHERE email = %s"
         cursor.execute(query, (user.email,))
-        result: Tuple[int, str, str] = cursor.fetchone()
+        result: Optional[Tuple[int, str, str]] = cursor.fetchone()
 
         if not result:
             raise HTTPException(status_code=404, detail="Utente non trovato")

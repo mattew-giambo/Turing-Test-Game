@@ -5,12 +5,9 @@ from utility.close_cursor import close_cursor
 from utility.connect_to_database import connect_to_database
 from utility.get_cursor import get_cursor
 from utility.insert_q_a_participant_api import insert_q_a_participant_api
-from utility.ai_utils import get_ai_answer, parse_ai_questions
 from utility.participant_functions import generate_ai_questions, select_unique_questions_from_db, build_qa_list
 import mariadb
-from typing import List, Tuple
 import random
-from rapidfuzz import fuzz
 
 def participant_game_api(game_id: int) -> ParticipantGameOutput:
     """

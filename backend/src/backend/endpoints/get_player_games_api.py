@@ -1,27 +1,69 @@
+from typing import List
 from fastapi import HTTPException
 from models.user_games import UserGames, Game
 from utility.close_connection import close_connection
 from utility.close_cursor import close_cursor
 from utility.connect_to_database import connect_to_database
 from utility.get_cursor import get_cursor
+import mariadb
 
-def get_player_games_api(user_id: int):
-    connection = connect_to_database()
-    cursor = get_cursor(connection) 
-    
-    cursor.execute("""SELECT g.game_id, g.date, ug.player_role, g.terminated, ug.is_won, ug.points
-                    FROM Users as u JOIN UserGames as ug ON u.id = ug.user_id
-                   """)
-    result = cursor.fetchall()
+def get_player_games_api(user_id: int) -> UserGames:
+    """
+    Restituisce la lista delle partite giocate da un determinato utente,
+    con informazioni dettagliate su ogni sessione (ruolo, punteggio, esito, ecc.).
 
-    if not result:
+    Args:
+        user_id (int): ID dell'utente di cui si vogliono recuperare le partite.
+
+    Returns:
+        UserGames: Oggetto contenente l'ID utente e la lista delle sue partite.
+
+    Raises:
+        HTTPException: Se l'utente non ha partite registrate o in caso di errore del database.
+    """
+    connection: mariadb.Connection = connect_to_database()
+    cursor: mariadb.Cursor = get_cursor(connection)
+
+    try:
+        query: str = """
+            SELECT g.id, g.date, ug.player_role, g.terminated, ug.is_won, ug.points
+            FROM Games AS g
+            JOIN UserGames AS ug ON g.id = ug.game_id
+            WHERE ug.player_id = %s
+            ORDER BY g.date DESC
+        """
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchall()
+
+        if not result:
+            raise HTTPException(
+                status_code=404,
+                detail="Nessuna partita trovata per questo utente."
+            )
+
+        games: List[Game] = [
+            Game(
+                game_id=row[0],
+                date=row[1],
+                player_role=row[2],
+                terminated=row[3],
+                is_won=row[4],
+                points=row[5]
+            )
+            for row in result
+        ]
+
+        return UserGames(
+                user_id=user_id,
+                user_games=games
+            )
+
+    except mariadb.Error:
         raise HTTPException(
-            status_code= 404,
-            detail= "Utente non trovato"
+            status_code=500,
+            detail="Errore del server."
         )
 
-    close_cursor(cursor)
-    close_connection(connection)
-
-    return UserGames(user_id= user_id, 
-                     user_games= [Game(game_id= game_id, data= data, player_role= player_role, terminated= terminated, is_won= is_won, points= points) for game_id, data, player_role, terminated, is_won, points in result])
+    finally:
+        close_cursor(cursor)
+        close_connection(connection)
