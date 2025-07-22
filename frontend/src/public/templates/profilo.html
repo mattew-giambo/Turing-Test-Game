@@ -74,7 +74,53 @@
                         <p>{{ lost_part }}</p>
                     </div>
                 </div>
+                <div id="punti" class="statistiche-gruppo">
+                    <div id="punti-judge" class="statistiche-elem">
+                        <h3>Punti ottenuti da Giudice</h3>
+                        <p>{{ score_judge }}</p>
+                    </div>
+                    <div id="punti-part" class="statistiche-elem">
+                        <h3>Punti ottenuti da Partecipante</h3>
+                        <p>{{ score_part }}</p>
+                    </div>
+                </div>
             </section>
+
+            <section class="partite-giocate">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Game ID</th>
+                            <th>Data</th>
+                            <th>Ruolo</th>
+                            <th>Stato</th>
+                            <th>Punti</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for game in user_games %}
+                        <tr>
+                            <td>{{ game.game_id }}</td>
+                            <td>{{ game.data }}</td>
+                            <td>{{ game.player_role }}</td>
+                            <td>
+                                {% if game.terminated == 0 %}
+                                    {% if game.is_won == 1 %}
+                                        Vinta
+                                    {% else %}
+                                        Persa
+                                    {% endif %}
+                                {% else %}
+                                    In attesa
+                                {% endif %}
+                            </td>
+                            <td>{{ game.points }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+
         </main>
 
         <!-- Footer -->
