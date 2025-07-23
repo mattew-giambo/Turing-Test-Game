@@ -13,39 +13,15 @@
                 </div>
             </div>
     <main>
-        <section class="partita-section">
-            <form>
-                <div class="form-elem">
-                    <label for="domanda1">Domanda 1:</label>
-                    <input id="domanda1"  placeholder="Inserisci la domanda">
-                </div>
-                <div class="form-elem">
-                    <label for="domanda2">Domanda 2:</label>
-                    <input id="domanda2"  placeholder="Inserisci la domanda">
-                </div>
-                <div class="form-elem">
-                    <label for="domanda3">Domanda 3:</label>
-                    <input id="domanda3" placeholder="Inserisci la domanda">
-                </div>
-                <button type="submit">Invia ora</button>
-            </form>
-        </section>
-
-        <section class="sessione-section"> <!-- Default invisibile, contiene il recap della sessione -->
+        <section class="sessione-section">
             <div>
-                <div>
-                    <div">
-                    <label for="sessione-domanda-1">Domanda 1:</label>
-                    <p id="sessione-domanda-1"></p>
-                </div>
-                <div">
-                    <label for="sessione-domanda-2">Domanda 2:</label>
-                    <p id="sessione-domanda-2"></p>
-                </div>
-                <div">
-                    <label for="sessione-domanda-3">Domanda 3:</label>
-                    <p id="sessione-domanda-3"></p>
-                </div>
+                {% for question_id, qa in session %}
+                    <div>
+                        <div">
+                        <label for="sessione-domanda-{{ question_id }}">Domanda {{question_id}}: {{qa.question}}</label>
+                        <p id="sessione-domanda-{{ question_id }}">{{ qa.answer }}</p>
+                    </div>
+                {% endfor %}
             </div>
 
             <div>

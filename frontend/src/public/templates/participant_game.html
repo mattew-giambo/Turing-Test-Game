@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Imitation Game - Giudice</title>
+</head>
+<body>
+    <header>
+            <div class="header-container">
+                <div class="logo">
+                    <h2>The Imitation Game</h2>
+                </div>
+            </div>
+    <main>
+        <section class="partita-section">
+            <form>
+                {% for q in questions %}
+                <div class="form-elem">
+                    <label for="domanda{{ loop.index }}">Domanda {{ loop.index }}: {{ q }}</label>
+                    <input id="domanda{{ loop.index }}"  placeholder="Inserisci la risposta">
+                </div>
+                {% endfor %}
+                <button type="submit">Invia e attendi il verdetto</button>
+            </form>
+        </section>
+    </main>
+    <!-- Footer -->
+        <footer>
+            <div class="footer-logo">
+                <h2>The Imitation Game</h2>
+            </div>
+        </footer>
+</body>
+</html>
