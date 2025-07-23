@@ -25,7 +25,7 @@ def get_verdict_game(game_id: int, player_id: int, request: Request, templates: 
             error_data = {}
 
         if e.response and e.response.status_code == 404:
-            return templates.TemplateResponse("game_not_found.html", {"request": request})
+            return templates.TemplateResponse("404.html", {"request": request})
 
         raise HTTPException(
             status_code=error_data.get("status_code", 500),

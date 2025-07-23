@@ -1,4 +1,4 @@
-from fastapi import Request
+from fastapi import Request, HTTPException
 from fastapi.templating import Jinja2Templates
 from models.user_stats import UserStats
 from models.user_games import UserGames
@@ -14,9 +14,16 @@ def get_profilo(user_id: int, request: Request, templates: Jinja2Templates, sess
         return templates.TemplateResponse(
             "login.html", {"request": request}
         )
-    user_info: UserInfo = get_user_info(user_id)
-    user_stats: UserStats = get_user_stats(user_id)
-    user_games: UserGames = get_user_games(user_id)
+    try:
+        user_info: UserInfo = get_user_info(user_id)
+        user_stats: UserStats = get_user_stats(user_id)
+        user_games: UserGames = get_user_games(user_id)
+    except HTTPException as e:
+        if e.status_code == 404:
+            return templates.TemplateResponse(
+                "404.html",
+                {"request": request}
+            )
 
     return templates.TemplateResponse(
         "profilo.html",{

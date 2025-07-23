@@ -23,7 +23,7 @@ def get_participant_game(game_id: int, player_id: int, request: Request, templat
         error_data: Dict =  e.response.json()
         if error_data.status_code == 404:
             return templates.TemplateResponse(
-            "game_not_found.html", {
+            "404.html", {
                 "request": request
             }
         )
