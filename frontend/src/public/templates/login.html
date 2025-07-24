@@ -2,14 +2,16 @@
 <html lang="it">
     <head>
         <meta charset="UTF-8" />
-        <meta name="description" content="Login di The Imitation Game" />
+        <meta name="description" content="Registrazione di The Imitation Game" />
         <meta name="author" content="Matteo Giamberardini & Ilaria Casolino" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-        <title>Accesso | The Imitation Game</title>
+        <title>Accedi | The Imitation Game</title>
     
         <!-- CSS -->
+        <link rel="stylesheet" href="login.css">
 
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" />
         <!-- JavaScript -->
 
     </head>
@@ -21,7 +23,7 @@
 
                 <nav id="nav"> 
                     <ul>
-                        <li> <a href="/">Home</a> </li>
+                        <li> <a href="/">Home<span class="material-symbols-rounded">home</span></a> </li>
                     </ul>
                 </nav>
             </div>
@@ -29,43 +31,37 @@
     
         <!-- Main -->
         <main  class="main-content">
-            <div class="registration-container">
-                <div class="registration-header">
-                    <h1>Inserisci i tuoi dati</h1>
-                    <p>La partita tra uomo e intelligenza artificiale sta per iniziare, e l’umanità ha bisogno di un nuovo giocatore.</p>
+            <div class="login-container">
+                <div class="login-header">
+                    <h1>Bentornato a The Imitation Game</h1>
+                    <p>Sei a un passo dal metterti alla prova</p>
+                </div>
+            </div>
+
+            <!-- Form di login -->
+            <form id="login-form" class="login-form" method="POST">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="mario_rossi" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Inserisci la password" required>
                 </div>
 
-                <!-- Form di registrazione -->
-                <form id="registration-form" class="registration-form" method="post" enctype="multipart/form-data">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="username">Username</label>
-                            <input type="text" id="username" name="username" maxlength="30" placeholder="Inserisci il tuo username">
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" placeholder="example@email.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" id="password" name="password" placeholder="Inserisci la password" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="conferma_password">Conferma Password</label>
-                            <input type="password" id="conferma_password" name="conferma_password" placeholder="Conferma la password" required>
-                        </div>
-                    </div>
+                <div class="form-actions">
+                    <button type="submit" id="accedi-btn">Accedi</button>
+                </div>
 
-                    <div class="form-actions">
-                        <button type="submit" class="btn-primary">Inizia Subito</button>
-                        <button type="reset" class="btn-secondary">Reset</button>
-                    </div>
+                <div class="register-group">
+                    <p>Non hai un account? <a href="/register">Registrati ora</a></p>
+                </div>
+            </form>
 
-                    <!-- Contenitore per eventuali messaggi di errore -->
-                    <div id="error-wrapper">
-                        <p class="errore-messaggio" id="msg-error"></p>
-                    </div>
-                </form>            
+            <!-- Contenitore per eventuali messaggi di errore -->
+            <div id="error-wrapper">
+                <p class="errore-messaggio" id="msg-error"></p>
             </div>
         </main>
 
