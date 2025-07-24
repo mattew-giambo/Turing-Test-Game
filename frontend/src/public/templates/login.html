@@ -19,19 +19,21 @@
         <!-- Header -->
         <header>
             <div class="header-container">
-                <div class="logo"></div>
+                <div class="logo">
+                </div>
 
                 <nav id="nav"> 
                     <ul>
-                        <li> <a href="/">Home<span class="material-symbols-rounded">home</span></a> </li>
+                        <li> <a href="/">Home</a> </li>
                     </ul>
                 </nav>
             </div>
         </header>
     
         <!-- Main -->
-        <main  class="main-content">
-            <div class="login-container">
+        <main>
+            <div class="main-content">
+                <div class="login-container">
                 <div class="login-header">
                     <h1>Bentornato a The Imitation Game</h1>
                     <p>Sei a un passo dal metterti alla prova</p>
@@ -42,7 +44,7 @@
             <form id="login-form" class="login-form" method="POST">
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="mario_rossi" required>
+                    <input type="text" id="username" name="username" placeholder="Inserisci l'username" required>
                 </div>
                 
                 <div class="form-group">
@@ -62,6 +64,7 @@
             <!-- Contenitore per eventuali messaggi di errore -->
             <div id="error-wrapper">
                 <p class="errore-messaggio" id="msg-error"></p>
+            </div>
             </div>
         </main>
 
