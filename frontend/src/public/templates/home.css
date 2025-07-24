@@ -1,12 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-:root{
+:root {
     --bianco-crema: #fffcdd;
-
-      /* Base colors */
+    
+    /* Base colors */
     --retro-bg: #FFFFB5;           /* Giallo pastello - sfondo */
     --retro-fg: #000000;           /* Nero - testo/bordi */
-
+    
     /* Accent colors */
     --retro-red: #FF4C4C;          /* Rosso acceso */
     --retro-blue: #4C9EFF;         /* Blu acceso */
@@ -14,11 +15,13 @@
     --retro-pink: #ff55c9;         /* Rosa pastello */
     --retro-purple: #a34cfa;       /* Viola pastello */
     --retro-orange: #FFB347;       /* Arancione retrò */
-
+    
     /* Element highlights */
     --retro-highlight: #FFEB3B;    /* Giallo evidenziato */
     --retro-shadow: #606060;       /* Ombra stile NES */
+    --hero-blue: #00A8C6;          /* Hero color */
 }
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -27,11 +30,12 @@
 
 body {
     font-family: 'Press Start 2P', cursive;
+    font-size: 1rem;
     background-color: var(--retro-bg);
     color: var(--retro-fg);
 }
 
-/* HEADER */
+/* HEADER 
 header {
     background-color: var(--retro-red);
     padding: 1.5rem;
@@ -70,18 +74,23 @@ nav a:hover {
   background-color: var(--retro-highlight);
   transform: scale(1.1)
 }
+*/
 
 /* HERO SECTION */
 .hero {
-    background-color: var(--retro-blue);
+    background-color: #00A8C6;
+    background-image: url('hero.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
     text-align: center;
     padding: 4rem 2rem;
-    border-bottom: 4px solid #ff4d8b;
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow:  0px 3px 5px rgba(0, 0, 0, 0.225);
+    border-bottom: 4px solid var(--retro-fg);
     z-index: 1;
     position: relative;
 }
@@ -106,24 +115,34 @@ nav a:hover {
 .hero-text a {
     display: inline-block;
     background-color: var(--retro-pink);
-    color: var(--retro-fg);
-    padding: 1rem 2rem;
+    color: #2D0A21;
+    padding: 1.2rem 2.4rem;
     text-decoration: none;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.1rem;
+    line-height: 1.6;
     border: 3px solid var(--retro-fg);
-    transition: all 0.2s;
-    box-shadow:  0px 3px 5px rgba(0, 0, 0, 0.225);
+    border-left: 6px solid #693027;
+    border-top: 6px solid #693027;
+    border-right: 3px solid #391a15;
+    border-bottom: 3px solid #391a15;
+    box-shadow: 4px 4px 0px #391a15;
+    transition: all 0.1s ease-in-out;
     margin-top: 4rem;
+    cursor: pointer;
 }
 
 .hero-text a:hover {
-    background-color: var(--retro-highlight);
-    transform: scale(1.1);
+    color: #ffa200;
+    background-color: #fae149;
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px #000;
 }
 
 /* ISTRUZIONI */
 .instructions {
-    background-color: var(--bianco-crema);
-    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #FAE149, #FFEB5B);
+    padding: 4rem 2rem;
     color: var(--retro-fg);
     line-height: 1.8;
 }
@@ -133,72 +152,109 @@ nav a:hover {
     margin: 0 auto;
 }
 
-.instructions h2{
-    color: var(--retro-pink);
-    margin-bottom: 1rem;
+.instructions h2 {
+    color: var(--retro-purple);
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    text-align: center;
+    text-shadow: 2px 2px 0px white;
 }
 
- .instructions h3 {
+.instruction-box {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border: 4px solid var(--retro-fg);
+    box-shadow: 8px 8px 0px var(--retro-shadow);
+}
+
+.instructions h3 {
     color: var(--retro-pink);
-    margin-top: 3rem;
+    margin-bottom: 1rem;
+    margin-top: 1.5rem;
+    font-size: 1.2rem;
 }
 
 .instructions p,
 .instructions li {
+    color: #1B1F8A;
     margin-bottom: 1rem;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
 }
 
 .role {
-    background-color: var(--retro-bg);
-    border: 3px dashed #000;
+    background: linear-gradient(45deg, rgba(250, 225, 62, 0.464), rgba(255, 229, 32, 0.24));
+    border: 3px dashed #face49;
     padding: 1.5rem;
     margin-top: 2rem;
+    position: relative;
 }
 
 .role h4 {
-    color: var(--retro-purple);
-    margin-bottom: 0.5rem;
+    color: var(--retro-pink);
+    margin-bottom: 0.8rem;
 }
 
 .role ul {
-    list-style-type: square;
-    padding-left: 1.5rem;
+    list-style-type: none;
+    padding-left: 0;
 }
 
-.modalita-role{
+.role li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.role li::before {
+    content: '▶';
+    position: absolute;
+    left: 0;
+    color: var(--retro-red);
+}
+
+.modalita-role {
     display: block;
     color: var(--retro-red);
     margin-bottom: 0.8rem;
+    font-weight: bold;
 }
+
 .role small {
     display: block;
     color: var(--retro-purple);
     margin-top: 0.5rem;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
 }
 
-em{
-    color: var(--retro-pink);
+em {
+    color: var(--retro-purple);
     font-style: normal;
     display: block;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(163, 76, 250, 0.1);
+    border-left: 4px solid var(--retro-purple);
 }
-.consiglio{
+
+.consiglio {
     color: var(--retro-red);
     display: inline;
+    font-weight: bold;
 }
 
 /* FOOTER */
 footer {
-  background-color: var(--retro-red);
-  color: var(--retro-fg);
-  padding: 1.5rem;
-  text-align: center;
-  border-top: 3px solid var(--retro-fg);
+    background: linear-gradient(45deg, var(--retro-red), #FF6B6B);
+    color: var(--retro-fg);
+    padding: 3rem 2rem;
+    text-align: center;
+    border-top: 4px solid var(--retro-fg);
+    position: relative;
 }
 
 .footer-logo h2 {
-  font-size: 1rem;
-  letter-spacing: 1px;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 0px var(--retro-shadow);
 }
