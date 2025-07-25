@@ -2,11 +2,11 @@
 
 :root {
     --bianco-crema: #fffcdd;
-
-      /* Base colors */
+    
+    /* Base colors */
     --retro-bg: #FFFFB5;           /* Giallo pastello - sfondo */
     --retro-fg: #000000;           /* Nero - testo/bordi */
-
+    
     /* Accent colors */
     --retro-red: #FF4C4C;          /* Rosso acceso */
     --retro-blue: #4C9EFF;         /* Blu acceso */
@@ -14,10 +14,11 @@
     --retro-pink: #ff55c9;         /* Rosa pastello */
     --retro-purple: #a34cfa;       /* Viola pastello */
     --retro-orange: #FFB347;       /* Arancione retrò */
-
+    
     /* Element highlights */
     --retro-highlight: #FFEB3B;    /* Giallo evidenziato */
     --retro-shadow: #606060;       /* Ombra stile NES */
+    --hero-blue: #00A8C6;          /* Hero color */
 }
 
 * {
@@ -29,7 +30,7 @@
 body {
     font-family: 'Press Start 2P', cursive;
     background-color: var(--retro-blue);
-    color: var(--retro-dark);
+    color: var(--retro-fg);
     line-height: 1.6;
 
     display: flex;
@@ -43,7 +44,6 @@ header {
     background-color: var(--retro-bg);
     padding: 1.5rem;
     border-bottom: 3px solid var(--retro-fg);
-    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.225);
     position: relative;
     z-index: 10;
     padding: 1rem;
@@ -68,82 +68,104 @@ nav a {
     color: var(--retro-fg);
     background-color: var(--retro-red);
     padding: 0.5rem 1.2rem;
-    border: 3px solid #000;
-    transition: all 0.2s ease;
-    box-shadow:  0px 3px 5px rgba(0, 0, 0, 0.225);
+
+    border: 3px solid var(--retro-fg);
+    border-left: 6px solid #693027;
+    border-top: 6px solid #693027;
+    border-right: 3px solid #391a15;
+    border-bottom: 3px solid #391a15;
+    box-shadow: 4px 4px 0px #391a15;
+    
+    transition: all 0.1s ease-in-out;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 nav a:hover {
-  background-color: var(--retro-highlight);
-  transform: scale(1.1)
+    color: #ffa200;
+    background-color: var(--retro-highlight);
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px #000;
 }
 
 main{
+    flex: 1;
     display: flex;
     flex-direction: column;
-
     justify-content: center;
     align-items: center;
     margin: 2.3rem;
 }
+
 /* MAIN */
 .main-content {
     max-width: 600px;
-    margin: 2rem auto;
-    background-color: var(--bianco-crema);
-    padding: 2rem;
-    border: 2px solid var(--retro-fg);
-    box-shadow:  4px 3px 5px rgba(0, 0, 0, 0.225);
+    background: linear-gradient(135deg, var(--bianco-crema) 0%, #fff 100%);
+    padding: 3rem;
+    border: 4px solid var(--retro-fg);
+    box-shadow: 
+        8px 8px 0px var(--retro-shadow),
+        0px 0px 20px rgba(0, 0, 0, 0.2);
     z-index: 100;
 }
 
 .login-header h1 {
-    font-size: 1rem;
+    font-size: 1.3rem;
     margin-bottom: 1rem;
     color: var(--retro-red);
+    text-align: center;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
 }
 
 .login-header p {
-    font-size: 0.7rem;
-    margin-bottom: 2rem;
-    color: var(--retro-orange);
+    font-size: 0.85rem;
+    margin-bottom: 2.5rem;
+    color: var(--retro-blue);
+    text-align: center;
 }
 
 .login-form .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.6rem;
 }
 
 label {
     display: block;
     font-size: 0.7rem;
     margin-bottom: 0.3rem;
-    color: var(--retro-blue)
+    color: var(--retro-blue);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-input{
+input {
     width: 100%;
-    padding: 0.5rem;
-    border: 2px solid var(--retro-border);
-    background-color: var(--bianco-crema);
+    padding: 0.6rem;
+    border: 3px solid var(--retro-fg);
+    background: linear-gradient(135deg, var(--bianco-crema) 0%, #fff 100%);
     font-family: 'Press Start 2P', cursive;
     font-size: 0.7rem;
-    border: 1.5px solid var(--retro-fg);
-
+    transition: all 0.3s ease;
+    position: relative;
 }
 
-input:focus{
-    border: 1.5px solid var(--retro-blue);
+input:focus {
+    border: 3px solid var(--retro-blue);
     outline: none;
+    transform: scale(1.02);
+}
+
+input::placeholder {
+    color: var(--retro-shadow);
+    opacity: 0.5;
 }
 
 .form-actions {
     margin-top: 1rem;
     text-align: center;
 }
-
+/*
 #accedi-btn {
     font-family: 'Press Start 2P', cursive;
     background-color: var(--retro-red);
@@ -159,17 +181,60 @@ input:focus{
 #accedi-btn:hover {
     background-color: var(--retro-highlight);
 }
+*/
+#accedi-btn {
+    font-family: 'Press Start 2P', cursive;
+    background-color: var(--retro-red);
+    color: var(--retro-fg);
+    padding: 0.8rem 1.5rem;
+    border: 3px solid var(--retro-fg);
+    box-shadow: 4px 4px 0px var(--retro-shadow);
+    cursor: pointer;
+    font-size: 0.7rem;
+    transition: all 0.1s ease-in-out;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#accedi-btn:hover {
+    background: var(--retro-highlight);
+    color: #ffa200;
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px var(--retro-shadow);
+}
 
 .register-group {
     text-align: center;
     font-size: 0.6rem;
-    margin-top: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.2rem;
+    border-top: 1px var(--retro-blue);
 }
 
 .register-group a {
     color: var(--retro-blue);
-   
     text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.register-group a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--retro-blue);
+    transition: width 0.3s ease;
+}
+
+.register-group a:hover::after {
+    width: 100%;
+}
+
+.register-group a:hover {
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
 }
 
 #msg-error {
@@ -179,16 +244,35 @@ input:focus{
     margin-top: 1rem;
 }
 
+/*
+#error-wrapper {
+    margin-top: 1.5rem;
+}
+
+#msg-error {
+    color: var(--retro-red);
+    font-size: 0.6rem;
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255, 76, 76, 0.1);
+    border: 2px solid var(--retro-red);
+    border-radius: 4px;
+}
+*/
+
 /* FOOTER */
 footer {
-  background-color: var(--retro-bg);
-  color: var(--retro-fg);
-  padding: 1.5rem;
-  text-align: center;
-  border-top: 3px solid var(--retro-fg);
+    background-color: var(--retro-bg);
+    color: var(--retro-fg);
+    padding: 3rem 2rem;
+    text-align: center;
+    border-top: 4px solid var(--retro-fg);
+    position: relative;
 }
 
 .footer-logo h2 {
-  font-size: 1rem;
-  letter-spacing: 1px;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 0px var(--retro-shadow);
 }
