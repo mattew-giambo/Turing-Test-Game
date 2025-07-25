@@ -9,7 +9,7 @@
         <title>Accesso | The Imitation Game</title>
     
         <!-- CSS -->
-
+        <link rel="stylesheet" href="register.css">
         <!-- JavaScript -->
 
     </head>
@@ -28,45 +28,49 @@
         </header>
     
         <!-- Main -->
-        <main  class="main-content">
-            <div class="registration-container">
-                <div class="registration-header">
-                    <h1>Inserisci i tuoi dati</h1>
-                    <p>La partita tra uomo e intelligenza artificiale sta per iniziare, e l’umanità ha bisogno di un nuovo giocatore.</p>
+        <main>
+            <section  class="main-content">
+                <div class="registration-container">
+                    <div class="registration-header">
+                        <h1>Inserisci i tuoi dati</h1>
+                        <p>La lotta tra uomo e intelligenza artificiale sta per iniziare, e l’umanità ha bisogno di un nuovo giocatore.</p>
+                    </div>
+
+                    <!-- Form di registrazione -->
+                    <div class="form-wrapper">
+                        <form id="registration-form" class="registration-form" method="post" enctype="multipart/form-data">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input type="text" id="username" name="username" maxlength="30" placeholder="Inserisci il tuo username">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" id="email" name="email" placeholder="example@email.com" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" id="password" name="password" placeholder="Inserisci la password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="conferma_password">Conferma Password</label>
+                                    <input type="password" id="conferma_password" name="conferma_password" placeholder="Conferma la password" required>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Inizia Subito</button>
+                                <!--<button type="reset" class="btn-secondary">Reset</button>-->
+                            </div>
+
+                            <!-- Contenitore per eventuali messaggi di errore -->
+                            <div id="error-wrapper">
+                                <p class="errore-messaggio" id="msg-error"></p>
+                            </div>
+                        </form>
+                    </div>            
                 </div>
-
-                <!-- Form di registrazione -->
-                <form id="registration-form" class="registration-form" method="post" enctype="multipart/form-data">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="username">Username</label>
-                            <input type="text" id="username" name="username" maxlength="30" placeholder="Inserisci il tuo username">
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" placeholder="example@email.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" id="password" name="password" placeholder="Inserisci la password" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="conferma_password">Conferma Password</label>
-                            <input type="password" id="conferma_password" name="conferma_password" placeholder="Conferma la password" required>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn-primary">Inizia Subito</button>
-                        <button type="reset" class="btn-secondary">Reset</button>
-                    </div>
-
-                    <!-- Contenitore per eventuali messaggi di errore -->
-                    <div id="error-wrapper">
-                        <p class="errore-messaggio" id="msg-error"></p>
-                    </div>
-                </form>            
-            </div>
+            </section>
         </main>
 
         <!-- Footer -->

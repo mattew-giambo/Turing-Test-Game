@@ -9,7 +9,7 @@
         <title>Ruolo | The Imitation Game</title>
     
         <!-- CSS -->
-
+        <link rel="stylesheet" href="profilo.css">
         <!-- JavaScript -->
 
     </head>
@@ -23,8 +23,8 @@
 
                 <nav id="nav"> 
                     <ul>
-                        <li> <a href="/profilo">Avvia una partita</a> </li>
-                        <li> <a href="/">Esci</a> </li>
+                        <li> <a href="/">Avvia una partita</a> </li>
+                        <li> <a href="/" id="btn-esci">Esci</a> </li>
                     </ul>
                 </nav>
             </div>
@@ -40,7 +40,72 @@
             </section>
 
             <section class="statistiche">
-                <div id="partite-giocate" class="statistiche-gruppo">
+                <div class="statistiche-gruppo-wrapper">
+                    <h2>Generali</h2>
+                    <div class="statistiche-gruppo">
+                        <div id="partite-giocate-tot" class="statistiche-elem">
+                            <h3>Partite giocate Totali</h3>
+                            <p>{{ n_games }}</p>
+                        </div>
+                        <div id="punti-tot" class="statistiche-elem">
+                            <h3>Punti totali</h3>
+                            <p>{{ score_judge }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="statistiche-gruppo-wrapper">
+                    <h2>Partite da Giudice</h2>
+                    <div class="statistiche-gruppo">
+                        <div id="partite-giocate-judge" class="statistiche-elem">
+                            <h3>Partite giocate</h3>
+                            <p>{{ n_games_judge }}</p>
+                        </div>
+                        <div id="partite-vinte-judge" class="statistiche-elem">
+                            <h3>Partite vinte</h3>
+                            <p>{{ won_judge }}</p>
+                        </div>
+                        <div id="partite-perse-judge" class="statistiche-elem">
+                            <h3>Partite perse</h3>
+                            <p>{{ lost_judge }}</p>
+                        </div>
+                        <div id="perc-vittoria-judge" class="statistiche-elem">
+                            <h3>Percentuale di vittoria</h3>
+                            <p>{{ perc_won_judge }}</p>
+                        </div>
+                        <div id="punti-judge" class="statistiche-elem">
+                            <h3>Punti ottenuti</h3>
+                            <p>{{ score_judge }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="statistiche-gruppo-wrapper">
+                    <h2>Partite da Partecipante</h2>
+                    <div class="statistiche-gruppo">
+                        <div id="partite-giocate-part" class="statistiche-elem">
+                            <h3>Partite giocate</h3>
+                            <p>{{ n_games_part }}</p>
+                        </div>
+                        <div id="partite-vinte-part" class="statistiche-elem">
+                            <h3>Partite vinte</h3>
+                            <p>{{ won_part}}</p>
+                        </div>
+                        <div id="partite-perse-part" class="statistiche-elem">
+                            <h3>Partite perse</h3>
+                            <p>{{ lost_part }}</p>
+                        </div>
+                        <div id="perc-vittoria-part" class="statistiche-elem">
+                            <h3>Percentuale di vittoria</h3>
+                            <p>{{ perc_won_part }}</p>
+                        </div>
+                        <div id="punti-part" class="statistiche-elem">
+                            <h3>Punti ottenuti</h3>
+                            <p>{{ score_part }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!--<div id="partite-giocate" class="statistiche-gruppo">
                     <div id="partite-giocate-tot" class="statistiche-elem">
                         <h3>Partite giocate Totali</h3>
                         <p>{{ n_games }}</p>
@@ -54,27 +119,40 @@
                         <p>{{ n_games_part }}</p>
                     </div>
                 </div>
-                <div id="partite-vinte" class="statistiche-gruppo">
+                <div id="partite-judge" class="statistiche-gruppo">
                     <div id="partite-vinte-judge" class="statistiche-elem">
                         <h3>Partite vinte da Giudice</h3>
                         <p>{{ won_judge }}</p>
                     </div>
-                    <div id="partite-vinte-part" class="statistiche-elem">
-                        <h3>Partite vinte da Partecipante</h3>
-                        <p>{{ won_part }}</p>
-                    </div>
-                </div>
-                <div id="partite-perse" class="statistiche-gruppo">
                     <div id="partite-perse-judge" class="statistiche-elem">
                         <h3>Partite perse da Giudice</h3>
                         <p>{{ lost_judge }}</p>
+                    </div>
+                    <div id="perc-vittoria-judge" class="statistiche-elem">
+                        <h3>Percentuale di vittoria da Giudice</h3>
+                        <p>{{ perc_won_judge }}</p>
+                    </div>
+                </div>
+                <div id="partite-part" class="statistiche-gruppo">
+                    <div id="partite-vinte-part" class="statistiche-elem">
+                        <h3>Partite vinte da Partecipante</h3>
+                        <p>{{ won_part }}</p>
                     </div>
                     <div id="partite-perse-part" class="statistiche-elem">
                         <h3>Partite perse da Partecipante</h3>
                         <p>{{ lost_part }}</p>
                     </div>
+                    <div id="perc-vittoria-part" class="statistiche-elem">
+                        <h3>Percentuale di vittoria da Partecipante</h3>
+                        <p>{{ perc_won_part }}</p>
+                    </div>
                 </div>
                 <div id="punti" class="statistiche-gruppo">
+                    <div id="punti-tot" class="statistiche-elem">
+                        <h3>Punti totali</h3>
+                        <p>{{ score_judge }}</p>
+                    </div>
+
                     <div id="punti-judge" class="statistiche-elem">
                         <h3>Punti ottenuti da Giudice</h3>
                         <p>{{ score_judge }}</p>
@@ -83,10 +161,11 @@
                         <h3>Punti ottenuti da Partecipante</h3>
                         <p>{{ score_part }}</p>
                     </div>
-                </div>
+                </div>-->
             </section>
 
             <section class="partite-giocate">
+                <h1>Partite giocate</h1>
                 <table>
                     <thead>
                         <tr>
