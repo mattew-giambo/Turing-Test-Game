@@ -1,23 +1,12 @@
-from fastapi import FastAPI, Request, HTTPException, Form
+from fastapi import FastAPI, Request, Form
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 import os
-import requests
 import asyncio
 from models.player_info import PlayerInfo
-from models.confirm_game import ConfirmGame
-from models.game_info import GameInfoInput, GameInfoOutput
-from models.judge_game import JudgeGameInput, JudgeGameOutput, JudgeGameAnswer, EndJudgeGameOutput
-from models.user_stats import UserStats
-from models.user_games import UserGames
-from models.user_info import UserInfo
-from models.participant_game import ParticipantGameOutput, AnswerInput, ResponseSubmit
-from models.pending_game import GameReviewOutput, JudgeGameAnswer, EndPendingGame
-from config.constants import API_BASE_URL
+from models.judge_game import JudgeGameAnswer
+from models.pending_game import JudgeGameAnswer
 from typing import *
-from urllib.parse import urljoin
-from models.disconnect_response import DisconnectResponse
 
 from endpoints.start_game import start_game
 from endpoints.get_judge_game import get_judge_game
@@ -37,6 +26,7 @@ from utility.rimuovi_sessioni_scadute import rimuovi_sessioni_scadute
 
 app = FastAPI()
 BASE_DIR = os.path.dirname(__file__)
+
 # MIDDLEWARE PER LA GESTIONE DEI FILE STATICI
 templates = Jinja2Templates(directory= os.path.join(BASE_DIR, "../public/templates"))
 

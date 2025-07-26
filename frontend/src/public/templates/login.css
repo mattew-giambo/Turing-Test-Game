@@ -161,23 +161,7 @@ input::placeholder {
     margin-top: 1rem;
     text-align: center;
 }
-/*
-#accedi-btn {
-    font-family: 'Press Start 2P', cursive;
-    background-color: var(--retro-red);
-    color: var(--retro-fg);
-    padding: 0.6rem 1.2rem;
-    border: 2px solid var(--retro-fg);
 
-    box-shadow:  4px 3px 5px rgba(0, 0, 0, 0.225);
-    cursor: pointer;
-    font-size: 0.7rem;
-}
-
-#accedi-btn:hover {
-    background-color: var(--retro-highlight);
-}
-*/
 #accedi-btn {
     font-family: 'Press Start 2P', cursive;
     background-color: var(--retro-red);

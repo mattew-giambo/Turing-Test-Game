@@ -2,7 +2,6 @@ from fastapi import Request, HTTPException
 import requests
 from models.authentication import UserRegister, RegisterResponse
 from typing import Dict
-from datetime import datetime
 
 def user_register(user_name: str, email: str, password: str, request: Request) -> RegisterResponse:
     user_cred = UserRegister(user_name= user_name, email= email, password= password)
