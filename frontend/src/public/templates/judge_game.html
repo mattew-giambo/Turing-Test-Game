@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Imitation Game - Giudice</title>
+
+    <link rel="stylesheet" href="judge_game.css">
 </head>
 <body>
     <header>
@@ -12,6 +14,7 @@
                     <h2>The Imitation Game</h2>
                 </div>
             </div>
+    </header>
     <main>
         <section class="partita-section">
             <form>
@@ -32,26 +35,41 @@
         </section>
 
         <section class="sessione-section"> <!-- Default invisibile, contiene il recap della sessione -->
-            <div>
-                <div>
-                    <div">
-                    <label for="sessione-domanda-1">Domanda 1:</label>
-                    <p id="sessione-domanda-1"></p>
+
+            <div class="sessione-section-text">
+                <p>Il momento della verità è arrivato. Osserva bene le relative risposte alle domande e annuncia il tuo verdetto!</p>
+            </div>
+
+            <div class="domande-risposte">
+                <div class="domande-risposte-elem">
+                    <div class="label-domanda">
+                        <label for="sessione-domanda-1">Domanda 1:</label>
+                        <p class="sessione-domanda" id="sessione-domanda-1">Domanda 1</p>
+                    </div>
+                    <p class="sessione-risposta" id="sessione-risposta-1">Risposta 1</p>
                 </div>
-                <div">
-                    <label for="sessione-domanda-2">Domanda 2:</label>
-                    <p id="sessione-domanda-2"></p>
+                <div class="domande-risposte-elem">
+                    <div class="label-domanda">
+                        <label for="sessione-domanda-2">Domanda 2:</label>
+                        <p class="sessione-domanda" id="sessione-domanda-2">Domanda 2</p>
+                    </div>
+                    <p class="sessione-risposta" id="sessione-risposta-2">Risposta 2</p>
                 </div>
-                <div">
-                    <label for="sessione-domanda-3">Domanda 3:</label>
-                    <p id="sessione-domanda-3"></p>
+                <div class="domande-risposte-elem">
+                    <div class="label-domanda">
+                        <label for="sessione-domanda-3">Domanda 3:</label>
+                        <p class="sessione-domanda" id="sessione-domanda-3">Domanda 3</p>
+                    </div> 
+                    <p class="sessione-risposta" id="sessione-risposta-3">Risposta 3</p>
                 </div>
             </div>
 
-            <div>
-                <p>È il momento della verità. Ora annuncia il tuo verdetto!</p>
+            <div class="sessione-section-text">
+                <p>Secondo te si tratta di un umano oppure una macchina?</p>
             </div>
+
             <div>
+                <!--Pulsanti da sostituire con le immagini di un umano e robot-->
                 <button>Umano</button>
                 <button>Macchina</button>
             </div>

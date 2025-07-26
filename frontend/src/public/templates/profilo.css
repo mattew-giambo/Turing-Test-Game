@@ -14,7 +14,8 @@
     --retro-pink: #ff55c9;         /* Rosa pastello */
     --retro-purple: #a34cfa;       /* Viola pastello */
     --retro-orange: #FFB347;       /* Arancione retrò */
-    
+     --retro-shadow: #391a15;
+     
     /* Element highlights */
     --retro-highlight: #FFEB3B;    /* Giallo evidenziato */
     --retro-shadow: #606060;       /* Ombra stile NES */
@@ -77,16 +78,13 @@ nav a {
     
     transition: all 0.1s ease-in-out;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 nav a:hover {
     color: var(--retro-fg);
     background-color: var(--retro-green);
     transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0px #000;
+    box-shadow: 1px 1px 0px var(--retro-shadow);
 }
 
 #btn-esci{
@@ -131,7 +129,9 @@ nav a:hover {
     justify-content: center;
     align-items: center;
     gap: 2rem;
-    margin-bottom: 2rem;
+    width: 100%;
+    border-bottom: 3px dashed var(--retro-fg);
+    padding-bottom: 4rem;
     width: 100%;
 }
 
@@ -182,17 +182,36 @@ nav a:hover {
 .partite-giocate {
     width: 100%;
     max-width: 800px;
-    margin-top: 4rem;
+    margin-top: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+.partite-giocate h1{
+    margin-bottom: 2rem;
+    color: var(--retro-purple);
+    text-shadow: 2px 2px var(--retro-pink);
+}
+
+.table-wrapper{
+    max-height: 40rem;
+    overflow-y: auto;
+    border: 2px solid var(--retro-fg);
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     background-color: var(--bianco-crema);
+    box-shadow: 4px 4px 0px #391a15;
+}
+
+table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border: 2px solid var(--retro-fg);
 }
 
 td {

@@ -166,38 +166,44 @@
 
             <section class="partite-giocate">
                 <h1>Partite giocate</h1>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Game ID</th>
-                            <th>Data</th>
-                            <th>Ruolo</th>
-                            <th>Stato</th>
-                            <th>Punti</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for game in user_games %}
-                        <tr>
-                            <td>{{ game.game_id }}</td>
-                            <td>{{ game.data }}</td>
-                            <td>{{ game.player_role }}</td>
-                            <td>
-                                {% if game.terminated == 0 %}
-                                    {% if game.is_won == 1 %}
-                                        Vinta
-                                    {% else %}
-                                        Persa
-                                    {% endif %}
-                                {% else %}
-                                    In attesa
-                                {% endif %}
-                            </td>
-                            <td>{{ game.points }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div class="table-wrapper">
+                        <table>
+                        <thead>
+                            <tr>
+                                <th>Game ID</th>
+                                <th>Data</th>
+                                <th>Ruolo</th>
+                                <th>Stato</th>
+                                <th>Punti</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if user_games %}
+                                {% for game in user_games %}
+                                <tr>
+                                    <td>{{ game.game_id }}</td>
+                                    <td>{{ game.data }}</td>
+                                    <td>{{ game.player_role }}</td>
+                                    <td>
+                                        {% if game.terminated == 0 %}
+                                            {% if game.is_won == 1 %}
+                                                Vinta
+                                            {% else %}
+                                                Persa
+                                            {% endif %}
+                                        {% else %}
+                                            In attesa
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ game.points }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>Non sono presenti partite recenti</tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
         </main>
