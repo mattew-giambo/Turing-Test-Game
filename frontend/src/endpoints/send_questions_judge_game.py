@@ -4,9 +4,10 @@ import requests
 from models.judge_game import JudgeGameInput, JudgeGameOutput
 from config.constants import API_BASE_URL
 from typing import *
+import asyncio
 from urllib.parse import urljoin
 
-def send_questions_judge_game(game_id: int, request: Request, question1: str, question2: str, question3: str):
+async def send_questions_judge_game(game_id: int, request: Request, question1: str, question2: str, question3: str):
     try:
         payload = JudgeGameInput(questions_list= [question1, question2, question3])
         response = requests.post(urljoin(API_BASE_URL, f"/judge-game-api/{game_id}"), json= payload.model_dump())
@@ -18,4 +19,5 @@ def send_questions_judge_game(game_id: int, request: Request, question1: str, qu
             detail= error_data.get("detail", "Errore sconosciuto")
         )
 
+    asyncio.sleep(60) # wait di 60s
     return JudgeGameOutput.model_validate(response.json())

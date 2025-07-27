@@ -6,10 +6,10 @@
         <meta name="author" content="Matteo Giamberardini & Ilaria Casolino" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-        <title>Ruolo | The Imitation Game</title>
+        <title>The Imitation Game | Avvia Partita</title>
     
         <!-- CSS -->
-
+        <link rel="stylesheet" href="start_game.css">
         <!-- JavaScript -->
 
     </head>
@@ -17,34 +17,42 @@
         <!-- Header -->
         <header>
             <div class="header-container">
-                <div class="logo"></div>
+                <div class="logo">
+                    The Imitation Game
+                </div>
 
                 <nav id="nav"> 
                     <ul>
                         <li> <a href="/profilo">Profilo e statistiche</a> </li>
-                        <li> <a href="/login">Esci</a> </li>
+                        <li> <a href="/login" id="btn-esci">Esci</a> </li>
                     </ul>
                 </nav>
             </div>
         </header>
     
         <!-- Main -->
-        <main  class="main-content">
-            <!-- Hero Section -->
-            <section class="hero">
-                <div class="hero-text">
-                    <h1>Giudica o fatti giudicare. Scegli il tuo destino.</h1>
-                    
+        <main >
+            <section class="main-content">
+                <!-- Hero Section -->
+                <section class="hero">                    
                     <!-- Bottoni che verranno sostituiti con Modalità classica o verdetto se si preme "Giudice" -->
-                    <button>Giudice</button>
-                    <button>Partecipante</button>
-                </div>
-            </section>
+                    <div class="ruolo-div">
+                        <h1>Giudica o fatti giudicare. Scegli il tuo destino.</h1>
+                        <div class="btn-wrapper">  
+                            <button class="btn-ruolo">Giudice</button>
+                            <button class="btn-ruolo">Partecipante</button>
+                        </div>
+                    </div>
+                    <div class="judge-game"> <!-- Default invisibile -->
+                        <h1> Scegli la modalità </h2>
+                        <div class="btn-wrapper">
+                            <button class="btn-mod">Modalità Classica</button>
+                            <button class="btn-mod">Modalità Verdetto</button>
+                        </div>
+                    </div>
+                </section>
 
-            <section class="judge-game" style="display: none;"> <!-- Default invisibile -->
-                    <h2> Scegli la modalità </h2>
-                    <button>Modalità Classica</button>
-                    <button>Modalità Verdetto</button>
+                
             </section>
         </main>
 
