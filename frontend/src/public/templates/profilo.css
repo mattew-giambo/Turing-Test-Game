@@ -84,7 +84,7 @@ nav a:hover {
     color: var(--retro-fg);
     background-color: var(--retro-green);
     transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0px var(--retro-shadow);
+    box-shadow: 1px 1px 0px #000;
 }
 
 #btn-esci{
@@ -94,6 +94,8 @@ nav a:hover {
 #btn-esci:hover{
     color: #ffa200;
     background-color: var(--retro-highlight);
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px #000;
 }
 
 
