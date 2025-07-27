@@ -8,9 +8,10 @@ from typing import *
 from utility.get_user_stats import get_user_stats
 from utility.get_user_info import get_user_info
 from utility.get_user_games import get_user_games
+from utility.verify_user_token import verify_user_token
 
-def get_profilo(user_id: int, request: Request, templates: Jinja2Templates, sessioni_attive: Dict[int, Dict[str, str]]):
-    if user_id not in sessioni_attive.keys():
+def get_profilo(user_id: int, token: str, request: Request, templates: Jinja2Templates, sessioni_attive: Dict[int, Dict[str, str]]):
+    if not verify_user_token(user_id, token, sessioni_attive):
         return templates.TemplateResponse(
             "login.html", {"request": request}
         )
@@ -27,6 +28,7 @@ def get_profilo(user_id: int, request: Request, templates: Jinja2Templates, sess
 
     return templates.TemplateResponse(
         "profilo.html",{
+            "user_id": user_id,
             "username": user_info.user_name,
             "email": user_info.email,
             "n_games": user_stats.n_games,
@@ -38,6 +40,7 @@ def get_profilo(user_id: int, request: Request, templates: Jinja2Templates, sess
             "won_judge": user_stats.won_judge,
             "lost_part": user_stats.lost_part,
             "lost_judge": user_stats.lost_judge,
-            "user_games": user_games.user_games
+            "user_games": user_games.user_games,
+            "request": request
         }
     )

@@ -224,6 +224,7 @@ input::placeholder {
     font-size: 0.6rem;
     text-align: left;
     margin-top: 1rem;
+    display: none;
 }
 
 /*

@@ -6,6 +6,7 @@ import asyncio
 from models.player_info import PlayerInfo
 from models.judge_game import JudgeGameAnswer
 from models.pending_game import JudgeGameAnswer
+from models.authentication import UserLogin
 from typing import *
 
 from endpoints.start_game import start_game
@@ -23,6 +24,7 @@ from endpoints.get_profilo import get_profilo
 from endpoints.user_register import user_register
 
 from utility.rimuovi_sessioni_scadute import rimuovi_sessioni_scadute
+from utility.verify_user_token import verify_user_token
 
 app = FastAPI()
 BASE_DIR = os.path.dirname(__file__)
@@ -57,17 +59,17 @@ def get_register_page(request: Request):
     )
 
 @app.post("/login")
-def login_endpoint(request: Request, email: str = Form(...), password: str = Form(...)):
-    return user_login(email, password, request, sessioni_attive)
+def login_endpoint(request: Request, user: UserLogin):
+    return user_login(user, request, sessioni_attive)
 
 @app.post("/register")
 def register_endpoint(request: Request, user_name:str = Form(...), email: str = Form(...), password: str = Form(...)):
     return user_register(user_name, email, password, request)
 
-# start_game.html, contiene la schermata con AVVIA PARTITA GIUDICE PARTECIPANTE
+# start_game.html, contiene la schermata con AVVIA PARTITA GIUDICE PARTECIPANTE, token è query param
 @app.get("/start-game/{user_id}")
-def get_start_game_page(request: Request, user_id: int):
-    if user_id in sessioni_attive.keys():
+def get_start_game_page(request: Request, user_id: int, token: str):
+    if verify_user_token(user_id, token, sessioni_attive):
         return templates.TemplateResponse(
             "start_game.html", {"request": request}
         )
@@ -81,10 +83,10 @@ def get_start_game_page(request: Request, user_id: int):
 def start_game_endpoint(payload: PlayerInfo, request: Request):
     return start_game(payload, request)
 
-# player_id è query param /game/{game_id}?player_id={}
+# player_id è query param /game/{game_id}?player_id={}, token={}
 @app.get("/judge-game/{game_id}")
-def get_judge_game_endpoint(game_id: int, player_id: int, request: Request):
-    return get_judge_game(game_id, player_id, request, templates, sessioni_attive)
+def get_judge_game_endpoint(game_id: int, player_id: int, token: str, request: Request):
+    return get_judge_game(game_id, player_id, token, request, templates, sessioni_attive)
 
 @app.post("/send-questions-judge-game/{game_id}")
 async def send_questions_judge_game_endpoint(game_id: int, request: Request, question1: str = Form(...), question2: str = Form(...), question3: str = Form(...)):
@@ -95,8 +97,8 @@ def send_judge_answer_endpoint(game_id: int, request: Request, payload: JudgeGam
     return send_judge_answer(game_id, request, payload, templates)
 
 @app.get("/participant-game/{game_id}")
-def get_participant_game_endpoint(game_id: int, player_id: int, request: Request):
-    return get_participant_game(game_id, player_id, request, templates, sessioni_attive)
+def get_participant_game_endpoint(game_id: int, player_id: int, token: str, request: Request):
+    return get_participant_game(game_id, player_id, token, request, templates, sessioni_attive)
 
 @app.post("/send-answers-participant-game/{game_id}")
 def send_answers_participant_game_endpoint(game_id: int, request: Request, answer1: str = Form(...), answer2: str = Form(...), answer3: str = Form(...)):
@@ -107,8 +109,8 @@ def start_pending_game_endpoint(player_id: int, request: Request):
     return start_pending_game(player_id, request)
 
 @app.get("/verdict-game/{game_id}")
-def get_verdict_game_endpoint(game_id: int, player_id: int, request: Request):
-    return get_verdict_game(game_id, player_id, request, templates, sessioni_attive)
+def get_verdict_game_endpoint(game_id: int, player_id: int, token: str, request: Request):
+    return get_verdict_game(game_id, player_id, token, request, templates, sessioni_attive)
 
 @app.post("/send-pending-verdict/{game_id}")
 def send_pending_verdict_endpoint(game_id: int, request: Request, payload: JudgeGameAnswer):
@@ -116,8 +118,8 @@ def send_pending_verdict_endpoint(game_id: int, request: Request, payload: Judge
 
 # USER 
 @app.get("/profilo/{user_id}")
-def get_profilo_endpoint(user_id: int, request: Request):
-    return get_profilo(user_id, request, sessioni_attive)
+def get_profilo_endpoint(user_id: int, token: str, request: Request):
+    return get_profilo(user_id, token, request, sessioni_attive)
 
 @app.post("/user-disconnect/{user_id}")
 def user_disconnect_endpoint(user_id: int):

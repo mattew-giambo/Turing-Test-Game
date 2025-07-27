@@ -29,24 +29,24 @@ def login_api(user: UserLogin) -> LoginResponse:
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        query: str = "SELECT id, user_name, hashed_password FROM Users WHERE email = %s"
-        cursor.execute(query, (user.email,))
+        query: str = "SELECT id, email, hashed_password FROM Users WHERE user_name = %s"
+        cursor.execute(query, (user.username,))
         result: Optional[Tuple[int, str, str]] = cursor.fetchone()
 
         if not result:
             raise HTTPException(status_code=404, detail="Utente non trovato")
 
         user_id: int = result[0]
-        user_name: str = result[1]
+        email: str = result[1]
         hashed_password: str = result[2]
 
         if not verify_password(user.password, hashed_password):
             raise HTTPException(status_code=401, detail="Password errata")
 
         return LoginResponse(
-            message="ok",
-            user_id=user_id,
-            user_name=user_name
+            user_id= user_id,
+            user_name= user.username,
+            email= email
         )
 
     except mariadb.Error:

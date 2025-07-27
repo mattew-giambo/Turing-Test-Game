@@ -10,8 +10,9 @@
     
         <!-- CSS -->
         <link rel="stylesheet" href="profilo.css">
-        <!-- JavaScript -->
 
+        <!-- JavaScript -->
+        <script src="profilo.js" defer></script>
     </head>
     <body>
         <!-- Header -->
@@ -23,7 +24,7 @@
 
                 <nav id="nav"> 
                     <ul>
-                        <li> <a href="/">Avvia una partita</a> </li>
+                        <li> <a href="/start_game/{{ user_id }}" id="start-game-btn">Avvia una partita</a> </li>
                         <li> <a href="/" id="btn-esci">Esci</a> </li>
                     </ul>
                 </nav>

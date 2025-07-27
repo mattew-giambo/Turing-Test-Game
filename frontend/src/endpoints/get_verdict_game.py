@@ -6,9 +6,10 @@ from models.game_info import GameInfoInput, GameInfoOutput
 from models.pending_game import GameReviewOutput
 from config.constants import API_BASE_URL
 from typing import Dict
+from utility.verify_user_token import verify_user_token
 
-def get_verdict_game(game_id: int, player_id: int, request: Request, templates: Jinja2Templates, sessioni_attive: Dict[int, Dict[str, str]]):
-    if player_id not in sessioni_attive.keys():
+def get_verdict_game(game_id: int, player_id: int, player_token: str, request: Request, templates: Jinja2Templates, sessioni_attive: Dict[int, Dict[str, str]]):
+    if not verify_user_token(player_id, player_token, sessioni_attive):
         return templates.TemplateResponse(
             "login.html", {"request": request}
         )

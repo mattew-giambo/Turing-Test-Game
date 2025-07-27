@@ -46,7 +46,7 @@ def register_api(user: UserRegister) -> RegisterResponse:
         connection.commit()
 
 
-        return RegisterResponse(message="ok", user_id=user_id)
+        return RegisterResponse(user_id=user_id)
     
     except mariadb.Error as e:
         connection.rollback()
