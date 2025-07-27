@@ -21,11 +21,10 @@
                 {% for question_id, qa in session %}
                     <div class="domande-risposte-elem">
                         <div class="label-domanda">
-                            <label for="sessione-domanda-{{ question_id }}">Domanda {{question_id}}: {{qa.question}}</label>
+                            <label for="sessione-domanda-{{ question_id }}">Domanda {{question_id}}:</label>
+                            <p class="sessione-domanda" id="sessione-domanda-{{ question_id }}">{{qa.question}}</p>
                         </div>
-                        <div class="label-domanda">
-                            <p id="sessione-domanda-{{ question_id }}">{{ qa.answer }}</p>
-                        </div>
+                        <p class="sessione-risposta" id="sessione-risposta--{{ question_id }}">{{ qa.answer }}</p>
                     </div>
                 {% endfor %}
             </div>
