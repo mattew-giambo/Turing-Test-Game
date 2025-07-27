@@ -61,43 +61,11 @@ main {
     padding: 2rem 18rem;
 }
 
-/* Partita Section */
-.partita-section {
-    background: linear-gradient(90deg, var(--bianco-crema) 0%, #fff 100%);
-    padding: 3rem;
-    margin-bottom: 2rem;
-    border: 2px solid var(--retro-fg);
-    box-shadow: 4px 4px 0 var(--retro-shadow);
-}
-
-.form-elem {
-    margin-bottom: 2rem;
-}
-
 label {
     display: block;
     margin-bottom: 0.5rem;
     color: var(--retro-red);
     text-shadow: 1.5px 2px 0 #a34cfad6;
-}
-
-input {
-    width: 100%;
-    padding: 0.75rem;
-    font-family: inherit;
-    font-size: 0.75rem;
-    border: 2px solid var(--retro-fg);
-    background-color: transparent;
-    color: var(--retro-fg);
-    box-shadow: 3px 3px var(--retro-shadow);
-
-    transition: all 0.1s ease-in-out;
-}
-
-input:focus {
-    outline: none;
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0px #000;
 }
 
 button {

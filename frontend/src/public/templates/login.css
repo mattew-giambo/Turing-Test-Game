@@ -139,17 +139,19 @@ input {
     width: 100%;
     padding: 0.6rem;
     border: 3px solid var(--retro-fg);
-    background: linear-gradient(135deg, var(--bianco-crema) 0%, #fff 100%);
+    background-color: transparent;
+    color: var(--retro-fg);
+    box-shadow: 3px 3px var(--retro-shadow);
     font-family: 'Press Start 2P', cursive;
     font-size: 0.7rem;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease-in-out;
     position: relative;
 }
 
 input:focus {
-    border: 3px solid var(--retro-blue);
     outline: none;
-    transform: scale(1.02);
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px #000;
 }
 
 input::placeholder {

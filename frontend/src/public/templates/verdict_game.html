@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Imitation Game - Giudice</title>
+
+    <link rel="stylesheet" href="verdict_game.css">
 </head>
 <body>
     <header>
@@ -12,14 +14,18 @@
                     <h2>The Imitation Game</h2>
                 </div>
             </div>
+    </header>
     <main>
         <section class="sessione-section">
-            <div>
+            <div class="domande-risposte">
                 {% for question_id, qa in session %}
-                    <div>
-                        <div">
-                        <label for="sessione-domanda-{{ question_id }}">Domanda {{question_id}}: {{qa.question}}</label>
-                        <p id="sessione-domanda-{{ question_id }}">{{ qa.answer }}</p>
+                    <div class="domande-risposte-elem">
+                        <div class="label-domanda">
+                            <label for="sessione-domanda-{{ question_id }}">Domanda {{question_id}}: {{qa.question}}</label>
+                        </div>
+                        <div class="label-domanda">
+                            <p id="sessione-domanda-{{ question_id }}">{{ qa.answer }}</p>
+                        </div>
                     </div>
                 {% endfor %}
             </div>

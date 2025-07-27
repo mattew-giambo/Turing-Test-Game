@@ -221,7 +221,7 @@ nav a:hover {
 
 .role small {
     display: block;
-    color: var(--retro-purple);
+    color: var(--retro-blue);
     margin-top: 0.5rem;
     font-size: 0.7rem;
 }
