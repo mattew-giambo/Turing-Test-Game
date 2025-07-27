@@ -71,7 +71,7 @@ def register_endpoint(request: Request, user_name:str = Form(...), email: str = 
 def get_start_game_page(request: Request, user_id: int, token: str):
     if verify_user_token(user_id, token, sessioni_attive):
         return templates.TemplateResponse(
-            "start_game.html", {"request": request}
+            "start_game.html", {"user_id": user_id, "request": request}
         )
     else:
         return templates.TemplateResponse(

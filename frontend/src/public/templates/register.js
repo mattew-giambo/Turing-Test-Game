@@ -42,7 +42,7 @@ document.getElementById("registration-form").addEventListener("submit", async fu
             return;
         }
         
-        window.location.href = "/login";
+        window.location.pathname = "/login";
 
     } catch (error) {
         console.error("Errore nella fetch:", error);
