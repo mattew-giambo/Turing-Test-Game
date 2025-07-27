@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Imitation Game - Giudice</title>
+
+    <link rel="stylesheet" href="participant_game.css">
 </head>
 <body>
     <header>
@@ -12,24 +14,30 @@
                     <h2>The Imitation Game</h2>
                 </div>
             </div>
+    </header>
     <main>
         <section class="partita-section">
-            <form>
+            <form class="participant-form">
                 {% for q in questions %}
                 <div class="form-elem">
-                    <label for="domanda{{ loop.index }}">Domanda {{ loop.index }}: {{ q }}</label>
+                    <div class="label-domanda">
+                        <label for="domanda{{ loop.index }}">Domanda {{ loop.index }}:</label>
+                        <p class="sessione-domanda" id="sessione-domanda-{{ loop.index }}">{{ q }}</p>
+                    </div>
                     <input id="domanda{{ loop.index }}"  placeholder="Inserisci la risposta">
                 </div>
                 {% endfor %}
-                <button type="submit">Invia e attendi il verdetto</button>
+                <div class="btn-form">
+                    <button type="submit">Invia e attendi il verdetto</button>
+                </div>
             </form>
         </section>
     </main>
     <!-- Footer -->
-        <footer>
-            <div class="footer-logo">
-                <h2>The Imitation Game</h2>
-            </div>
-        </footer>
+    <footer>
+        <div class="footer-logo">
+            <h2>The Imitation Game</h2>
+        </div>
+    </footer>
 </body>
 </html>
