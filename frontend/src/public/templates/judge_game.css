@@ -130,6 +130,8 @@ button:hover {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+
+    display: none;
 }
 .sessione-section-text{
     overflow-wrap: break-word;
@@ -176,6 +178,8 @@ button:hover {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+
+    display: none;
 }
 
 .img-container {

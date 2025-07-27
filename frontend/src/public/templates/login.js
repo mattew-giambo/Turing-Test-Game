@@ -20,7 +20,7 @@ document.getElementById("login-form").addEventListener("submit", async(e)=>{
     if(response.ok){
         const url = new URL(`/profilo/${response_data.user_id}`);
         url.searchParams.set("token", `${response_data.token}`);
-        return window.location.href= url;
+        return window.location.pathname= url.toString();
     }
     else{
         msg_error.innerText= response_data.detail;
