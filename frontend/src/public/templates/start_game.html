@@ -11,7 +11,8 @@
         <!-- CSS -->
         <link rel="stylesheet" href="start_game.css">
         <!-- JavaScript -->
-
+         <script src="start_game.js" defer></script>
+        <script src="disconnect_user.js" defer></script>
     </head>
     <body>
         <!-- Header -->
@@ -36,18 +37,18 @@
                 <!-- Hero Section -->
                 <section class="hero">                    
                     <!-- Bottoni che verranno sostituiti con Modalità classica o verdetto se si preme "Giudice" -->
-                    <div class="ruolo-div">
+                    <div class="ruolo-div" id="generic_game">
                         <h1>Giudica o fatti giudicare. Scegli il tuo destino.</h1>
                         <div class="btn-wrapper">  
-                            <button class="btn-ruolo">Giudice</button>
-                            <button class="btn-ruolo">Partecipante</button>
+                            <button class="btn-ruolo" id="judge_btn">Giudice</button>
+                            <button class="btn-ruolo" id="part_btn">Partecipante</button>
                         </div>
                     </div>
-                    <div class="judge-game"> <!-- Default invisibile -->
+                    <div class="judge-game" id="judge_game" style="display: none;"> <!-- Default invisibile -->
                         <h1> Scegli la modalità </h2>
                         <div class="btn-wrapper">
-                            <button class="btn-mod">Modalità Classica</button>
-                            <button class="btn-mod">Modalità Verdetto</button>
+                            <button class="btn-mod" id="classic_mod">Modalità Classica</button>
+                            <button class="btn-mod" id="verdict_mod">Modalità Verdetto</button>
                         </div>
                     </div>
                 </section>

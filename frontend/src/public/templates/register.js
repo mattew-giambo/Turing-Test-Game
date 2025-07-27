@@ -1,4 +1,4 @@
-document.getElementById("registration-form").addEventListener("submit", async function (e) {
+document.getElementById("registration-form").addEventListener("submit", async (e)=>{
     e.preventDefault();
 
     const user_name = document.getElementById("username").value;

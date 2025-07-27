@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+    --bianco-crema: #fffcdd;
+    --retro-bg: #FFFFB5;
+    --retro-fg: #000000;
+    --retro-red: #FF4C4C;
+    --retro-blue: #4C9EFF;
+    --retro-green: #6FFF6F;
+    --retro-pink: #ff55c9;
+    --retro-purple: #a34cfa;
+    --retro-orange: #FFB347;
+    --retro-highlight: #FFEB3B;
+    --retro-shadow: #606060;
+    --hero-blue: #00A8C6;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    background-color: var(--retro-bg);
+    color: var(--retro-fg);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    text-align: center;
+}
+
+/* Sezione principale con sfondo immagine pixel 404 */
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background-color: #ffffff;
+
+    background-image: url('404.PNG');
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    background-size: 400px; /* Adatta la dimensione in base alla tua immagine */
+}
+
+/* Box centrale che contiene il messaggio */
+.section-box {
+    background: var(--bianco-crema);
+    border: 3px solid var(--retro-fg);
+    padding: 2rem;
+    margin-bottom: 10rem;
+    box-shadow: 4px 4px var(--retro-shadow);
+    width: 100%;
+    max-width: 600px;
+    backdrop-filter: blur(4px);
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Contenitore del contenuto 404 */
+.not-found-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.big-404 {
+    font-size: 3rem;
+    color: var(--retro-red);
+    text-shadow: 2px 2px 0 var(--retro-shadow);
+}
+
+.not-found-container p {
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.8;
+}
+
+/* Link stile retrò */
+a {
+    text-decoration: none;
+    color: var(--retro-fg);
+    background-color: var(--retro-red);
+    padding: 0.5rem 1.2rem;
+    border: 3px solid var(--retro-fg);
+    box-shadow: 4px 4px 0px #391a15;
+    transition: all 0.1s ease-in-out;
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 1rem;
+}
+
+a:hover {
+    background-color: var(--retro-highlight);
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px var(--retro-shadow);
+}
