@@ -1,9 +1,9 @@
-DROP DATABASE IF EXISTS turingDB;
-CREATE DATABASE turingDB;
-CREATE OR REPLACE USER 'user_db'@'%' IDENTIFIED BY 'userpassword';
-GRANT ALL PRIVILEGES ON turingDB.* TO 'user_db'@'%';
+DROP DATABASE IF EXISTS turing_db;
+CREATE DATABASE turing_db;
+CREATE OR REPLACE USER 'user_db'@'%' IDENTIFIED BY 'userpw';
+GRANT ALL PRIVILEGES ON turing_db.* TO 'user_db'@'%';
 FLUSH PRIVILEGES;
-USE turingDB;
+USE turing_db;
 
 -- Table: Users
 CREATE TABLE Users (
@@ -29,10 +29,11 @@ CREATE TABLE Stats (
 -- Table: Games
 CREATE TABLE Games (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    date DATE NOT NULL DEFAULT CURRENT_DATE,
-    terminated BOOLEAN DEFAULT FALSE
+    game_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    `terminated`BOOLEAN DEFAULT FALSE
 );
 
+-- Table: UserGames
 CREATE TABLE UserGames(
     game_id INT NOT NULL,
     player_id INT NOT NULL,
@@ -43,7 +44,8 @@ CREATE TABLE UserGames(
     CHECK (player_role IN ('judge', 'participant')),
     FOREIGN KEY(game_id) REFERENCES Games(id) ON DELETE CASCADE,
     FOREIGN KEY(player_id) REFERENCES Users(id) ON DELETE CASCADE
-)
+);
+
 -- Table: Q_A
 CREATE TABLE Q_A (
     game_id INT NOT NULL,
@@ -58,4 +60,4 @@ CREATE TABLE Q_A (
 
 
 INSERT INTO Users(id, user_name, email, hashed_password) VALUES (1, "AI", "--", "--");
-INSERT INTO Stats(id) VALUES (1);
+INSERT INTO Stats(user_id) VALUES (1);
