@@ -1,119 +1,27 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Partita Terminata</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Partita Terminata</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bianco-crema: #fffcdd;
-      --retro-bg: #FFFFB5;
-      --retro-fg: #000000;
-      --retro-red: #FF4C4C;
-      --retro-blue: #4C9EFF;
-      --retro-green: #6FFF6F;
-      --retro-pink: #ff55c9;
-      --retro-purple: #a34cfa;
-      --retro-orange: #FFB347;
-      --retro-highlight: #FFEB3B;
-      --retro-shadow: #606060;
-      --hero-blue: #00A8C6;
-    }
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Press Start 2P', cursive;
-      font-size: 0.8rem;
-      background-color: #ffffff;
-      color: var(--retro-fg);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      text-align: center;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem;
-    }
-
-    .endgame-box {
-      background: var(--bianco-crema);
-      border: 3px solid var(--retro-fg);
-      padding: 2rem;
-      margin-bottom: 15rem;
-      box-shadow: 4px 4px var(--retro-shadow);
-      width: 100%;
-      max-width: 600px;
-      backdrop-filter: blur(4px);
-      background-color: rgba(255, 255, 255, 0.95);
-    }
-
-    .endgame-box h1 {
-      font-size: 2rem;
-      color: var(--retro-red);
-      margin-bottom: 1.5rem;
-      text-shadow: 2px 2px 0 var(--retro-shadow);
-    }
-
-    .endgame-box p {
-      margin-bottom: 2rem;
-      line-height: 1.6;
-      max-width: 480px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    a {
-      text-decoration: none;
-      color: var(--retro-fg);
-      background-color: var(--retro-red);
-      padding: 0.6rem 1.5rem;
-      border: 3px solid var(--retro-fg);
-      box-shadow: 4px 4px 0px #391a15;
-      transition: all 0.1s ease-in-out;
-      cursor: pointer;
-      display: inline-block;
-    }
-
-    a:hover {
-      background-color: var(--retro-highlight);
-      transform: translate(2px, 2px);
-      box-shadow: 1px 1px 0px var(--retro-shadow);
-    }
-
-    #bg-video {
-        position: fixed;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-
-        width: 400px;
-        height: auto;
-
-        z-index: -1;
-        pointer-events: none;
-    }
-
-  </style>
+	<link rel="stylesheet" href="partita_terminata.css">
 </head>
 <body>
-  <video autoplay muted loop playsinline id="bg-video">
-    <source src="terminated.MP4" type="video/mp4">
-    Il tuo browser non supporta il video HTML5.
-  </video>
-
-  <main>
-    <div class="endgame-box">
-        <h1>Partita terminata</h1>
-        <p>Questa partita non è più disponibile perché si è conclusa.</p>
-        <a href="/">Torna alla home</a>
-    </div>
-  </main>
+	<main>
+		<div class="endgame-box">
+			<h1>Partita terminata</h1>
+			<p>Questa partita non è più disponibile perché si è conclusa.</p>
+			<a href="/">Torna alla home</a>
+		</div>
+	</main>
+	<div class="video-wrapper">
+		<video autoplay muted loop playsinline id="bg-video">
+			<source src="terminated.MP4" type="video/mp4">
+			Il tuo browser non supporta il video HTML5.
+		</video>
+	</div>
 </body>
 </html>

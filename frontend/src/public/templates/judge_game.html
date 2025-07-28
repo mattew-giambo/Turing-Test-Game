@@ -6,6 +6,7 @@
     <title>The Imitation Game - Giudice</title>
 
     <link rel="stylesheet" href="judge_game.css">
+    <script src="judge_game.js" defer></script>
 </head>
 <body>
     <header>
@@ -16,8 +17,8 @@
             </div>
     </header>
     <main>
-        <section class="partita-section">
-            <form>
+        <section id="partita-section" class="partita-section">
+            <form id="form-partita">
                 <div class="form-elem">
                     <label for="domanda1">Domanda 1:</label>
                     <input id="domanda1"  placeholder="Inserisci la domanda">
@@ -34,7 +35,7 @@
             </form>
         </section>
 
-        <section class="sessione-section"> <!-- Default invisibile, contiene il recap della sessione -->
+        <section id="sessione-section" class="sessione-section"> <!-- Default invisibile, contiene il recap della sessione -->
 
             <div class="sessione-section-text">
                 <p>Il momento della verità è arrivato. Osserva bene le risposte relative alle domande e annuncia il tuo verdetto!</p>
@@ -70,13 +71,13 @@
 
             <div>
                 <!--Pulsanti da sostituire con le immagini di un umano e robot-->
-                <button>Umano</button>
-                <button>Macchina</button>
+                <button id="umano-btn">Umano</button>
+                <button id="macchina-btn">Macchina</button>
             </div>
 
         </section>
 
-        <section class="partita-terminata-section"> <!-- Default invisibile, mostra al player se ha vinto o meno -->
+        <section id="partita-terminata-section" class="partita-terminata-section"> <!-- Default invisibile, mostra al player se ha vinto o meno -->
             <div id="vittoria-div">
                 <div class="img-container">
                     <img src="assets/victory.png">
@@ -98,7 +99,7 @@
             </div>
 
             <div>
-                <a href="/profilo">Torna al profilo</a>
+                <a id="profilo-btn" href="/profilo/{{ player_id }}">Torna al profilo</a>
             </div>
         </section>
     </main>

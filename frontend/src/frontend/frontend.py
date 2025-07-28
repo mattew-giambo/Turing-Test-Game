@@ -89,7 +89,7 @@ def get_judge_game_endpoint(game_id: int, player_id: int, token: str, request: R
     return get_judge_game(game_id, player_id, token, request, templates, sessioni_attive)
 
 @app.post("/send-questions-judge-game/{game_id}")
-async def send_questions_judge_game_endpoint(game_id: int, request: Request, question1: str = Form(...), question2: str = Form(...), question3: str = Form(...)):
+async def send_questions_judge_game_endpoint(game_id: int, request: Request, question1: str, question2: str, question3: str):
     return await send_questions_judge_game(game_id, request, question1, question2, question3)
 
 @app.post("/send-judge-answer/{game_id}")
