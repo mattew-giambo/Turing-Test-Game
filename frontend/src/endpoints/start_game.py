@@ -1,10 +1,12 @@
 from fastapi import Request, HTTPException
+from fastapi.templating import Jinja2Templates
 import requests
 from models.player_info import PlayerInfo
 from models.confirm_game import ConfirmGame
 from config.constants import API_BASE_URL
 from typing import Dict
 from urllib.parse import urljoin
+from utility.verify_user_token import verify_user_token
 
 def start_game(payload: PlayerInfo, request: Request):
     try:

@@ -81,7 +81,7 @@ def get_start_game_page(request: Request, user_id: int, token: str):
 # Endpoint per gestire l'avvio effettivo della partita classica
 @app.post("/start-game")
 def start_game_endpoint(payload: PlayerInfo, request: Request):
-    return start_game(payload, request)
+    return start_game(payload, templates, sessioni_attive, request)
 
 # player_id è query param /game/{game_id}?player_id={}, token={}
 @app.get("/judge-game/{game_id}")
@@ -106,7 +106,7 @@ def send_answers_participant_game_endpoint(game_id: int, request: Request, answe
 
 @app.post("/start-pending-game")
 def start_pending_game_endpoint(player_id: int, request: Request):
-    return start_pending_game(player_id, request)
+    return start_pending_game(player_id, templates, sessioni_attive, request)
 
 @app.get("/verdict-game/{game_id}")
 def get_verdict_game_endpoint(game_id: int, player_id: int, token: str, request: Request):

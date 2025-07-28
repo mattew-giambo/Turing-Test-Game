@@ -3,11 +3,11 @@ const url = new URL(profilo_stats.href);
 
 const params = new URLSearchParams(window.location.search);
 const token = params.get("token");
+const user_id = window.location.pathname.split("/")[2];
 
+url.searchParams.set("player_id", user_id);
 url.searchParams.set("token", token);
 profilo_stats.href = url.toString();
-
-const user_id = window.location.pathname.split("/")[2];
 
 const judge_btn = document.getElementById("judge_btn");
 const part_btn = document.getElementById("part_btn");
@@ -23,20 +23,100 @@ judge_btn.addEventListener("click", () => {
     judge_game.style.display = "block";
 });
 
-part_btn.addEventListener("click", () => {
-    url = new URL(`/participant-game/${user_id}`, window.location.origin);
-    url.searchParams.set("token", token);
-    window.location.href = url.toString();
+part_btn.addEventListener("click", async () => {
+    try{
+        const data = {
+            player_id: parseInt(user_id),
+            player_role: "participant"
+        };
+
+        const response = await fetch("/start-game", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || "Errore avvio partita");
+        }
+
+        const data_response = await response.json();
+        const game_id = data_response.game_id;
+
+        const newUrl = new URL(`/participant-game/${game_id}`, window.location.origin);
+        newUrl.searchParams.set("player_id", user_id);
+        newUrl.searchParams.set("token", token);
+        window.location.href = newUrl.toString();
+    } catch (error) {
+        alert("Errore: " + error.message);
+        console.error("Errore avvio partita partecipante:", error);
+    }
 });
 
-classic_mod.addEventListener("click", () => {
-    url = new URL(`/judge-game/${user_id}`, window.location.origin);
-    url.searchParams.set("token", token);
-    window.location.href = url.toString();
+classic_mod.addEventListener("click", async () => {
+    try{
+        const data = {
+            player_id: parseInt(user_id),
+            player_role: "judge"
+        };
+
+        const response = await fetch("/start-game", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || "Errore avvio partita");
+        }
+
+        const data_response = await response.json();
+        const game_id = data_response.game_id;
+
+        const newUrl = new URL(`/judge-game/${game_id}`, window.location.origin);
+        newUrl.searchParams.set("player_id", user_id);
+        newUrl.searchParams.set("token", token);
+        window.location.href = newUrl.toString();
+    } catch (error) {
+        alert("Errore: " + error.message);
+        console.error("Errore avvio partita partecipante:", error);
+    }
 });
 
-verdict_mod.addEventListener("click", () => {
-    url = new URL(`/verdict-game/${user_id}`, window.location.origin);
-    url.searchParams.set("token", token);
-    window.location.href = url.toString();
+verdict_mod.addEventListener("click", async () => {
+    try{
+        const data = {
+            player_id: parseInt(user_id)
+        };
+
+        const response = await fetch("/start-pending-game", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || "Errore avvio partita");
+        }
+
+        const data_response = await response.json();
+        const game_id = data_response.game_id;
+
+        const newUrl = new URL(`/verdict-game/${game_id}`, window.location.origin);
+        newUrl.searchParams.set("player_id", user_id);
+        newUrl.searchParams.set("token", token);
+        window.location.href = newUrl.toString();
+    } catch (error) {
+        alert("Errore: " + error.message);
+        console.error("Errore avvio partita partecipante:", error);
+    }
 });

@@ -6,6 +6,7 @@
     <title>The Imitation Game - Giudice</title>
 
     <link rel="stylesheet" href="participant_game.css">
+    <script src="participant_game.js" defer></script>
 </head>
 <body>
     <header>
@@ -17,18 +18,22 @@
     </header>
     <main>
         <section class="partita-section">
-            <form class="participant-form">
+            <form class="participant-form" id="participant-form">
                 {% for q in questions %}
                 <div class="form-elem">
                     <div class="label-domanda">
                         <label for="domanda{{ loop.index }}">Domanda {{ loop.index }}:</label>
                         <p class="sessione-domanda" id="sessione-domanda-{{ loop.index }}">{{ q }}</p>
                     </div>
-                    <input id="domanda{{ loop.index }}"  placeholder="Inserisci la risposta">
+                    <input
+                        id="domanda{{ loop.index }}"
+                        name="answer{{ loop.index }}"
+                        placeholder="Inserisci la risposta"
+                        required>
                 </div>
                 {% endfor %}
                 <div class="btn-form">
-                    <button type="submit">Invia e attendi il verdetto</button>
+                    <button id="btn-form" type="submit">Invia e attendi il verdetto</button>
                 </div>
             </form>
         </section>
