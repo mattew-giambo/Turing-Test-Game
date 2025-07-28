@@ -249,3 +249,67 @@ footer {
     margin-bottom: 1rem;
     text-shadow: 2px 2px 0px var(--retro-shadow);
 }
+
+/* Popup */
+.popup-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-content {
+  background: var(--bianco-crema);
+  border: 3px solid var(--retro-fg);
+  box-shadow: 4px 4px var(--retro-shadow);
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  font-family: 'Press Start 2P', cursive;
+  color: var(--retro-fg);
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.popup-content h2 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: var(--retro-red);
+  text-shadow: 2px 2px 0 var(--retro-shadow);
+}
+
+.popup-content p {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--retro-fg);
+  margin-bottom: 1.5rem;
+}
+
+.submit-btn {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.7rem;
+  background-color: var(--retro-red);
+  color: var(--retro-fg);
+  border: 3px solid var(--retro-fg);
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px var(--retro-shadow);
+  transition: all 0.1s ease-in-out;
+}
+
+.submit-btn:hover {
+  background-color: var(--retro-highlight);
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px var(--retro-shadow);
+}
+
+.close-btn-wrapper {
+  display: flex;
+  justify-content: center;
+}
