@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Imitation Game - Giudice</title>
 
-    <link rel="stylesheet" href="verdict_game.css">
+    <link rel="stylesheet" href="/css/verdict_game.css">
 </head>
 <body>
     <header>
@@ -33,8 +33,9 @@
                 <p>È il momento della verità. Ora annuncia il tuo verdetto!</p>
             </div>
             <div>
-                <button>Umano</button>
-                <button>Macchina</button>
+                <!--Pulsanti da sostituire con le immagini di un umano e robot-->
+                <button id="umano-btn">Umano</button>
+                <button id="macchina-btn">Macchina</button>
             </div>
 
         </section>
@@ -61,7 +62,7 @@
             </div>
 
             <div>
-                <a href="/profilo">Torna al profilo</a>
+                <a href="/profilo/{{ player_id }}" id="profilo-btn">Torna al profilo</a>
             </div>
         </section>
     </main>

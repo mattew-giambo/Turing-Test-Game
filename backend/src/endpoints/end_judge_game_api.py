@@ -50,7 +50,7 @@ def end_judge_game_api(judge_answer: JudgeGameAnswer, game_id: int) -> EndJudgeG
         cursor.execute(query, (game_id,))
 
         verdetto: bool = judge_answer.is_ai
-        participant_is_ai: bool = (participant == 1)
+        participant_is_ai: bool = (participant_id == 1)
         is_won: bool = verdetto == participant_is_ai
 
         message: str = "Congratulazioni hai vinto!" if is_won else "Ooohh Noo, hai perso!"

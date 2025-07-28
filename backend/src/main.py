@@ -1,7 +1,6 @@
 from backend.backend import app
 import uvicorn
+from config.constants import HOST, PORT
 
 if __name__ == "__main__":
-    HOST = "127.0.0.1"
-    PORT = 8003
     uvicorn.run(app, host= HOST, port= PORT)

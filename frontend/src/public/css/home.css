@@ -79,7 +79,7 @@ nav a:hover {
 /* HERO SECTION */
 .hero {
     background-color: #00A8C6;
-    background-image: url('hero.jpg');
+    background-image: url('/assets/hero.jpg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;

@@ -1,5 +1,13 @@
-OLLAMA_CHAT_URL = "http://localhost:11434/api/chat"
+HOST = "127.0.0.1"
+PORT = 8003
 
+HOST_DB = "127.0.0.1"
+PORT_DB = 3307
+USER_DB = "user_db"
+USER_PASSWORD_DB = "userpassword"
+DATABASE_NAME_DB = "turingDB"
+
+OLLAMA_CHAT_URL = "http://127.0.0.1:11434/api/chat"
 MODEL = "gemma3:1b"
 
 JUDGE_WON_POINTS = 3

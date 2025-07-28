@@ -1,5 +1,6 @@
 import mariadb
 from fastapi import HTTPException
+from config.constants import HOST_DB, PORT_DB, USER_DB, DATABASE_NAME_DB, USER_PASSWORD_DB
 
 def connect_to_database() -> mariadb.Connection:
     """ 
@@ -8,20 +9,16 @@ def connect_to_database() -> mariadb.Connection:
         Return
             - `connection`: mariadb.Connection
     """
-    HOST = "127.0.0.1"
-    PORT = 3307
-    USER = "user_db"
-    USER_PASSWORD = "userpassword"
-    DATABASE_NAME = "turing_db"
+    
 
     connection: mariadb.Connection
     try:
         connection = mariadb.connect(
-            host= HOST,
-            port= PORT,
-            user= USER,
-            password= USER_PASSWORD,
-            database= DATABASE_NAME
+            host= HOST_DB,
+            port= PORT_DB,
+            user= USER_DB,
+            password= USER_PASSWORD_DB,
+            database= DATABASE_NAME_DB
         )
     except mariadb.Error as e:
         raise HTTPException(

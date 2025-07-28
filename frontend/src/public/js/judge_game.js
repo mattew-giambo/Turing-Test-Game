@@ -41,11 +41,11 @@ document.getElementById("form-partita").addEventListener("submit", async(e)=>{
     sessione_section.style.display = "block";
 });
 
-document.getElementById("umano-btn").addEventListener("click", async()=>{
+async function send_verdict(is_ai){
     const data ={
-        is_ai: false
+        is_ai: is_ai
     }
-    const response = await fetch(`/send-judge-answer/${game_id}`, {
+    const response = await fetch(`/judge-game/${game_id}`, {
        method: "POST",
        headers: {"Content-Type": "application/json"},
        body: JSON.stringify(data)
@@ -57,5 +57,36 @@ document.getElementById("umano-btn").addEventListener("click", async()=>{
         return window.location.pathname = "/";
     }
 
+    const response_data = await response.json();
 
+    if(response_data.is_won){
+        document.getElementById("vittoria-msg").innerText = response_data.message;
+        document.getElementById("azione-punti").innerText = "vinto";
+    }
+    else{
+        document.getElementById("sconfitta-msg").innerText = response_data.message;
+        document.getElementById("azione-punti").innerText = "perso";
+    }
+    document.getElementById("punti-valore").innerText = response_data.points;
+    document.getElementById("label-punti").innerText = (response_data.points == 1)? "punto":"punti";
+
+    sessione_section.style.display = "none";
+    partita_terminata_section.style.display = "block";
+}
+
+document.getElementById("umano-btn").addEventListener("click", async()=>{
+    await send_verdict(false);
 });
+
+document.getElementById("macchina-btn").addEventListener("click", async()=>{
+    await send_verdict(true);
+});
+
+const profilo_btn = document.getElementById("profilo-btn");
+const url = new URL(profilo_btn.href);
+
+const token = new URLSearchParams(window.location.search).get("token");
+
+url.searchParams.set("token", token);
+
+profilo_btn.href = url.toString();

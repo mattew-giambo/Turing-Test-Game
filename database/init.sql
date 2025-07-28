@@ -1,5 +1,8 @@
 DROP DATABASE IF EXISTS turingDB;
 CREATE DATABASE turingDB;
+CREATE OR REPLACE USER 'user_db'@'%' IDENTIFIED BY 'userpassword';
+GRANT ALL PRIVILEGES ON turingDB.* TO 'user_db'@'%';
+FLUSH PRIVILEGES;
 USE turingDB;
 
 -- Table: Users
@@ -20,7 +23,7 @@ CREATE TABLE Stats (
     won_judge INT DEFAULT 0,
     lost_part INT DEFAULT 0,
     lost_judge INT DEFAULT 0,
-    FOREIGN KEY user_id REFERENCES Users(id) ON DELETE CASCADE
+    FOREIGN KEY(user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
 -- Table: Games
@@ -38,8 +41,8 @@ CREATE TABLE UserGames(
     points int DEFAULT 0,
     PRIMARY KEY (game_id, player_role),
     CHECK (player_role IN ('judge', 'participant')),
-    FOREIGN KEY game_id REFERENCES Games(id) ON DELETE CASCADE,
-    FOREIGN KEY player_id REFERENCES Users(id) ON DELETE CASCADE
+    FOREIGN KEY(game_id) REFERENCES Games(id) ON DELETE CASCADE,
+    FOREIGN KEY(player_id) REFERENCES Users(id) ON DELETE CASCADE
 )
 -- Table: Q_A
 CREATE TABLE Q_A (
@@ -50,5 +53,9 @@ CREATE TABLE Q_A (
     ai_question BOOLEAN DEFAULT FALSE,
     ai_answer BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (game_id, question_id),
-    FOREIGN KEY game_id REFERENCES Games(id) ON DELETE CASCADE
+    FOREIGN KEY(game_id) REFERENCES Games(id) ON DELETE CASCADE
 );
+
+
+INSERT INTO Users(id, user_name, email, hashed_password) VALUES (1, "AI", "--", "--");
+INSERT INTO Stats(id) VALUES (1);

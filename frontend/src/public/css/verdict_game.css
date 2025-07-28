@@ -144,6 +144,8 @@ button:hover {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+
+    display: none;
 }
 
 .img-container {

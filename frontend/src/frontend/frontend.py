@@ -5,7 +5,6 @@ import os
 import asyncio
 from models.player_info import PlayerInfo
 from models.judge_game import JudgeGameAnswer
-from models.pending_game import JudgeGameAnswer
 from models.authentication import UserLogin
 from typing import *
 
@@ -124,6 +123,12 @@ def get_profilo_endpoint(user_id: int, token: str, request: Request):
 @app.post("/user-disconnect/{user_id}")
 def user_disconnect_endpoint(user_id: int):
     return user_disconnect(user_id, sessioni_attive)
+
+@app.exception_handler(404)
+def not_found_handler(request: Request):
+    return templates.TemplateResponse(
+        "404.html", {"request": request}
+    )
 
 # @app.get("/user-stats/{user_id}")
 # def get_user_stats_endpoint(user_id: int, request: Request):
