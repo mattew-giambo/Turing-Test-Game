@@ -33,7 +33,7 @@ def end_pending_game_api(judge_answer: JudgeGameAnswer, game_id: int) -> EndPend
             SELECT ug.player_id, ug.player_role
             FROM Games AS g
             JOIN UserGames AS ug ON g.id = ug.game_id
-            WHERE g.terminated = FALSE AND g.id = %s
+            WHERE g.is_terminated = FALSE AND g.id = %s
         """, (game_id,))
         result = cursor.fetchall()
 
@@ -45,7 +45,7 @@ def end_pending_game_api(judge_answer: JudgeGameAnswer, game_id: int) -> EndPend
         # Crea dizionario con ruoli: {"judge": id, "participant": id}
         players: Dict[str, int] = {p_role: p_id for p_id, p_role in result}
 
-        query: str = "UPDATE Games SET terminated = TRUE WHERE id = %s"
+        query: str = "UPDATE Games SET is_terminated = TRUE WHERE id = %s"
         cursor.execute(query, (game_id,))
 
         verdetto: bool = judge_answer.is_ai

@@ -24,8 +24,9 @@ def end_judge_game_api(judge_answer: JudgeGameAnswer, game_id: int) -> EndJudgeG
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        query: str = "SELECT terminated FROM Games WHERE id = %s"
+        query: str = "SELECT is_terminated FROM Games WHERE id = %s"
         cursor.execute(query, (game_id,))
+        result = cursor.fetchone()
 
         if result is None:
             raise HTTPException(status_code=404, detail="Partita non trovata")
@@ -46,7 +47,7 @@ def end_judge_game_api(judge_answer: JudgeGameAnswer, game_id: int) -> EndJudgeG
         participant = cursor.fetchone()
         participant_id: Optional[int] = participant[0] if participant else None
 
-        query = "UPDATE Games SET terminated = TRUE WHERE id = %s"
+        query = "UPDATE Games SET is_terminated = TRUE WHERE id = %s"
         cursor.execute(query, (game_id,))
 
         verdetto: bool = judge_answer.is_ai

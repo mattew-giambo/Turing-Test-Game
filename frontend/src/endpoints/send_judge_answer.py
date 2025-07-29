@@ -8,7 +8,7 @@ from urllib.parse import urljoin
 
 def send_judge_answer(game_id: int, request: Request, payload: JudgeGameAnswer):
     try:
-        response = requests.post(urljoin(API_BASE_URL, f"/judge-game-api/{game_id}"), json= payload.model_dump())
+        response = requests.post(urljoin(API_BASE_URL, f"/end-judge-game-api/{game_id}"), json= payload.model_dump())
         response.raise_for_status()
     except requests.RequestException as e:
         error_data: Dict =  e.response.json()

@@ -14,7 +14,7 @@ def submit_answers_api(game_id: int, input_data: AnswerInput):
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        query:str = "SELECT id FROM Games WHERE id = %s AND terminated = FALSE"
+        query:str = "SELECT id FROM Games WHERE id = %s AND is_terminated = FALSE"
         cursor.execute(query, (game_id,))
         result = cursor.fetchone()
 

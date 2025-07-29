@@ -30,7 +30,7 @@ CREATE TABLE Stats (
 CREATE TABLE Games (
     id INT AUTO_INCREMENT PRIMARY KEY,
     game_date DATE NOT NULL DEFAULT CURRENT_DATE,
-    `terminated`BOOLEAN DEFAULT FALSE
+    is_terminated BOOLEAN DEFAULT FALSE
 );
 
 -- Table: UserGames

@@ -11,9 +11,7 @@ document.getElementById("form-partita").addEventListener("submit", async(e)=>{
     const domanda3 = document.getElementById("domanda3").value;
     
     const data ={
-        question1: domanda1,
-        question2: domanda2,
-        question3: domanda3
+        questions_list: new Array(domanda1, domanda2, domanda3)
     }
 
     const response = await fetch(`/send-questions-judge-game/${game_id}`, {
@@ -25,10 +23,12 @@ document.getElementById("form-partita").addEventListener("submit", async(e)=>{
     if(!response.ok){
         const errorData = response.json();
         console.error(errorData.detail)
-        return window.location.pathname = "/";
+        const url = new URL("/", window.location.origin)
+        window.location.href = url.toString();
+        alert("Errore della partita");
+        return;
     }
-
-    const answers_list = response.json().answers_list;
+    const answers_list = (await response.json()).answers_list;
     document.getElementById("sessione-domanda-1").innerText = domanda1;
     document.getElementById("sessione-domanda-2").innerText = domanda2;
     document.getElementById("sessione-domanda-3").innerText = domanda3;
@@ -45,7 +45,7 @@ async function send_verdict(is_ai){
     const data ={
         is_ai: is_ai
     }
-    const response = await fetch(`/judge-game/${game_id}`, {
+    const response = await fetch(`/send-judge-answer/${game_id}`, {
        method: "POST",
        headers: {"Content-Type": "application/json"},
        body: JSON.stringify(data)

@@ -26,6 +26,18 @@ def get_profilo(user_id: int, token: str, request: Request, templates: Jinja2Tem
                 {"request": request}
             )
 
+    perc_won_judge: float
+    if user_stats.n_games_judge == 0:
+        perc_won_judge = 0
+    else:
+        perc_won_judge = round(user_stats.won_judge/user_stats.n_games_judge, 2)*100
+
+    perc_won_part: float
+    if user_stats.n_games_part == 0:
+        perc_won_part = 0
+    else:
+        perc_won_part = round(user_stats.won_part/user_stats.n_games_part, 2)*100
+
     return templates.TemplateResponse(
         "profilo.html",{
             "user_id": user_id,
@@ -41,6 +53,8 @@ def get_profilo(user_id: int, token: str, request: Request, templates: Jinja2Tem
             "lost_part": user_stats.lost_part,
             "lost_judge": user_stats.lost_judge,
             "user_games": user_games.user_games,
+            "perc_won_judge": perc_won_judge,
+            "perc_won_part": perc_won_part,
             "request": request
         }
     )

@@ -10,7 +10,7 @@ document.getElementById("login-form").addEventListener("submit", async(e)=>{
         password: password
     }
 
-    const response = await fetch("/loging", {
+    const response = await fetch("/login", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data)
@@ -18,9 +18,9 @@ document.getElementById("login-form").addEventListener("submit", async(e)=>{
 
     const response_data = await response.json();
     if(response.ok){
-        const url = new URL(`/profilo/${response_data.user_id}`);
+        const url = new URL(`/profilo/${response_data.user_id}`, window.location.origin);
         url.searchParams.set("token", `${response_data.token}`);
-        return window.location.pathname= url.toString();
+        return window.location.href= url.toString();
     }
     else{
         msg_error.innerText= response_data.detail;

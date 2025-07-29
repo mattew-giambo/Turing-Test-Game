@@ -28,7 +28,7 @@ def judge_game_api(payload: JudgeGameInput, game_id: int) -> JudgeGameOutput:
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        query: str = "SELECT id, terminated FROM Games WHERE id = %s"
+        query: str = "SELECT id, is_terminated FROM Games WHERE id = %s"
         cursor.execute(query, (game_id,))
         result = cursor.fetchone()
 
@@ -59,7 +59,8 @@ def judge_game_api(payload: JudgeGameInput, game_id: int) -> JudgeGameOutput:
             except mariadb.Error:
                 raise HTTPException(status_code= 500, detail= "Errore del server")
 
-    except mariadb.Error:
+    except mariadb.Error as e:
+        print(e)
         raise HTTPException(status_code=500, detail="Errore del server nella gestione della partita")
 
     finally:

@@ -4,8 +4,8 @@ from fastapi.templating import Jinja2Templates
 import os
 import asyncio
 from models.player_info import PlayerInfo
-from models.judge_game import JudgeGameAnswer
-from models.authentication import UserLogin
+from models.judge_game import JudgeGameAnswer, JudgeGameInput
+from models.authentication import UserLogin, UserRegister
 from typing import *
 
 from endpoints.start_game import start_game
@@ -64,8 +64,8 @@ def login_endpoint(request: Request, user: UserLogin):
     return user_login(user, request, sessioni_attive)
 
 @app.post("/register")
-def register_endpoint(request: Request, user_name:str = Form(...), email: str = Form(...), password: str = Form(...)):
-    return user_register(user_name, email, password, request)
+def register_endpoint(request: Request, user: UserRegister):
+    return user_register(user, request)
 
 # start_game.html, contiene la schermata con AVVIA PARTITA GIUDICE PARTECIPANTE, token è query param
 @app.get("/start-game/{user_id}")
@@ -82,7 +82,7 @@ def get_start_game_page(request: Request, user_id: int, token: str):
 # Endpoint per gestire l'avvio effettivo della partita classica
 @app.post("/start-game")
 def start_game_endpoint(payload: PlayerInfo, request: Request):
-    return start_game(payload, templates, sessioni_attive, request)
+    return start_game(payload, request)
 
 # player_id è query param /game/{game_id}?player_id={}, token={}
 @app.get("/judge-game/{game_id}")
@@ -90,12 +90,12 @@ def get_judge_game_endpoint(game_id: int, player_id: int, token: str, request: R
     return get_judge_game(game_id, player_id, token, request, templates, sessioni_attive)
 
 @app.post("/send-questions-judge-game/{game_id}")
-async def send_questions_judge_game_endpoint(game_id: int, request: Request, question1: str, question2: str, question3: str):
-    return await send_questions_judge_game(game_id, request, question1, question2, question3)
+async def send_questions_judge_game_endpoint(game_id: int, request: Request, payload: JudgeGameInput):
+    return await send_questions_judge_game(game_id, request, payload)
 
 @app.post("/send-judge-answer/{game_id}")
 def send_judge_answer_endpoint(game_id: int, request: Request, payload: JudgeGameAnswer):
-    return send_judge_answer(game_id, request, payload, templates)
+    return send_judge_answer(game_id, request, payload)
 
 @app.get("/participant-game/{game_id}")
 def get_participant_game_endpoint(game_id: int, player_id: int, token: str, request: Request):
@@ -103,11 +103,11 @@ def get_participant_game_endpoint(game_id: int, player_id: int, token: str, requ
 
 @app.post("/send-answers-participant-game/{game_id}")
 def send_answers_participant_game_endpoint(game_id: int, request: Request, answer1: str = Form(...), answer2: str = Form(...), answer3: str = Form(...)):
-    return send_answers_participant_game(game_id, request, answer1, answer2, answer3, templates)
+    return send_answers_participant_game(game_id, request, answer1, answer2, answer3)
 
 @app.post("/start-pending-game")
 def start_pending_game_endpoint(player_id: int, request: Request):
-    return start_pending_game(player_id, templates, sessioni_attive, request)
+    return start_pending_game(player_id, request)
 
 @app.get("/verdict-game/{game_id}")
 def get_verdict_game_endpoint(game_id: int, player_id: int, token: str, request: Request):
@@ -120,7 +120,7 @@ def send_pending_verdict_endpoint(game_id: int, request: Request, payload: Judge
 # USER 
 @app.get("/profilo/{user_id}")
 def get_profilo_endpoint(user_id: int, token: str, request: Request):
-    return get_profilo(user_id, token, request, sessioni_attive)
+    return get_profilo(user_id, token, request, templates, sessioni_attive)
 
 @app.post("/user-disconnect/{user_id}")
 def user_disconnect_endpoint(user_id: int):

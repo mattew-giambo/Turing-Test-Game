@@ -59,7 +59,7 @@ def start_pending_game_api(payload: PlayerInfo) -> ConfirmGame:
 
         # Seleziona una partita 'pending' tra quelle già esistenti nel database.
         # Criteri:
-        # 1. La partita non è terminata (g.terminated = FALSE)
+        # 1. La partita non è terminata (g.is_terminated = FALSE)
         # 2. Esiste almeno una risposta umana valida (qa.ai_answer = FALSE e TRIM(qa.answer) != '')
         # 3. Il player corrente non ha già partecipato alla partita (assenza in UserGames)
         # 4. Nessun giudice è stato ancora assegnato alla partita (assenza di ruolo 'judge' in UserGames)
@@ -67,7 +67,7 @@ def start_pending_game_api(payload: PlayerInfo) -> ConfirmGame:
         query = """
             SELECT g.id
             FROM Games AS g
-            WHERE g.terminated = FALSE
+            WHERE g.is_terminated = FALSE
             AND EXISTS (
                 SELECT *
                 FROM Q_A AS qa

@@ -29,7 +29,7 @@ def game_info_api(payload: GameInfoInput):
 
     try:
         query: str = """
-            SELECT g.id, g.date, g.terminated, ug.player_id, ug.player_role
+            SELECT g.id, g.game_date, g.is_terminated, ug.player_id, ug.player_role
             FROM Games AS g
             JOIN UserGames AS ug ON g.id = ug.game_id
             WHERE g.id = %s AND ug.player_id = %s

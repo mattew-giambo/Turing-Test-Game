@@ -18,10 +18,3 @@ def get_user_games(user_id: int):
         )
 
     return UserGames.model_validate(response.json())
-    return templates.TemplateResponse(
-        "user_games.html",{
-            "request": request,
-            "user_id": response_data.user_id,
-            "user_games": response_data.user_games
-        }
-    )

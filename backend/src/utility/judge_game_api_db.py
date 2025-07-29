@@ -26,9 +26,11 @@ def judge_game_api_db(questions_input: List[str]) -> List[str]:
         answers_output: List[str] = []
         for question_input in questions_input:
             # Fuzzy matching con domande esistenti
-            match, score, index = process.extractOne(question_input, questions_db, scorer=fuzz.token_sort_ratio)
-            if score >= 80:
-                answers_output.append(qa_list[index]["answer"])
+            result_fuzz = process.extractOne(question_input, questions_db, scorer=fuzz.token_sort_ratio)
+            if result_fuzz:
+                match, score, index = result
+                if score >= 80:
+                    answers_output.append(qa_list[index]["answer"])
 
         return answers_output
     finally:

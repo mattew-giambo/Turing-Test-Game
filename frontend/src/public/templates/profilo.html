@@ -46,7 +46,7 @@
                     <h2>Generali</h2>
                     <div class="statistiche-gruppo">
                         <div id="partite-giocate-tot" class="statistiche-elem">
-                            <h3>Partite giocate Totali</h3>
+                            <h3>Partite giocate totali</h3>
                             <p>{{ n_games }}</p>
                         </div>
                         <div id="punti-tot" class="statistiche-elem">
@@ -72,7 +72,7 @@
                         </div>
                         <div id="perc-vittoria-judge" class="statistiche-elem">
                             <h3>Percentuale di vittoria</h3>
-                            <p>{{ perc_won_judge }}</p>
+                            <p>{{ perc_won_judge }} %</p>
                         </div>
                         <div id="punti-judge" class="statistiche-elem">
                             <h3>Punti ottenuti</h3>
@@ -98,7 +98,7 @@
                         </div>
                         <div id="perc-vittoria-part" class="statistiche-elem">
                             <h3>Percentuale di vittoria</h3>
-                            <p>{{ perc_won_part }}</p>
+                            <p>{{ perc_won_part }} %</p>
                         </div>
                         <div id="punti-part" class="statistiche-elem">
                             <h3>Punti ottenuti</h3>
@@ -169,7 +169,7 @@
             <section class="partite-giocate">
                 <h1>Partite giocate</h1>
                 <div class="table-wrapper">
-                        <table>
+                    <table>
                         <thead>
                             <tr>
                                 <th>Game ID</th>
@@ -187,7 +187,7 @@
                                     <td>{{ game.data }}</td>
                                     <td>{{ game.player_role }}</td>
                                     <td>
-                                        {% if game.terminated == 0 %}
+                                        {% if game.terminated == 1 %}
                                             {% if game.is_won == 1 %}
                                                 Vinta
                                             {% else %}
@@ -201,7 +201,9 @@
                                 </tr>
                                 {% endfor %}
                             {% else %}
-                                <tr>Non sono presenti partite recenti</tr>
+                                <tr>
+                                    <td colspan="5">Non sono presenti partite recenti</td>
+                                </tr>
                             {% endif %}
                         </tbody>
                     </table>

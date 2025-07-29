@@ -26,26 +26,26 @@ def get_player_games_api(user_id: int) -> UserGames:
 
     try:
         query: str = """
-            SELECT g.id, g.date, ug.player_role, g.terminated, ug.is_won, ug.points
+            SELECT g.id, g.game_date, ug.player_role, g.is_terminated, ug.is_won, ug.points
             FROM Games AS g
             JOIN UserGames AS ug ON g.id = ug.game_id
             WHERE ug.player_id = %s
-            ORDER BY g.date DESC
+            ORDER BY g.game_date DESC
         """
         cursor.execute(query, (user_id,))
         result = cursor.fetchall()
 
         if not result:
-            raise HTTPException(
-                status_code=404,
-                detail="Nessuna partita trovata per questo utente."
+            return UserGames(
+                user_id=user_id,
+                user_games=[]
             )
 
         games: List[Game] = [
             Game(
                 game_id=row[0],
-                date=row[1],
                 player_role=row[2],
+                data=row[1],
                 terminated=row[3],
                 is_won=row[4],
                 points=row[5]
@@ -58,7 +58,8 @@ def get_player_games_api(user_id: int) -> UserGames:
                 user_games=games
             )
 
-    except mariadb.Error:
+    except mariadb.Error as e:
+        print(e)
         raise HTTPException(
             status_code=500,
             detail="Errore del server."
