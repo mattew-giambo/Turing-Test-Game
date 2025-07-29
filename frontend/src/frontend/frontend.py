@@ -5,6 +5,7 @@ import os
 import asyncio
 from models.player_info import PlayerInfo
 from models.judge_game import JudgeGameAnswer, JudgeGameInput
+from models.participant_game import AnswerInput
 from models.authentication import UserLogin, UserRegister
 from typing import *
 
@@ -81,8 +82,8 @@ def get_start_game_page(request: Request, user_id: int, token: str):
 
 # Endpoint per gestire l'avvio effettivo della partita classica
 @app.post("/start-game")
-def start_game_endpoint(payload: PlayerInfo, request: Request):
-    return start_game(payload, request)
+def start_game_endpoint(payload: PlayerInfo):
+    return start_game(payload)
 
 # player_id è query param /game/{game_id}?player_id={}, token={}
 @app.get("/judge-game/{game_id}")
@@ -90,24 +91,24 @@ def get_judge_game_endpoint(game_id: int, player_id: int, token: str, request: R
     return get_judge_game(game_id, player_id, token, request, templates, sessioni_attive)
 
 @app.post("/send-questions-judge-game/{game_id}")
-async def send_questions_judge_game_endpoint(game_id: int, request: Request, payload: JudgeGameInput):
-    return await send_questions_judge_game(game_id, request, payload)
+async def send_questions_judge_game_endpoint(game_id: int, payload: JudgeGameInput):
+    return await send_questions_judge_game(game_id, payload)
 
 @app.post("/send-judge-answer/{game_id}")
-def send_judge_answer_endpoint(game_id: int, request: Request, payload: JudgeGameAnswer):
-    return send_judge_answer(game_id, request, payload)
+def send_judge_answer_endpoint(game_id: int, payload: JudgeGameAnswer):
+    return send_judge_answer(game_id, payload)
 
 @app.get("/participant-game/{game_id}")
 def get_participant_game_endpoint(game_id: int, player_id: int, token: str, request: Request):
     return get_participant_game(game_id, player_id, token, request, templates, sessioni_attive)
 
 @app.post("/send-answers-participant-game/{game_id}")
-def send_answers_participant_game_endpoint(game_id: int, request: Request, answer1: str = Form(...), answer2: str = Form(...), answer3: str = Form(...)):
-    return send_answers_participant_game(game_id, request, answer1, answer2, answer3)
+def send_answers_participant_game_endpoint(game_id: int, payload: AnswerInput):
+    return send_answers_participant_game(game_id, payload)
 
 @app.post("/start-pending-game")
-def start_pending_game_endpoint(player_id: int, request: Request):
-    return start_pending_game(player_id, request)
+def start_pending_game_endpoint(player_id: int):
+    return start_pending_game(player_id)
 
 @app.get("/verdict-game/{game_id}")
 def get_verdict_game_endpoint(game_id: int, player_id: int, token: str, request: Request):

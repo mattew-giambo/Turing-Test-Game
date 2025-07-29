@@ -1,4 +1,4 @@
-from fastapi import Request, HTTPException
+from fastapi import Request, HTTPException, requests
 from fastapi.templating import Jinja2Templates
 from models.user_stats import UserStats
 from models.user_games import UserGames
@@ -12,34 +12,36 @@ from utility.verify_user_token import verify_user_token
 
 def get_profilo(user_id: int, token: str, request: Request, templates: Jinja2Templates, sessioni_attive: Dict[int, Dict[str, str]]):
     if not verify_user_token(user_id, token, sessioni_attive):
-        return templates.TemplateResponse(
-            "login.html", {"request": request}
-        )
+        return templates.TemplateResponse("login.html", {"request": request})
+    
     try:
         user_info: UserInfo = get_user_info(user_id)
         user_stats: UserStats = get_user_stats(user_id)
         user_games: UserGames = get_user_games(user_id)
-    except HTTPException as e:
-        if e.status_code == 404:
-            return templates.TemplateResponse(
-                "404.html",
-                {"request": request}
-            )
+    
+    except requests.RequestException as e:
+        status_code = 500
+        detail = "Errore sconosciuto"
 
-    perc_won_judge: float
-    if user_stats.n_games_judge == 0:
-        perc_won_judge = 0
-    else:
-        perc_won_judge = round(user_stats.won_judge/user_stats.n_games_judge, 2)*100
+        if e.response is not None:
+            status_code = e.response.status_code
+            try:
+                error_data = e.response.json()
+                detail = error_data.get("detail", detail)
+            except Exception:
+                detail = e.response.text or detail
 
-    perc_won_part: float
-    if user_stats.n_games_part == 0:
-        perc_won_part = 0
-    else:
-        perc_won_part = round(user_stats.won_part/user_stats.n_games_part, 2)*100
+            if status_code == 404:
+                return templates.TemplateResponse("404.html", {"request": request})
+
+        raise HTTPException(status_code=status_code, detail=detail)
+
+    perc_won_judge = round(user_stats.won_judge / user_stats.n_games_judge, 2) * 100 if user_stats.n_games_judge > 0 else 0
+    perc_won_part = round(user_stats.won_part / user_stats.n_games_part, 2) * 100 if user_stats.n_games_part > 0 else 0
 
     return templates.TemplateResponse(
-        "profilo.html",{
+        "profilo.html",
+        {
             "user_id": user_id,
             "username": user_info.user_name,
             "email": user_info.email,

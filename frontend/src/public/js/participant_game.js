@@ -2,7 +2,11 @@ document.getElementById("participant-form").addEventListener("submit", async (e)
     e.preventDefault(); 
 
     const form = e.target;
-    const formData = new FormData(form);
+    const answers = [
+        form.answer1.value,
+        form.answer2.value,
+        form.answer3.value
+    ];
 
     const popup = document.getElementById("popup");
     const hMessage = document.getElementById("hMessage");
@@ -25,7 +29,10 @@ document.getElementById("participant-form").addEventListener("submit", async (e)
     try {
         const response = await fetch(`/send-answers-participant-game/${game_id}`, {
             method: "POST",
-            body: formData
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ answers })
         });
 
         if (!response.ok) {
