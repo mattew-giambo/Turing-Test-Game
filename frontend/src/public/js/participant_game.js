@@ -49,7 +49,8 @@ document.getElementById("participant-form").addEventListener("submit", async (e)
         );
 
         setTimeout(() => {
-            const user_id = window.location.pathname.split("/")[2];
+            const user_id_href = document.getElementById("close-popup-btn").href;
+            const user_id = user_id_href.split("/")[2];
             const params = new URLSearchParams(window.location.search);
             const token = params.get("token");
 
