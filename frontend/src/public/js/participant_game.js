@@ -12,7 +12,7 @@ document.getElementById("participant-form").addEventListener("submit", async (e)
     const hMessage = document.getElementById("hMessage");
     const pMessage = document.getElementById("pMessage");
     const closeBtn = document.getElementById("close-popup-btn");
-
+    const game_id = window.location.pathname.split("/")[2];
 
     const showPopup = (title, message) => {
         hMessage.textContent = title;
