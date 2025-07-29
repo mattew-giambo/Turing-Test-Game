@@ -39,7 +39,7 @@ def get_judge_game(game_id: int, player_id: int, player_token: str, request: Req
 
     response_data = GameInfoOutput.model_validate(response.json())
 
-    if response_data.terminated:
+    if response_data.is_terminated:
         return templates.TemplateResponse("partita_terminata.html", {"request": request})
 
     return templates.TemplateResponse(

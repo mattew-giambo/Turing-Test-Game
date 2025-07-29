@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 from datetime import date
 
 class Game(BaseModel):
@@ -7,7 +7,7 @@ class Game(BaseModel):
     player_role: str
     data: date
     is_terminated: bool
-    is_won: bool
+    is_won: Optional[bool]
     points: int
     
 class UserGames(BaseModel):

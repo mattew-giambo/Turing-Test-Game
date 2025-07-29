@@ -1,4 +1,5 @@
-from fastapi import Request, HTTPException, requests
+from fastapi import Request, HTTPException
+import requests
 from fastapi.templating import Jinja2Templates
 from models.user_stats import UserStats
 from models.user_games import UserGames

@@ -35,12 +35,8 @@ def get_participant_game(game_id: int, player_id: int, player_token: str, reques
 
         raise HTTPException(status_code=status_code, detail=detail)
 
-<<<<<<< HEAD
-    if game_info.terminated or game_info.player_role == "judge":
-=======
     # 2 Blocca se partita terminata o se è il giudice
     if game_info.is_terminated or game_info.player_role == "judge":
->>>>>>> 992f4a4 (modifiche)
         return templates.TemplateResponse("partita_terminata.html", {"request": request})
 
     try:
