@@ -37,7 +37,9 @@ app.mount("/js", StaticFiles(directory= os.path.join(BASE_DIR, "../public/js")))
 
 sessioni_attive: Dict[int, Dict[str, str]] = {}
 
-asyncio.create_task(rimuovi_sessioni_scadute(sessioni_attive))
+@app.on_event("startup")
+async def on_startup():
+    asyncio.create_task(rimuovi_sessioni_scadute(sessioni_attive))
 
 @app.get("/")
 def get_home_page(request: Request):
@@ -125,7 +127,7 @@ def user_disconnect_endpoint(user_id: int):
     return user_disconnect(user_id, sessioni_attive)
 
 @app.exception_handler(404)
-def not_found_handler(request: Request):
+def not_found_handler(request: Request, exc):
     return templates.TemplateResponse(
         "404.html", {"request": request}
     )

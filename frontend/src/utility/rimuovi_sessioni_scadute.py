@@ -11,4 +11,6 @@ async def rimuovi_sessioni_scadute(sessioni_attive: Dict[int, Dict[str, str]]):
                 scaduti.append(user_id)
         for user_id in scaduti:
             sessioni_attive.pop(user_id)
+        
+        print("cuao")
         await asyncio.sleep(60)  # controlla ogni minuto

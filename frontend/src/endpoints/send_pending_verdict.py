@@ -2,7 +2,7 @@ from fastapi import Request, HTTPException
 from fastapi.templating import Jinja2Templates
 import requests
 from models.judge_game import JudgeGameAnswer
-from models.pending_game import JudgeGameAnswer, EndPendingGame
+from models.pending_game import EndPendingGame
 from config.constants import API_BASE_URL
 from typing import *
 from urllib.parse import urljoin
