@@ -122,12 +122,6 @@ main{
     text-align: center;
 }
 
-.form-wrapper{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .registration-form{
     display: flex;
     flex-direction: column;

@@ -1,7 +1,7 @@
 document.getElementById("registration-form").addEventListener("submit", async (e)=>{
     e.preventDefault();
 
-    const user_name = document.getElementById("username").value;
+    const user_name = document.getElementById("user_name").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     const conferma_password = document.getElementById("conferma_password").value;
