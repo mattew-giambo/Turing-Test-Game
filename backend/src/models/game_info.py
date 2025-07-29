@@ -9,6 +9,6 @@ class GameInfoInput(BaseModel):
 class GameInfoOutput(BaseModel):
     game_id: int
     data: date 
-    terminated: bool 
+    is_terminated: bool 
     player_id: int 
     player_role: Literal["judge", "participant"]

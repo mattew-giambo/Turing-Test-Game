@@ -46,7 +46,7 @@ def get_player_games_api(user_id: int) -> UserGames:
                 game_id=row[0],
                 player_role=row[2],
                 data=row[1],
-                terminated=row[3],
+                is_terminated=row[3],
                 is_won=row[4],
                 points=row[5]
             )

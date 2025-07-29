@@ -6,7 +6,7 @@ class UserRegister(BaseModel):
     password: str
 
 class UserLogin(BaseModel):
-    username: str
+    user_name: str
     password: str
 
 class RegisterResponse(BaseModel):

@@ -6,7 +6,7 @@ class Game(BaseModel):
     game_id: int
     player_role: str
     data: date
-    terminated: bool
+    is_terminated: bool
     is_won: bool
     points: int
 

@@ -42,10 +42,10 @@ def insert_q_a_participant_api(game_id: int, qa_list: List[QADict]) -> None:
             cursor.execute(query, (
                 game_id,
                 idx,
-                qa["question"],
-                qa["answer"],
-                qa["ai_question"],
-                qa["ai_answer"]
+                qa.question,
+                qa.answer,
+                qa.ai_question,
+                qa.ai_answer
             ))
 
         connection.commit()

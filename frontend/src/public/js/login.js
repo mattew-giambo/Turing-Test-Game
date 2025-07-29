@@ -6,7 +6,7 @@ document.getElementById("login-form").addEventListener("submit", async(e)=>{
     const msg_error = document.getElementById("msg-error")
 
     const data = {
-        username: username,
+        user_name: username,
         password: password
     }
 

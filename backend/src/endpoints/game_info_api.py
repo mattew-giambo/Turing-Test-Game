@@ -46,7 +46,7 @@ def game_info_api(payload: GameInfoInput):
         return GameInfoOutput(
             game_id=result[0],
             data=result[1],
-            terminated=result[2],
+            is_terminated=result[2],
             player_id=result[3],
             player_role=result[4]
         )

@@ -30,7 +30,7 @@ def login_api(user: UserLogin) -> LoginResponse:
 
     try:
         query: str = "SELECT id, email, hashed_password FROM Users WHERE user_name = %s"
-        cursor.execute(query, (user.username,))
+        cursor.execute(query, (user.user_name,))
         result: Optional[Tuple[int, str, str]] = cursor.fetchone()
 
         if not result:
@@ -45,7 +45,7 @@ def login_api(user: UserLogin) -> LoginResponse:
 
         return LoginResponse(
             user_id= user_id,
-            user_name= user.username,
+            user_name= user.user_name,
             email= email
         )
 

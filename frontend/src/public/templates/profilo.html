@@ -187,7 +187,7 @@
                                     <td>{{ game.data }}</td>
                                     <td>{{ game.player_role }}</td>
                                     <td>
-                                        {% if game.terminated == 1 %}
+                                        {% if game.is_terminated == 1 %}
                                             {% if game.is_won == 1 %}
                                                 Vinta
                                             {% else %}
