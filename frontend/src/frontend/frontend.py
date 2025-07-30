@@ -29,12 +29,20 @@ from utility.verify_user_token import verify_user_token
 app = FastAPI()
 BASE_DIR = os.path.dirname(__file__)
 
+class NoCacheStaticFiles(StaticFiles):
+    async def get_response(self, path: str, scope):
+        response = await super().get_response(path, scope)
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
+
 # MIDDLEWARE PER LA GESTIONE DEI FILE STATICI
 templates = Jinja2Templates(directory= os.path.join(BASE_DIR, "../public/templates"))
 
-app.mount("/assets", StaticFiles(directory= os.path.join(BASE_DIR, "../public/assets")))
-app.mount("/css", StaticFiles(directory= os.path.join(BASE_DIR, "../public/css")))
-app.mount("/js", StaticFiles(directory= os.path.join(BASE_DIR, "../public/js")))
+app.mount("/assets", NoCacheStaticFiles(directory= os.path.join(BASE_DIR, "../public/assets")))
+app.mount("/css", NoCacheStaticFiles(directory= os.path.join(BASE_DIR, "../public/css")))
+app.mount("/js", NoCacheStaticFiles(directory= os.path.join(BASE_DIR, "../public/js")))
 
 sessioni_attive: Dict[int, Dict[str, str]] = {}
 
@@ -107,8 +115,8 @@ def send_answers_participant_game_endpoint(game_id: int, payload: AnswerInput):
     return send_answers_participant_game(game_id, payload)
 
 @app.post("/start-pending-game")
-def start_pending_game_endpoint(player_id: int):
-    return start_pending_game(player_id)
+def start_pending_game_endpoint(payload: PlayerInfo):
+    return start_pending_game(payload)
 
 @app.get("/verdict-game/{game_id}")
 def get_verdict_game_endpoint(game_id: int, player_id: int, token: str, request: Request):

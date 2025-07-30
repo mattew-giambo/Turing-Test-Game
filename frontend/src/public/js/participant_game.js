@@ -49,12 +49,11 @@ document.getElementById("participant-form").addEventListener("submit", async (e)
         );
 
         setTimeout(() => {
-            const user_id_href = document.getElementById("close-popup-btn").href;
-            const user_id = user_id_href.split("/")[2];
             const params = new URLSearchParams(window.location.search);
             const token = params.get("token");
 
-            const newUrl = new URL(`/profilo/${user_id}`, window.location.origin);
+            const closeBtn = document.getElementById("close-popup-btn");
+            const newUrl = new URL(closeBtn.href);
             newUrl.searchParams.set("token", token);
             window.location.href = newUrl.toString();
         }, 3000);

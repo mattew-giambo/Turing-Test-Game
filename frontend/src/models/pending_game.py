@@ -13,3 +13,4 @@ class EndPendingGame(BaseModel):
     game_id: int
     is_won: bool
     message: str
+    points: int

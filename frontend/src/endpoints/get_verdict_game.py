@@ -36,7 +36,7 @@ def get_verdict_game(game_id: int, player_id: int, player_token: str, request: R
         raise HTTPException(status_code=status_code, detail=detail)
 
 
-    if game_info.terminated or game_info.player_role == "participant":
+    if game_info.is_terminated or game_info.player_role == "participant":
         return templates.TemplateResponse("partita_terminata.html", {"request": request})
 
     try:

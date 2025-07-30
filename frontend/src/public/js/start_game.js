@@ -40,7 +40,10 @@ part_btn.addEventListener("click", async () => {
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.detail || "Errore avvio partita");
+            const message = typeof errorData.detail === "string"
+                ? errorData.detail
+                : JSON.stringify(errorData.detail);
+            throw new Error(message || "Errore avvio partita");
         }
 
         const data_response = await response.json();
@@ -73,8 +76,12 @@ classic_mod.addEventListener("click", async () => {
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.detail || "Errore avvio partita");
+            const detailMsg = typeof errorData.detail === "string"
+                ? errorData.detail
+                : JSON.stringify(errorData.detail);
+            throw new Error(detailMsg || "Errore avvio partita");
         }
+
 
         const data_response = await response.json();
         const game_id = data_response.game_id;
@@ -92,8 +99,10 @@ classic_mod.addEventListener("click", async () => {
 verdict_mod.addEventListener("click", async () => {
     try{
         const data = {
-            player_id: parseInt(user_id)
+            player_id: parseInt(user_id),
+            player_role: "judge"
         };
+        console.log(data);
 
         const response = await fetch("/start-pending-game", {
             method: "POST",
@@ -105,7 +114,10 @@ verdict_mod.addEventListener("click", async () => {
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.detail || "Errore avvio partita");
+            const message = typeof errorData.detail === "string"
+                ? errorData.detail
+                : JSON.stringify(errorData.detail);
+            throw new Error(message || "Errore avvio partita");
         }
 
         const data_response = await response.json();

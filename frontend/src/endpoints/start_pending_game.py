@@ -5,8 +5,9 @@ from models.confirm_game import ConfirmGame
 from config.constants import API_BASE_URL
 from urllib.parse import urljoin
 
-def start_pending_game(player_id: int):
-    payload = PlayerInfo(player_id=player_id, player_role="judge")
+def start_pending_game(payload: PlayerInfo):
+    payload.player_role = "judge"
+    
     try:
         response = requests.post(urljoin(API_BASE_URL, "/start-pending-game-api"), json= payload.model_dump())
         response.raise_for_status()

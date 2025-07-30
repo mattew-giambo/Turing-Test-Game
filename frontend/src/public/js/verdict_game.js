@@ -1,4 +1,3 @@
-const partita_section = document.getElementById("partita-section");
 const sessione_section = document.getElementById("sessione-section");
 const partita_terminata_section = document.getElementById("partita-terminata-section");
 const game_id = window.location.pathname.split("/")[2]; // /verdict-game/id
