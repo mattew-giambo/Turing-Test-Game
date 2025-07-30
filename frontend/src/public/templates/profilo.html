@@ -127,16 +127,24 @@
                                 <tr>
                                     <td>{{ game.game_id }}</td>
                                     <td>{{ game.data }}</td>
-                                    <td>{{ game.player_role | capitalize }}</td>
+                                    <td>
+                                        {% if game.player_role == 'judge' %}
+                                            Giudice
+                                        {% elif game.player_role == 'participant' %}
+                                            Partecipante
+                                        {% else %}
+                                            Ruolo sconosciuto
+                                        {% endif %}
+                                    </td>
                                     <td>
                                         {% if game.is_terminated == 1 %}
                                             {% if game.is_won == 1 %}
-                                                Vinta
+                                                <img src="/assets/vittoria.PNG" alt="Vinto" title="Vinto" width="44" height="44">
                                             {% else %}
-                                                Persa
+                                                <img src="/assets/sconfitta.PNG" alt="Perso" title="Perso" width="44" height="44">
                                             {% endif %}
                                         {% else %}
-                                            In attesa
+                                            <img src="/assets/attesa.PNG" alt="In attesa" title="In attesa" width="44" height="44">
                                         {% endif %}
                                     </td>
                                     <td>

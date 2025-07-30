@@ -103,46 +103,49 @@ nav a:hover {
 /* MAIN */
 .main-content {
     flex: 1;
-    padding: 2rem 1rem;
+    padding: 2.5rem 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
 .hero-text {
     background-color: var(--retro-green);
-    padding: 1rem;
-    margin-bottom: 2rem;
+    padding: 1.2rem 1rem;
+    margin-bottom: 2.5rem;
     width: 100%;
     max-width: 700px;
     border: 3px solid var(--retro-fg);
     text-align: center;
+    letter-spacing: 0.04em;
     box-shadow: 4px 4px 0px #391a15;
 }
 
 .msg-benvenuto, .email-text {
     margin: 1rem 0;
-    font-size: 0.7rem;
+    font-size: 0.85rem;
+    text-shadow: 1px 1px 0 #108019a1;
 }
 
 .statistiche {
     display: flex;
-    flex-direction: column;
     flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
     gap: 2rem;
     width: 100%;
-    border-bottom: 3px dashed var(--retro-fg);
-    padding-bottom: 4rem;
-    width: 100%;
+    justify-content: center;
+    border-bottom: 4px dashed var(--retro-border);
+    padding-bottom: 2rem;
 }
 
-.statistiche-gruppo-wrapper{
+.statistiche-gruppo-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-width: 270px;
 }
+
 .statistiche-gruppo {
     display: flex;
     justify-content: space-between;
@@ -152,8 +155,9 @@ nav a:hover {
 .statistiche-gruppo-wrapper h2{
     font-size: 1.3rem;
     color: var(--retro-red);
-    text-shadow: 2px 2px 0 var(--retro-highlight);
-    margin-bottom: 0.5rem;
+    text-shadow:  2px 2px 0 #f3f3be;
+    margin-bottom: 0.7rem;
+    user-select: none;
 }
 
 .statistiche-elem {
@@ -165,77 +169,93 @@ nav a:hover {
     text-align: center;
     box-shadow: 4px 4px 0px #391a15;
 }
-
+/*
 .statistiche-elem:hover{
     transform: translate(2px, 2px);
     box-shadow: 1px 1px 0px #000;
-}
+}*/
 
 .statistiche-elem h3 {
-    font-size: 0.6rem;
-    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+    margin-bottom: 0.65rem;
+    text-shadow: 1px 1px 0 #0000006b;
 }
 
 .statistiche-elem p {
-    font-size: 0.8rem;
-    font-weight: bold;
+    font-size: 0.9rem;
+    font-weight: 900;
     color: var(--retro-red);
+    letter-spacing: 0.06em;
 }
 
 .partite-giocate {
     width: 100%;
-    margin: 2rem auto;
+    margin-top: 3rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
+
 .partite-giocate h1{
-    margin-bottom: 2rem;
-    color: var(--retro-purple);
-    text-shadow: 2px 2px var(--retro-pink);
+    margin-bottom: 2.2rem;
+    color: var(--retro-red);
+    text-shadow:  2px 2px 0 #f3f3be;
+    user-select: none;
 }
 
 .table-wrapper{
-    max-height: 40rem;
+    max-height: 50rem;
     overflow-y: auto;
-    border: 2px solid var(--retro-fg);
+    border: 3px solid var(--retro-fg);
+    max-width: 100%;
 }
 
 table {
     width: 64rem;
     border-collapse: collapse;
     background-color: var(--bianco-crema);
-    box-shadow: 4px 4px 0px #391a15;
+    font-size: 0.85rem;
 }
 
 table thead th {
     position: sticky;
     top: 0;
     z-index: 10;
-    border: 2px solid var(--retro-fg);
-}
+    border: 3px solid var(--retro-fg);
 
-td {
-    border: 2px solid var(--retro-fg);
-    padding: 1rem;
-    font-size: 0.8rem;
-    text-align: center;
-    font-weight: bold;
+    font-size: 1.3rem;
+    user-select: none;
+    letter-spacing: 0.08em;
+    padding: 1rem 0.8rem;
 }
 
 th {
-    border: 2px solid var(--retro-fg);
-    padding: 1rem;
-    font-size: 1.2rem;
+    border: 3px solid var(--retro-fg);
+    padding: 1rem 0.8rem;
+    font-weight: 900;
     text-align: center;
+    font-size: 1rem; /* Larger font matching header */
+    letter-spacing: 0.06em;
+    user-select: text;
+
     background-color: var(--retro-bg);
     color: var(--retro-red);
-    text-shadow:  2px 2px 0 var(--retro-green);
+    text-shadow: 2px 2px 0 #dd42426d;
+}
+
+td {
+    border: 3px solid var(--retro-fg);
+    padding: 1rem 0.8rem;
+    font-size: 0.9rem; /* Larger font size */
+    text-align: center;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    user-select: text;
 }
 
 tr:nth-child(even) {
-    background-color: #eee;
+    background-color: #f3f3be;
 }
 
 
@@ -250,8 +270,8 @@ footer {
 }
 
 .footer-logo h2 {
-    font-size: 1.2rem;
-    letter-spacing: 2px;
+    font-size: 1.4rem;
+    letter-spacing: 0.12em;
     margin-bottom: 1rem;
-    text-shadow: 2px 2px 0px var(--retro-shadow);
+    text-shadow: 3px 3px 0 var(--retro-shadow);
 }
