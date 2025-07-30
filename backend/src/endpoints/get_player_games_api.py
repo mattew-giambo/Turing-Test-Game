@@ -43,19 +43,20 @@ def get_player_games_api(user_id: int) -> UserGames:
 
         games: List[Game] = []
         query = "DELETE FROM UserGames WHERE game_id= %s and player_role= %s"
-        for game_id, player_role, data, is_terminated, is_won, points in result:
+        for game_id, game_date, player_role, is_terminated, is_won, points in result:
             if player_role == "judge" and is_terminated == 0:
                 cursor.execute(query, (game_id, player_role))
             else:
+                print(game_id, player_role, game_date, is_terminated, is_won, points)
                 games.append(Game(
                         game_id= game_id,
                         player_role= player_role,
-                        data= data,
+                        data= game_date,
                         is_terminated= is_terminated,
                         is_won= is_won,
                         points= points
                     ))
-
+        connection.commit()
         return UserGames(
                 user_id=user_id,
                 user_games=games
