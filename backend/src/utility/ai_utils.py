@@ -27,7 +27,7 @@ def get_ai_answer(question: Optional[str] = None, flag_judge: bool= True) -> Opt
         if not question:
             raise HTTPException(status_code=400, detail="Domanda mancante per la risposta del giudice AI.")
         
-        prompt: str = f"""Rispondi in modo discorsivo e naturale come se fossi un essere umano alla domanda: {question}
+        prompt: str = f"""Rispondi in modo naturale come se fossi un essere umano alla domanda: {question}
                     Scrivi solo la risposta, senza meta-commenti, spiegazioni o riferimenti alla domanda stessa.
                     Rispondi in modo emotivo e spontaneo, come in una vera conversazione tra due persone.
                     Non usare asterischi per indicare azioni o pensieri. 

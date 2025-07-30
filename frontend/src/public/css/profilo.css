@@ -6,7 +6,7 @@
     /* Base colors */
     --retro-bg: #FFFFB5;           /* Giallo pastello - sfondo */
     --retro-fg: #000000;           /* Nero - testo/bordi */
-    
+
     /* Accent colors */
     --retro-red: #FF4C4C;          /* Rosso acceso */
     --retro-blue: #4C9EFF;         /* Blu acceso */
@@ -20,6 +20,7 @@
     --retro-highlight: #FFEB3B;    /* Giallo evidenziato */
     --retro-shadow: #606060;       /* Ombra stile NES */
     --hero-blue: #00A8C6;          /* Hero color */
+    --green: #39aa35;
 }
 
 * {
@@ -183,8 +184,7 @@ nav a:hover {
 
 .partite-giocate {
     width: 100%;
-    max-width: 800px;
-    margin-top: 2rem;
+    margin: 2rem auto;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -203,7 +203,7 @@ nav a:hover {
 }
 
 table {
-    width: 100%;
+    width: 64rem;
     border-collapse: collapse;
     background-color: var(--bianco-crema);
     box-shadow: 4px 4px 0px #391a15;
@@ -218,16 +218,16 @@ table thead th {
 
 td {
     border: 2px solid var(--retro-fg);
-    padding: 0.6rem;
-    font-size: 0.7rem;
+    padding: 1rem;
+    font-size: 0.8rem;
     text-align: center;
     font-weight: bold;
 }
 
 th {
     border: 2px solid var(--retro-fg);
-    padding: 0.6rem;
-    font-size: 1rem;
+    padding: 1rem;
+    font-size: 1.2rem;
     text-align: center;
     background-color: var(--retro-bg);
     color: var(--retro-red);
