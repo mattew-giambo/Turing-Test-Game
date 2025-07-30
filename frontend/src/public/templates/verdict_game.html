@@ -42,20 +42,20 @@
         </section>
 
         <section class="partita-terminata-section" id="partita-terminata-section"> <!-- Default invisibile, mostra al player se ha vinto o meno -->
-            <div id="vittoria-div">
+            <div id="vittoria-div" style="display: none;">
                 <div class="img-container">
                     <img src="assets/victory.png">
                 </div>
                 <div>
-                    <p id="vittoria-msg">Messaggio inviato dal server</p>
+                    <p id="vittoria-msg"></p>
                 </div>
             </div>
-            <div id="sconfitta-div">
+            <div id="sconfitta-div" style="display: none;">
                 <div class="img-container">
                     <img src="assets/victory.png">
                 </div>
                 <div>
-                    <p id="sconfitta-msg">Messaggio inviato dal server</p>
+                    <p id="sconfitta-msg"></p>
                 </div>
             </div>
             <div class="punti-div">
@@ -68,10 +68,14 @@
         </section>
     </main>
     <!-- Footer -->
-        <footer>
-            <div class="footer-logo">
-                <h2>The Imitation Game</h2>
+    <footer class="footer">
+        <div class="footer-container">
+            <h1>The Imitation Game</h1>
+            <div class="footer-text">
+                <p>Turing Test Game 2025</p>
+                <p>Created by Matteo Giamberardini & Ilaria Casolino</p>
             </div>
-        </footer>
+        </div>
+    </footer>
 </body>
 </html>

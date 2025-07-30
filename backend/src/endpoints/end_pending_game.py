@@ -104,6 +104,7 @@ def end_pending_game_api(judge_answer: JudgeGameAnswer, game_id: int) -> EndPend
         ))
 
         connection.commit()
+        print(message)
 
         return EndPendingJudgeGameOutput(
             game_id=game_id,

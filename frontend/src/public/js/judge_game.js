@@ -2,6 +2,8 @@ const partita_section = document.getElementById("partita-section");
 const sessione_section = document.getElementById("sessione-section");
 const partita_terminata_section = document.getElementById("partita-terminata-section");
 const game_id = window.location.pathname.split("/")[2]; // /judge-game/id
+const vittoria = document.getElementById("vittoria-div");
+const sconfitta = document.getElementById("sconfitta-div");
 
 document.getElementById("form-partita").addEventListener("submit", async(e)=>{
     e.preventDefault();
@@ -60,10 +62,12 @@ async function send_verdict(is_ai){
     const response_data = await response.json();
 
     if(response_data.is_won){
+        vittoria.style.display = "flex";
         document.getElementById("vittoria-msg").innerText = response_data.message;
         document.getElementById("azione-punti").innerText = "vinto";
     }
     else{
+        sconfitta.style.display = "flex";
         document.getElementById("sconfitta-msg").innerText = response_data.message;
         document.getElementById("azione-punti").innerText = "perso";
     }

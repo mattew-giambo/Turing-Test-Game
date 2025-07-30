@@ -137,15 +137,23 @@ button:hover {
 
 /* Sezione partita terminata */
 .partita-terminata-section {
-    background: linear-gradient(90deg, var(--bianco-crema) 0%, #fff 100%);
-    border: 2px solid var(--retro-fg);
-    padding: 3rem;
-    box-shadow: 4px 4px var(--retro-shadow);
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    padding: 3rem;
+    border: 2px solid var(--retro-fg);
+    background: linear-gradient(90deg, var(--bianco-crema) 0%, #fff 100%);
+    box-shadow: 4px 4px var(--retro-shadow);
+    display: none; 
+    height: 100%;
+}
 
-    display: none;
+.partita-terminata-section > div {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .img-container {
@@ -176,6 +184,7 @@ a {
     
     transition: all 0.1s ease-in-out;
     cursor: pointer;
+    margin-top: 2rem;
 }
 
 a:hover {
@@ -185,19 +194,29 @@ a:hover {
     box-shadow: 1px 1px 0px var(--retro-shadow);
 }
 
-/* Footer */
-footer {
+/* FOOTER */
+.footer {
     background-color: var(--retro-bg);
-    color: var(--retro-fg);
-    padding: 3rem 2rem;
+    color: var(--text-color);
+    padding-top: 2rem;
     text-align: center;
-    border-top: 4px solid var(--retro-fg);
-    position: relative;
+    border-top: 2px solid var(--retro-fg);
 }
-
-.footer-logo h2 {
+.footer h1{
     font-size: 1.2rem;
-    letter-spacing: 2px;
-    margin-bottom: 1rem;
-    text-shadow: 2px 2px 0px var(--retro-shadow);
+    margin-bottom: 0.8rem;
+    border-bottom: 1px solid;
+    display: inline-block;
+    width: 50rem;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+    letter-spacing: 0.5cap;
+}
+.footer p{
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: -0.1cap;
+}
+.footer-text{
+    margin: 0.5rem;
 }
