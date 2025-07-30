@@ -44,10 +44,10 @@ body {
 /* HEADER */
 header {
     background-color: var(--retro-bg);
-    padding: 1.8rem;
     border-bottom: 3px solid var(--retro-fg);
     position: relative;
     z-index: 10;
+    padding: 2rem;
 }
 
 .header-container {
@@ -57,8 +57,12 @@ header {
     justify-content: space-between;
 }
 
-.logo h2{
-    font-size: 1rem;
+.logo h1{
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2cap;
+    color: var(--text-color);
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
 }
 
 nav ul {
@@ -71,20 +75,23 @@ nav a {
     text-decoration: none;
     color: var(--retro-fg);
     background-color: var(--retro-blue);
-    padding: 0.5rem 1.2rem;
+    padding: 0.8rem 1.2rem;
 
     border: 3px solid var(--retro-fg);
     box-shadow: 4px 4px 0px #391a15;
     
-    transition: all 0.1s ease-in-out;
+    transition: all 0.2s ease-in-out;
     cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    text-shadow: 1px 1px 0 var(--retro-shadow);
 }
 
 nav a:hover {
     color: var(--retro-fg);
     background-color: var(--retro-green);
     transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0px #000;
+    box-shadow: 1px 1px 0px var(--retro-shadow);
 }
 
 #btn-esci{
@@ -94,10 +101,7 @@ nav a:hover {
 #btn-esci:hover{
     color: #ffa200;
     background-color: var(--retro-highlight);
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0px #000;
 }
-
 
 /* MAIN */
 .main-content {
@@ -219,9 +223,11 @@ nav a:hover {
 .statistiche-gruppo-wrapper h2{
     font-size: 1.3rem;
     color: var(--retro-red);
-    text-shadow:  2px 2px 0 #f3f3be;
+    text-shadow:  2px 2px 0 rgba(0, 0, 0, 0.6);
     margin-bottom: 0.7rem;
     user-select: none;
+    text-transform: uppercase;
+    letter-spacing: -1.2px;
 }
 
 .statistiche-elem {
@@ -342,19 +348,28 @@ tr:nth-child(even) {
 
 
 /* FOOTER */
-footer {
+.footer {
     background-color: var(--retro-bg);
-    color: var(--retro-fg);
-    padding: 3rem 2rem;
+    color: var(--text-color);
+    padding-top: 2rem;
     text-align: center;
-    border-top: 4px solid var(--retro-fg);
-    position: relative;
-    margin-top: 4rem;
+    border-top: 2px solid var(--retro-fg);
 }
-
-.footer-logo h2 {
-    font-size: 1.4rem;
-    letter-spacing: 0.12em;
-    margin-bottom: 1rem;
-    text-shadow: 2px 2px 0 var(--retro-shadow);
+.footer h1{
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+    border-bottom: 1px solid;
+    display: inline-block;
+    width: 50rem;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+    letter-spacing: 0.5cap;
+}
+.footer p{
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: -0.1cap;
+}
+.footer-text{
+    margin: 0.5rem;
 }
