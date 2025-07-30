@@ -18,7 +18,7 @@
      
     /* Element highlights */
     --retro-highlight: #FFEB3B;    /* Giallo evidenziato */
-    --retro-shadow: #606060;       /* Ombra stile NES */
+    --retro-shadow: #606060d5;       /* Ombra stile NES */
     --hero-blue: #00A8C6;          /* Hero color */
     --green: #39aa35;
 }
@@ -44,11 +44,10 @@ body {
 /* HEADER */
 header {
     background-color: var(--retro-bg);
-    padding: 1.5rem;
+    padding: 1.8rem;
     border-bottom: 3px solid var(--retro-fg);
     position: relative;
     z-index: 10;
-    padding: 1rem;
 }
 
 .header-container {
@@ -111,8 +110,14 @@ nav a:hover {
     margin: 0 auto;
 }
 
+.hero-container {
+    position: relative; 
+    max-width: 700px;
+    margin: 0 auto;
+}
+
 .hero-text {
-    background-color: var(--retro-green);
+    background-color: #fefefe;
     padding: 1.2rem 1rem;
     margin-bottom: 2.5rem;
     width: 100%;
@@ -121,18 +126,34 @@ nav a:hover {
     text-align: center;
     letter-spacing: 0.04em;
     box-shadow: 4px 4px 0px #391a15;
+
+    position: relative;
+    z-index: 1;
+}
+
+.highlight-pink {
+    color: var(--retro-pink); /* se esiste */
+}
+
+#welcome-img {
+    position: absolute;
+    top: -20px;     /* sposta l'immagine sopra il box */
+    left: -250px;    /* sposta l'immagine a sinistra del box */
+    width: 350px;
+    height: 350px;
+    z-index: 2;
 }
 
 .msg-benvenuto, .email-text {
     margin: 1rem 0;
     font-size: 0.85rem;
-    text-shadow: 1px 1px 0 #108019a1;
+    text-shadow: 1px 1px 0 #626262a1;
 }
 
 .statistiche {
     display: flex;
     flex-wrap: wrap;
-    gap: 2rem;
+    gap: 3rem;
     width: 100%;
     justify-content: center;
     border-bottom: 4px dashed var(--retro-border);
@@ -144,7 +165,50 @@ nav a:hover {
     flex-direction: column;
     align-items: center;
     min-width: 270px;
+    position: relative;
 }
+
+#robot-img {
+    position: absolute;
+    top: -20px;
+    left: 320px;
+    width: 80px;
+    height: auto;
+    z-index: 5;
+}
+
+#quack-img {
+    position: absolute;
+    top: -53px;
+    right: 60px;
+    width: 100px;
+    height: auto;
+    z-index: 5;
+}
+
+#coin-img {
+    position: absolute;
+    top: -40px;
+    left: -90px;
+    transform: translateX(-50%);
+    width: 80px;
+    height: auto;
+    z-index: 5;
+
+    animation: shadow-move 2s ease-in-out infinite;
+}
+
+@keyframes shadow-move {
+  0%, 100% {
+    filter: drop-shadow(4px 4px 0 #391a15);
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    filter: drop-shadow(6px 6px 0 #391a15);
+    transform: translateX(-50%) translateY(-3px);
+  }
+}
+
 
 .statistiche-gruppo {
     display: flex;
@@ -164,21 +228,20 @@ nav a:hover {
     background-color: var(--bianco-crema);
     border: 3px solid var(--retro-fg);
     padding: 1rem;
-    max-width: 250px;
-    max-height: 180px;
+    width: 200px;
+    height: 140px;
     text-align: center;
     box-shadow: 4px 4px 0px #391a15;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
-/*
-.statistiche-elem:hover{
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0px #000;
-}*/
 
 .statistiche-elem h3 {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     margin-bottom: 0.65rem;
-    text-shadow: 1px 1px 0 #0000006b;
+    text-shadow: 1px 1px 0 #00000043;
 }
 
 .statistiche-elem p {
@@ -206,8 +269,15 @@ nav a:hover {
 .table-wrapper{
     max-height: 40rem;
     overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
     border: 2px solid var(--retro-fg);
+    border-left: 1px;
+    border-top: 1px;
+    border-bottom: 1px;
     max-width: 100%;
+    box-shadow: 4px 4px 0px #391a15;
 }
 
 table {
@@ -253,6 +323,19 @@ td {
     user-select: text;
 }
 
+table tr:first-child th:first-child {
+    border-top-left-radius: 2px;
+}
+table tr:first-child th:last-child {
+    border-top-right-radius: 2px;
+}
+table tr:last-child td:first-child {
+    border-bottom-left-radius: 2px;
+}
+table tr:last-child td:last-child {
+    border-bottom-right-radius: 2px;
+}
+
 tr:nth-child(even) {
     background-color: #f3f3be;
 }
@@ -266,11 +349,12 @@ footer {
     text-align: center;
     border-top: 4px solid var(--retro-fg);
     position: relative;
+    margin-top: 4rem;
 }
 
 .footer-logo h2 {
     font-size: 1.4rem;
     letter-spacing: 0.12em;
     margin-bottom: 1rem;
-    text-shadow: 3px 3px 0 var(--retro-shadow);
+    text-shadow: 2px 2px 0 var(--retro-shadow);
 }

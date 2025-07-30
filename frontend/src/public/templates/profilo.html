@@ -35,14 +35,21 @@
         <!-- Main -->
         <main  class="main-content">
             <!-- Hero Section -->
-            <section class="hero-text">
-                <div class="msg-benvenuto">Benvenuto nella tua area riservata, {{ username }}.</div>
-
-                <div class="email-text">Email: {{ email }}</div>
-            </section>
+            <div class="hero-container">
+                <img id="welcome-img" src="/assets/welcome.PNG" alt="Welcome">
+                <section class="hero-text">
+                    <div class="msg-benvenuto">
+                        Benvenuto nella tua area riservata, <span class="highlight-pink">{{ username }}</span>.
+                    </div>
+                    <div class="email-text">
+                        Email: <span class="highlight-pink">{{ email }}</span>
+                    </div>
+                </section>
+            </div>
 
             <section class="statistiche">
                 <div class="statistiche-gruppo-wrapper">
+                    <img id="robot-img" src="/assets/robot.PNG" alt="robot">
                     <h2>Generali</h2>
                     <div class="statistiche-gruppo">
                         <div id="partite-giocate-tot" class="statistiche-elem">
@@ -57,6 +64,7 @@
                 </div>
                 <div class="statistiche-gruppo-wrapper">
                     <h2>Partite da Giudice</h2>
+                    <img id="quack-img" src="/assets/quack.PNG" alt="quack">
                     <div class="statistiche-gruppo">
                         <div id="partite-giocate-judge" class="statistiche-elem">
                             <h3>Partite giocate</h3>
@@ -82,6 +90,7 @@
                 </div>
                 
                 <div class="statistiche-gruppo-wrapper">
+                    <img id="coin-img" src="/assets/turingcoin.PNG" alt="coin">
                     <h2>Partite da Partecipante</h2>
                     <div class="statistiche-gruppo">
                         <div id="partite-giocate-part" class="statistiche-elem">
