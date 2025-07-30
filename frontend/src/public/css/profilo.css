@@ -189,7 +189,6 @@ nav a:hover {
 }
 
 .partite-giocate {
-    width: 100%;
     margin-top: 3rem;
     display: flex;
     flex-direction: column;
@@ -205,9 +204,9 @@ nav a:hover {
 }
 
 .table-wrapper{
-    max-height: 50rem;
+    max-height: 40rem;
     overflow-y: auto;
-    border: 3px solid var(--retro-fg);
+    border: 2px solid var(--retro-fg);
     max-width: 100%;
 }
 
