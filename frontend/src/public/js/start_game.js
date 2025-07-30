@@ -5,7 +5,6 @@ const params = new URLSearchParams(window.location.search);
 const token = params.get("token");
 const user_id = window.location.pathname.split("/")[2];
 
-url.searchParams.set("player_id", user_id);
 url.searchParams.set("token", token);
 profilo_stats.href = url.toString();
 
@@ -18,12 +17,15 @@ const judge_game = document.getElementById("judge_game");
 const classic_mod = document.getElementById("classic_mod");
 const verdict_mod = document.getElementById("verdict_mod");
 
+const popup = document.getElementById("popup");
+
 judge_btn.addEventListener("click", () => {
     generic_game.style.display = "none";
-    judge_game.style.display = "block";
+    judge_game.style.display = "flex";
 });
 
 part_btn.addEventListener("click", async () => {
+    popup.style.display = "flex";
     try{
         const data = {
             player_id: parseInt(user_id),
@@ -52,7 +54,11 @@ part_btn.addEventListener("click", async () => {
         const newUrl = new URL(`/participant-game/${game_id}`, window.location.origin);
         newUrl.searchParams.set("player_id", user_id);
         newUrl.searchParams.set("token", token);
-        window.location.href = newUrl.toString();
+
+        setTimeout(()=>{
+            window.location.href = newUrl.toString();
+        }, 5000);
+        
     } catch (error) {
         alert("Errore: " + error.message);
         console.error("Errore avvio partita partecipante:", error);
@@ -60,6 +66,7 @@ part_btn.addEventListener("click", async () => {
 });
 
 classic_mod.addEventListener("click", async () => {
+    popup.style.display = "flex";
     try{
         const data = {
             player_id: parseInt(user_id),
@@ -89,7 +96,10 @@ classic_mod.addEventListener("click", async () => {
         const newUrl = new URL(`/judge-game/${game_id}`, window.location.origin);
         newUrl.searchParams.set("player_id", user_id);
         newUrl.searchParams.set("token", token);
-        window.location.href = newUrl.toString();
+
+        setTimeout(()=>{
+            window.location.href = newUrl.toString();
+        }, 5000);
     } catch (error) {
         alert("Errore: " + error.message);
         console.error("Errore avvio partita partecipante:", error);
@@ -97,6 +107,7 @@ classic_mod.addEventListener("click", async () => {
 });
 
 verdict_mod.addEventListener("click", async () => {
+    popup.style.display = "flex";
     try{
         const data = {
             player_id: parseInt(user_id),
@@ -126,7 +137,10 @@ verdict_mod.addEventListener("click", async () => {
         const newUrl = new URL(`/verdict-game/${game_id}`, window.location.origin);
         newUrl.searchParams.set("player_id", user_id);
         newUrl.searchParams.set("token", token);
-        window.location.href = newUrl.toString();
+
+        setTimeout(()=>{
+            window.location.href = newUrl.toString();
+        }, 5000);
     } catch (error) {
         alert("Errore: " + error.message);
         console.error("Errore avvio partita partecipante:", error);
