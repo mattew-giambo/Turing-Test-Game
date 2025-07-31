@@ -72,6 +72,16 @@ main {
     margin-bottom: 2rem;
     border: 2px solid var(--retro-fg);
     box-shadow: 4px 4px 0 var(--retro-shadow);
+    position: relative;
+}
+
+#mod-img-partita {
+    position: absolute;
+    top: -5px;
+    left: 850px;
+    width: 280px;
+    height: auto;
+    z-index: 5;
 }
 
 .form-elem {
@@ -133,6 +143,8 @@ button:hover {
     margin-bottom: 2rem;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 2rem;
 
     display: none;
@@ -149,7 +161,18 @@ button:hover {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    position: relative;
 }
+
+#mod-img {
+    position: absolute;
+    top: -60px;
+    left: 800px;
+    width: 280px;
+    height: auto;
+    z-index: 5;
+}
+
 .domande-risposte-elem{
     display: flex;
     flex-direction: column;
