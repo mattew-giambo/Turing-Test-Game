@@ -69,7 +69,6 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 2rem 18rem;
 }
 
 /* Partita Section */
@@ -80,6 +79,7 @@ main {
     border: 2px solid var(--retro-fg);
     box-shadow: 4px 4px 0 var(--retro-shadow);
     position: relative;
+    margin: 2rem 14rem;
 }
 
 #mod-img-partita {
@@ -148,13 +148,12 @@ button:hover {
     padding: 3rem;
     box-shadow: 4px 4px var(--retro-shadow);
     margin-bottom: 2rem;
-    display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    justify-content: space-around;
     gap: 2rem;
 
     display: none;
+    margin: 2rem 10rem;
 }
 
 .sessione-section-text{
@@ -162,6 +161,18 @@ button:hover {
     line-height: 1.6;
     margin-bottom: 1rem;
     margin-top: 1rem;
+    font-size: 1rem;
+    color: var(--retro-red);
+    -webkit-text-stroke: 1px var(--retro-fg);
+    text-transform: uppercase;
+    text-align: center;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+.sessione-section-text h1{
+    color: #d84040;
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    margin-bottom: 2rem;
 }
 
 .domande-risposte{
@@ -199,13 +210,19 @@ button:hover {
 }
 
 .sessione-risposta{
-    color: var(--retro-purple)
+    color: var(--retro-fg)
 }
 
 .sessione-domanda{
-    color: var(--retro-red)
+    color: var(--retro-fg)
 }
 
+.btn-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
+}
 /* Sezione partita terminata */
 .partita-terminata-section {
     background: linear-gradient(90deg, var(--bianco-crema) 0%, #fff 100%);
@@ -281,4 +298,52 @@ a:hover {
 }
 .footer-text{
     margin: 0.5rem;
+}
+
+/* POPUP */
+.partita-avviata-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.popup-content {
+    background-color: var(--bianco-crema);
+    border: 3px solid var(--retro-fg);
+    box-shadow: 4px 4px var(--retro-shadow);
+    padding: 4rem;
+    text-align: center;
+    font-family: 'Press Start 2P', cursive;
+    color: var(--retro-fg);
+    background-color: rgba(255, 255, 255, 0.95);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.popup-content p{
+    text-transform: uppercase;
+    color: var(--retro-red);
+    -webkit-text-stroke: 1px var(--retro-fg);
+    text-shadow: 2px 2px 0 var(--retro-orange);
+}
+
+.loader {
+    display: flex;
+    align-items: center;
+}
+
+.loader img {
+    width: 8rem;   /* o qualsiasi valore in px, %, rem, ecc. */
+    height: auto;  /* mantiene le proporzioni */
+    image-rendering: pixelated; /* se vuoi effetto pixelato */
 }

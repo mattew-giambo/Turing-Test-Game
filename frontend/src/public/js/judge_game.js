@@ -4,10 +4,11 @@ const partita_terminata_section = document.getElementById("partita-terminata-sec
 const game_id = window.location.pathname.split("/")[2]; // /judge-game/id
 const vittoria = document.getElementById("vittoria-div");
 const sconfitta = document.getElementById("sconfitta-div");
+const popup = document.getElementById("popup");
 
 document.getElementById("form-partita").addEventListener("submit", async(e)=>{
     e.preventDefault();
-
+    popup.style.display = "flex";
     const domanda1 = document.getElementById("domanda1").value;
     const domanda2 = document.getElementById("domanda2").value;
     const domanda3 = document.getElementById("domanda3").value;
@@ -40,7 +41,8 @@ document.getElementById("form-partita").addEventListener("submit", async(e)=>{
     document.getElementById("sessione-risposta-3").innerText = answers_list[2];
 
     partita_section.style.display = "none";
-    sessione_section.style.display = "block";
+    sessione_section.style.display = "flex";
+    popup.style.display = "none";
 });
 
 async function send_verdict(is_ai){

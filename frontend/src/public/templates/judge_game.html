@@ -18,7 +18,7 @@
     </header>
     <main>
         <section id="partita-section" class="partita-section">
-            <img id="mod-img-partita" src="/assets/classic.PNG" alt="mod-img">
+            <!-- <img id="mod-img-partita" src="/assets/classic.PNG" alt="mod-img"> -->
             <form id="form-partita">
                 <div class="form-elem">
                     <label for="domanda1">Domanda 1:</label>
@@ -39,11 +39,12 @@
         <section id="sessione-section" class="sessione-section"> <!-- Default invisibile, contiene il recap della sessione -->
 
             <div class="sessione-section-text">
-                <p>Il momento della verità è arrivato. <br> Osserva bene le risposte relative alle domande e annuncia il tuo verdetto!</p>
+                <h1>Il momento della verita' e' arrivato.</h1>
+                <p>Osserva bene le risposte e annuncia il tuo verdetto!</p>
             </div>
 
             <div class="domande-risposte">
-                <img id="mod-img" src="/assets/classic.PNG" alt="mod-img">
+                <!-- <img id="mod-img" src="/assets/classic.PNG" alt="mod-img"> -->
                 <div class="domande-risposte-elem">
                     <div class="label-domanda">
                         <label for="sessione-domanda-1">Domanda 1:</label>
@@ -71,7 +72,7 @@
                 <p>Secondo te ha risposto un umano oppure una macchina?</p>
             </div>
 
-            <div>
+            <div class="btn-wrapper">
                 <!--Pulsanti da sostituire con le immagini di un umano e robot-->
                 <button id="umano-btn">Umano</button>
                 <button id="macchina-btn">Macchina</button>
@@ -105,6 +106,14 @@
             </div>
         </section>
     </main>
+    <section class="partita-avviata-popup" id="popup">
+        <div class="popup-content">
+            <div class="loader">
+                <img src="/assets/attesa.png">
+            </div>
+            <p>Le domande sono state inoltrate. Attendi le risposte...</p>
+        </div>
+    </section>
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-container">

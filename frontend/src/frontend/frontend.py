@@ -7,6 +7,7 @@ from models.player_info import PlayerInfo
 from models.judge_game import JudgeGameAnswer, JudgeGameInput
 from models.participant_game import AnswerInput
 from models.authentication import UserLogin, UserRegister
+from models.game_info import GameInfoInput
 from typing import *
 
 from endpoints.start_game import start_game
@@ -22,6 +23,7 @@ from endpoints.user_disconnect import user_disconnect
 from endpoints.user_login import user_login
 from endpoints.get_profilo import get_profilo
 from endpoints.user_register import user_register
+from endpoints.game_info import game_info
 
 from utility.rimuovi_sessioni_scadute import rimuovi_sessioni_scadute
 from utility.verify_user_token import verify_user_token
@@ -135,20 +137,12 @@ def get_profilo_endpoint(user_id: int, token: str, request: Request):
 def user_disconnect_endpoint(user_id: int):
     return user_disconnect(user_id, sessioni_attive)
 
+@app.post("/game-info")
+def game_info_endpoint(payload: GameInfoInput):
+    return game_info(payload)
+
 @app.exception_handler(404)
 def not_found_handler(request: Request, exc):
     return templates.TemplateResponse(
         "404.html", {"request": request}
     )
-
-# @app.get("/user-stats/{user_id}")
-# def get_user_stats_endpoint(user_id: int, request: Request):
-#     return get_user_stats(user_id, request, templates)
-
-# @app.get("/user-games/{user_id}")
-# def get_user_games_endpoint(user_id: int, request: Request):
-#     return get_user_games(user_id, request, templates)
-
-# @app.get("/user-info/{user_id}")
-# def get_user_info_endpoint(user_id: int, request: Request):
-#     return get_user_info(user_id, request)

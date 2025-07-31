@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Literal
+from typing import Literal, Optional
 from datetime import date
 
 class GameInfoInput(BaseModel):
@@ -12,3 +12,4 @@ class GameInfoOutput(BaseModel):
     is_terminated: bool 
     player_id: int 
     player_role: Literal["judge", "participant"]
+    is_won: Optional[bool]

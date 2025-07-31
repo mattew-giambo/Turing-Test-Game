@@ -29,7 +29,7 @@ def game_info_api(payload: GameInfoInput):
 
     try:
         query: str = """
-            SELECT g.id, g.game_date, g.is_terminated, ug.player_id, ug.player_role
+            SELECT g.id, g.game_date, g.is_terminated, ug.player_id, ug.player_role, ug.is_won
             FROM Games AS g
             JOIN UserGames AS ug ON g.id = ug.game_id
             WHERE g.id = %s AND ug.player_id = %s
@@ -48,7 +48,8 @@ def game_info_api(payload: GameInfoInput):
             data=result[1],
             is_terminated=result[2],
             player_id=result[3],
-            player_role=result[4]
+            player_role=result[4],
+            is_won= result[5]
         )
 
     except mariadb.Error:
