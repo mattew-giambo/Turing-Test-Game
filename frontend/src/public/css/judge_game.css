@@ -49,8 +49,12 @@ header {
     justify-content: space-between;
 }
 
-.logo h2{
-    font-size: 1rem;
+.logo h1{
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2cap;
+    color: var(--text-color);
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
 }
 
 /* Main content */
@@ -222,19 +226,33 @@ a:hover {
     box-shadow: 1px 1px 0px var(--retro-shadow);
 }
 
-/* Footer */
-footer {
+/* FOOTER */
+.footer {
     background: linear-gradient(135deg, #FAE149, #FFEB5B);
-    color: var(--retro-fg);
+    color: var(--text-color);
     padding: 3rem 2rem;
     text-align: center;
     border-top: 4px solid var(--retro-fg);
     position: relative;
 }
 
-.footer-logo h2 {
+.footer h1{
     font-size: 1.2rem;
-    letter-spacing: 2px;
-    margin-bottom: 1rem;
-    text-shadow: 2px 2px 0px var(--retro-shadow);
+    margin-bottom: 0.8rem;
+    border-bottom: 1px solid;
+    display: inline-block;
+    width: 50rem;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+    letter-spacing: 0.5cap;
+}
+
+.footer p{
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: -0.1cap;
+}
+
+.footer-text{
+    margin: 0.5rem;
 }

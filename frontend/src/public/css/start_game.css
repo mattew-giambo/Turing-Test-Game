@@ -202,9 +202,10 @@ button:hover{
 .footer {
     background: linear-gradient(135deg, #FAE149, #FFEB5B);
     color: var(--text-color);
-    padding-top: 2rem;
+    padding: 2rem 2rem;
     text-align: center;
-    border-top: 2px solid var(--retro-fg);
+    border-top: 4px solid var(--retro-fg);
+    position: relative;
 }
 .footer h1{
     font-size: 1.2rem;
@@ -224,7 +225,6 @@ button:hover{
 .footer-text{
     margin: 0.5rem;
 }
-
 
 /* POPUP */
 .partita-avviata-popup {
