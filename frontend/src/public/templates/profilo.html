@@ -135,7 +135,7 @@
                                 {% for game in user_games %}
                                 <tr>
                                     <td>{{ game.game_id }}</td>
-                                    <td>{{ game.data }}</td>
+                                    <td>{{ game.data.strftime('%d/%m/%Y') }}</td>
                                     <td>
                                         {% if game.player_role == 'judge' %}
                                             Giudice

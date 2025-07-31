@@ -30,7 +30,7 @@ def get_player_games_api(user_id: int) -> UserGames:
             FROM Games AS g
             JOIN UserGames AS ug ON g.id = ug.game_id
             WHERE ug.player_id = %s
-            ORDER BY g.game_date DESC
+            ORDER BY g.game_date DESC, g.game_id DESC
         """
         cursor.execute(query, (user_id,))
         result = cursor.fetchall()
