@@ -20,6 +20,7 @@
     --retro-highlight: #FFEB3B;    /* Giallo evidenziato */
     --retro-shadow: #606060;       /* Ombra stile NES */
     --hero-blue: #00A8C6;          /* Hero color */
+    --text-color: #2D0A21;
 }
 
 * {
@@ -31,6 +32,12 @@
 body {
     background-color: var(--retro-blue);
     font-family: "Press Start 2P";
+
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: space-between;
+    line-height: 1.6;
 }
 
 /* Header */
@@ -54,7 +61,7 @@ header {
     text-transform: uppercase;
     letter-spacing: 0.2cap;
     color: var(--text-color);
-    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
 }
 
 /* Main content */
@@ -253,12 +260,10 @@ a:hover {
 .footer {
     background: linear-gradient(135deg, #FAE149, #FFEB5B);
     color: var(--text-color);
-    padding: 3rem 2rem;
+    padding-top: 2rem;
     text-align: center;
-    border-top: 4px solid var(--retro-fg);
-    position: relative;
+    border-top: 2px solid var(--retro-fg);
 }
-
 .footer h1{
     font-size: 1.2rem;
     margin-bottom: 0.8rem;
@@ -269,13 +274,11 @@ a:hover {
     text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
     letter-spacing: 0.5cap;
 }
-
 .footer p{
     font-size: 0.6rem;
     text-transform: uppercase;
     letter-spacing: -0.1cap;
 }
-
 .footer-text{
     margin: 0.5rem;
 }

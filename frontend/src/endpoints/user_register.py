@@ -10,10 +10,21 @@ def user_register(user: UserRegister, request: Request) -> RegisterResponse:
         response = requests.post(urljoin(API_BASE_URL, "/register-api"), json= user.model_dump())
         response.raise_for_status()
     except requests.RequestException as e:
-        error_data: Dict =  e.response.json()
+        status_code = 500
+        detail = "Errore sconosciuto"
+
+        if e.response is not None:
+            status_code = e.response.status_code
+            try:
+                error_data: Dict = e.response.json()
+                detail = error_data.get("detail", detail)
+            except ValueError:
+                # Il body non è in formato JSON
+                detail = e.response.text
+
         raise HTTPException(
-            status_code= error_data.get("status_code", 500),
-            detail= error_data.get("detail", "Errore del server")
+            status_code=status_code,
+            detail=detail
         )
     
     response_data = RegisterResponse.model_validate(response.json())

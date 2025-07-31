@@ -49,7 +49,8 @@ def login_api(user: UserLogin) -> LoginResponse:
             email= email
         )
 
-    except mariadb.Error:
+    except mariadb.Error as e:
+        print(e)
         raise HTTPException(status_code=500, detail="Errore durante il login")
 
     finally:

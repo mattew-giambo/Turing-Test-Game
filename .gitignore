@@ -1,3 +1,4 @@
 Ollama
 database/mariadb_data
 start.sh
+__pycache__/

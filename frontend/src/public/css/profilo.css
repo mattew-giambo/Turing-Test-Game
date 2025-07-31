@@ -14,13 +14,14 @@
     --retro-pink: #ff55c9;         /* Rosa pastello */
     --retro-purple: #a34cfa;       /* Viola pastello */
     --retro-orange: #FFB347;       /* Arancione retrò */
-     --retro-shadow: #391a15;
+    --retro-shadow: #391a15;
      
     /* Element highlights */
     --retro-highlight: #FFEB3B;    /* Giallo evidenziato */
     --retro-shadow: #606060d5;       /* Ombra stile NES */
     --hero-blue: #00A8C6;          /* Hero color */
     --green: #39aa35;
+    --text-color: #2D0A21;
 }
 
 * {
@@ -62,7 +63,7 @@ header {
     text-transform: uppercase;
     letter-spacing: 0.2cap;
     color: var(--text-color);
-    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
 }
 
 nav ul {

@@ -64,7 +64,7 @@ header {
     text-transform: uppercase;
     letter-spacing: 0.2cap;
     color: var(--text-color);
-    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
 }
 
 nav ul {
@@ -202,10 +202,9 @@ button:hover{
 .footer {
     background: linear-gradient(135deg, #FAE149, #FFEB5B);
     color: var(--text-color);
-    padding: 2rem 2rem;
+    padding-top: 2rem;
     text-align: center;
-    border-top: 4px solid var(--retro-fg);
-    position: relative;
+    border-top: 2px solid var(--retro-fg);
 }
 .footer h1{
     font-size: 1.2rem;

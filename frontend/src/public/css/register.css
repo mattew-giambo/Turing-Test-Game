@@ -19,6 +19,7 @@
     --retro-highlight: #FFEB3B;    /* Giallo evidenziato */
     --retro-shadow: #606060;       /* Ombra stile NES */
     --hero-blue: #00A8C6;          /* Hero color */
+    --text-color: #2D0A21;
 }
 
 * {
@@ -37,24 +38,31 @@ body {
     flex-direction: column;
     min-height: 100vh;
     justify-content: space-between;
+    line-height: 1.6;
 }
 
 /* HEADER */
 header {
     background: linear-gradient(135deg, #FAE149, #FFEB5B);
-    padding: 1.5rem;
     border-bottom: 3px solid var(--retro-fg);
     position: relative;
     z-index: 10;
-    padding: 1rem;
+    padding: 2rem;
 }
 
 .header-container {
-    max-width: 1200px;
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.logo h1{
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2cap;
+    color: var(--text-color);
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
 }
 
 nav ul {
@@ -67,23 +75,23 @@ nav a {
     text-decoration: none;
     color: var(--retro-fg);
     background-color: var(--retro-red);
-    padding: 0.5rem 1.2rem;
+    padding: 0.8rem 1.2rem;
 
     border: 3px solid var(--retro-fg);
     box-shadow: 4px 4px 0px #391a15;
     
-    transition: all 0.1s ease-in-out;
+    transition: all 0.2s ease-in-out;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
 }
 
 nav a:hover {
-    color: #ffa200;
+    color: var(--retro-orange);
     background-color: var(--retro-highlight);
     transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0px #000;
+    box-shadow: 1px 1px 0px var(--retro-shadow);
 }
 
 /* MAIN */
@@ -98,7 +106,7 @@ main{
 
 .main-content {
     max-width: 1200px;
-    background: linear-gradient(135deg, var(--bianco-crema) 0%, #fff 100%);
+    background: linear-gradient(135deg, var(--bianco-crema) 40%, #fff 100%);
     padding: 3rem;
     border: 4px solid var(--retro-fg);
     box-shadow: 
@@ -112,7 +120,8 @@ main{
     margin-bottom: 1rem;
     color: var(--retro-red);
     text-align: center;
-    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
 }
 
 .registration-header p {
@@ -120,6 +129,9 @@ main{
     margin-bottom: 2.5rem;
     color: var(--retro-blue);
     text-align: center;
+    text-transform: uppercase;
+    letter-spacing: -0.8px;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
 }
 
 .registration-form{
@@ -144,6 +156,7 @@ label {
     color: var(--retro-blue);
     text-transform: uppercase;
     letter-spacing: 1px;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
 }
 
 input {
@@ -169,7 +182,9 @@ input::placeholder {
     color: var(--retro-shadow);
     opacity: 0.5;
 }
-
+input:focus::placeholder{
+    opacity: 0.8;
+}
 .form-actions{
     display: flex;
     justify-content: center;
@@ -191,6 +206,8 @@ input::placeholder {
     transition: all 0.1s ease-in-out;
     text-transform: uppercase;
     letter-spacing: 1px;
+
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary:hover{
@@ -228,18 +245,28 @@ input::placeholder {
 }
 
 /* FOOTER */
-footer {
+.footer {
     background: linear-gradient(135deg, #FAE149, #FFEB5B);
-    color: var(--retro-fg);
-    padding: 3rem 2rem;
+    color: var(--text-color);
+    padding-top: 2rem;
     text-align: center;
-    border-top: 4px solid var(--retro-fg);
-    position: relative;
+    border-top: 2px solid var(--retro-fg);
 }
-
-.footer-logo h2 {
+.footer h1{
     font-size: 1.2rem;
-    letter-spacing: 2px;
-    margin-bottom: 1rem;
-    text-shadow: 2px 2px 0px var(--retro-shadow);
+    margin-bottom: 0.8rem;
+    border-bottom: 1px solid;
+    display: inline-block;
+    width: 50rem;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+    letter-spacing: 0.5cap;
+}
+.footer p{
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: -0.1cap;
+}
+.footer-text{
+    margin: 0.5rem;
 }
