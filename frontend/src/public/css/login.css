@@ -41,7 +41,7 @@ body {
 
 /* HEADER */
 header {
-    background-color: var(--retro-bg);
+    background: linear-gradient(135deg, #FAE149, #FFEB5B);
     padding: 1.5rem;
     border-bottom: 3px solid var(--retro-fg);
     position: relative;
@@ -245,7 +245,7 @@ input::placeholder {
 
 /* FOOTER */
 footer {
-    background-color: var(--retro-bg);
+    background: linear-gradient(135deg, #FAE149, #FFEB5B);
     color: var(--retro-fg);
     padding: 3rem 2rem;
     text-align: center;

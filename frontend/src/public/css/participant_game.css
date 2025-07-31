@@ -38,7 +38,7 @@ body {
 
 /* Header */
 header {
-    background-color: var(--retro-bg);
+    background: linear-gradient(135deg, #FAE149, #FFEB5B);
     border-bottom: 3px solid var(--retro-fg);
     position: relative;
     z-index: 10;
@@ -235,7 +235,7 @@ a:hover {
 
 /* Footer */
 footer {
-    background-color: var(--retro-bg);
+    background: linear-gradient(135deg, #FAE149, #FFEB5B);
     color: var(--retro-fg);
     padding: 3rem 2rem;
     text-align: center;
