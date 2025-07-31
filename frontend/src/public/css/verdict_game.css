@@ -35,7 +35,7 @@ body {
 
 /* Header */
 header {
-    background-color: var(--retro-bg);
+    background: linear-gradient(135deg, #FAE149, #FFEB5B);
     border-bottom: 3px solid var(--retro-fg);
     position: relative;
     z-index: 10;
@@ -58,7 +58,7 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 2rem 18rem;
+    padding: 6rem 18rem;
 }
 
 label {
@@ -97,29 +97,46 @@ button:hover {
     margin-bottom: 2rem;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 2rem;
 }
+
 .sessione-section-text{
     overflow-wrap: break-word;
     line-height: 1.6;
-
 }
+
 .domande-risposte{
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    position: relative;
 }
+
+#mod-img {
+    position: absolute;
+    top: -60px;
+    left: 780px;
+    width: 280px;
+    height: auto;
+    z-index: 5;
+}
+
 .domande-risposte-elem{
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
+
 .label-domanda label{
     margin: 0;
 }
+
 .label-domanda p{
     margin: 0;
 }
+
 .label-domanda{
     display: flex;
     flex: 1;
@@ -133,6 +150,10 @@ button:hover {
 
 .sessione-domanda{
     color: var(--retro-red)
+}
+
+p {
+    text-align: center;
 }
 
 /* Sezione partita terminata */
@@ -196,15 +217,16 @@ a:hover {
 
 /* FOOTER */
 .footer {
-    background-color: var(--retro-bg);
+    background: linear-gradient(135deg, #FAE149, #FFEB5B);
     color: var(--text-color);
     padding-top: 2rem;
+    padding-bottom: 2rem;
     text-align: center;
     border-top: 2px solid var(--retro-fg);
 }
 .footer h1{
     font-size: 1.2rem;
-    margin-bottom: 0.8rem;
+    margin-bottom: 1.2rem;
     border-bottom: 1px solid;
     display: inline-block;
     width: 50rem;
