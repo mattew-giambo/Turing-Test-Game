@@ -56,10 +56,25 @@ header {
     justify-content: space-between;
 }
 
+.logo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    width: 100%;
+}
+
 .logo h1{
     font-size: 1.3rem;
     text-transform: uppercase;
     letter-spacing: 0.2cap;
+    color: var(--text-color);
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
+}
+
+.logo h2{
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1cap;
     color: var(--text-color);
     text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
 }
@@ -98,8 +113,9 @@ main {
 label {
     display: block;
     margin-bottom: 0.5rem;
+    text-transform: uppercase;
     color: var(--retro-red);
-    text-shadow: 1.5px 2px 0 #a34cfad6;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
 input {
@@ -141,6 +157,13 @@ button:hover {
     box-shadow: 1px 1px 0px #000;
 }
 
+.btn-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
+}
+
 /* Sessione section */
 .sessione-section {
     background: linear-gradient(90deg, var(--bianco-crema) 0%, #fff 100%);
@@ -159,8 +182,8 @@ button:hover {
 .sessione-section-text{
     overflow-wrap: break-word;
     line-height: 1.6;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
+    margin-bottom: 1.2rem;
+    margin-top: 1.2rem;
     font-size: 1rem;
     color: var(--retro-red);
     -webkit-text-stroke: 1px var(--retro-fg);
@@ -168,6 +191,7 @@ button:hover {
     text-align: center;
     text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
 }
+
 .sessione-section-text h1{
     color: #d84040;
     font-size: 1.4rem;
@@ -196,25 +220,36 @@ button:hover {
     flex-direction: column;
     gap: 1rem;
 }
+
 .label-domanda label{
     margin: 0;
+    white-space: nowrap;
+    color: var(--retro-red);
+    font-weight: bold;
 }
+
 .label-domanda p{
     margin: 0;
 }
-.label-domanda{
+
+.label-domanda {
     display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+}
+
+.label-domanda .sessione-domanda {
     flex: 1;
-    justify-content: left;
-    gap: 1rem;
+    color: #1B1F8A;
+    text-shadow: 1.5px 2px 0 #a34cfad6;
+    word-break: break-word; 
 }
 
 .sessione-risposta{
-    color: var(--retro-fg)
-}
-
-.sessione-domanda{
-    color: var(--retro-fg)
+    color: #1B1F8A;
+    font-weight: bold;
+    margin-left: 1rem;
 }
 
 .btn-wrapper{
@@ -223,17 +258,22 @@ button:hover {
     align-items: center;
     gap: 4rem;
 }
+
 /* Sezione partita terminata */
 .partita-terminata-section {
     background: linear-gradient(90deg, var(--bianco-crema) 0%, #fff 100%);
     border: 2px solid var(--retro-fg);
     padding: 3rem;
     box-shadow: 4px 4px var(--retro-shadow);
+    margin-bottom: 2rem;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    justify-content: space-around;
+    gap: 2rem;
 
     display: none;
+    margin: 8rem 15rem;
+    text-align: center;
 }
 
 .img-container {
@@ -278,6 +318,7 @@ a:hover {
     background: linear-gradient(135deg, #FAE149, #FFEB5B);
     color: var(--text-color);
     padding-top: 2rem;
+    padding-bottom: 2rem;
     text-align: center;
     border-top: 2px solid var(--retro-fg);
 }

@@ -94,8 +94,9 @@ main {
 label {
     display: block;
     margin-bottom: 0.5rem;
+    text-transform: uppercase;
     color: var(--retro-red);
-    text-shadow: 1.5px 2px 0 #a34cfad6;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
 input {
@@ -155,27 +156,33 @@ button:hover {
     flex-direction: column;
     gap: 2rem;
 }
+
 .sessione-section-text{
     overflow-wrap: break-word;
     line-height: 1.6;
 
 }
+
 .domande-risposte{
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
+
 .domande-risposte-elem{
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
+
 .label-domanda label{
     margin: 0;
 }
+
 .label-domanda p{
     margin: 0;
 }
+
 .label-domanda{
     display: flex;
     flex: 1;
@@ -184,11 +191,16 @@ button:hover {
 }
 
 .sessione-risposta{
-    color: var(--retro-purple)
+    color: #1B1F8A;
+    font-weight: bold;
+    margin-left: 1rem;
 }
 
-.sessione-domanda{
-    color: var(--retro-red)
+.label-domanda .sessione-domanda {
+    flex: 1;
+    color: #1B1F8A;
+    text-shadow: 1.5px 2px 0 #a34cfad6;
+    word-break: break-word; 
 }
 
 /* Sezione partita terminata */

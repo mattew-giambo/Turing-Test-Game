@@ -56,10 +56,25 @@ header {
     justify-content: space-between;
 }
 
+.logo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    width: 100%;
+}
+
 .logo h1{
     font-size: 1.3rem;
     text-transform: uppercase;
     letter-spacing: 0.2cap;
+    color: var(--text-color);
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
+}
+
+.logo h2{
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1cap;
     color: var(--text-color);
     text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
 }
@@ -69,14 +84,14 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 6rem 18rem;
 }
 
 label {
     display: block;
     margin-bottom: 0.5rem;
+    text-transform: uppercase;
     color: var(--retro-red);
-    text-shadow: 1.5px 2px 0 #a34cfad6;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
 button {
@@ -106,16 +121,30 @@ button:hover {
     padding: 3rem;
     box-shadow: 4px 4px var(--retro-shadow);
     margin-bottom: 2rem;
-    display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    justify-content: space-around;
     gap: 2rem;
+    margin: 2rem 10rem;
 }
 
 .sessione-section-text{
     overflow-wrap: break-word;
     line-height: 1.6;
+    margin-bottom: 1.2rem;
+    margin-top: 1.2rem;
+    font-size: 1rem;
+    color: var(--retro-red);
+    -webkit-text-stroke: 1px var(--retro-fg);
+    text-transform: uppercase;
+    text-align: center;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.sessione-section-text h1{
+    color: #d84040;
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    margin-bottom: 2rem;
 }
 
 .domande-risposte{
@@ -142,50 +171,57 @@ button:hover {
 
 .label-domanda label{
     margin: 0;
+    white-space: nowrap;
+    color: var(--retro-red);
+    font-weight: bold;
 }
 
 .label-domanda p{
     margin: 0;
 }
 
-.label-domanda{
+.label-domanda {
     display: flex;
-    flex: 1;
-    justify-content: left;
-    gap: 1rem;
+    align-items: flex-start;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
 }
 
 .sessione-risposta{
-    color: var(--retro-purple)
+    color: #1B1F8A;
+    font-weight: bold;
+    margin-left: 1rem;
 }
 
-.sessione-domanda{
-    color: var(--retro-red)
+.label-domanda .sessione-domanda {
+    flex: 1;
+    color: #1B1F8A;
+    text-shadow: 1.5px 2px 0 #a34cfad6;
+    word-break: break-word; 
 }
 
-p {
-    text-align: center;
+.btn-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
 }
 
 /* Sezione partita terminata */
 .partita-terminata-section {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: 3rem;
-    border: 2px solid var(--retro-fg);
     background: linear-gradient(90deg, var(--bianco-crema) 0%, #fff 100%);
+    border: 2px solid var(--retro-fg);
+    padding: 3rem;
     box-shadow: 4px 4px var(--retro-shadow);
-    display: none; 
-    height: 100%;
-}
-
-.partita-terminata-section > div {
-    flex-grow: 1;
+    margin-bottom: 2rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    justify-content: space-around;
+    gap: 2rem;
+
+    display: none;
+    margin: 8rem 15rem;
+    text-align: center;
 }
 
 .img-container {
@@ -216,7 +252,6 @@ a {
     
     transition: all 0.1s ease-in-out;
     cursor: pointer;
-    margin-top: 2rem;
 }
 
 a:hover {

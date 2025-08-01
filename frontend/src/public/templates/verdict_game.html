@@ -13,13 +13,20 @@
             <div class="header-container">
                 <div class="logo">
                     <h1>The Imitation Game</h1>
+                    <h2>Modalità Verdetto</h2>
                 </div>
             </div>
     </header>
     <main>
         <section class="sessione-section" id="sessione-section">
+
+            <div class="sessione-section-text">
+                <h1>Il momento della verita' e' arrivato.</h1>
+                <p>Osserva bene le risposte e annuncia il tuo verdetto!</p>
+            </div>
+
             <div class="domande-risposte">
-                <img id="mod-img" src="/assets/verdict.PNG" alt="mod-img">
+                <!-- <img id="mod-img" src="/assets/verdict.PNG" alt="mod-img"> -->
                 {% for question_id, qa in session.items() %}
                     <div class="domande-risposte-elem">
                         <div class="label-domanda">
@@ -31,10 +38,11 @@
                 {% endfor %}
             </div>
 
-            <div>
-                <p>È il momento della verità. <br>Ora annuncia il tuo verdetto!</p>
+            <div class="sessione-section-text">
+                <p>Secondo te ha risposto un umano oppure una macchina?</p>
             </div>
-            <div>
+
+            <div class="btn-wrapper">
                 <!--Pulsanti da sostituire con le immagini di un umano e robot-->
                 <button id="umano-btn">Umano</button>
                 <button id="macchina-btn">Macchina</button>
