@@ -19,7 +19,6 @@ const hidePopup_errore = () => {
     popup_errore.style.display = "none";
 };
 
-
 async function send_verdict(is_ai){
     try{
         const data ={
@@ -68,11 +67,18 @@ async function send_verdict(is_ai){
     } 
 }
 
-document.getElementById("umano-btn").addEventListener("click", async()=>{
+const umanoBtn = document.getElementById("umano-btn");
+const macchinaBtn = document.getElementById("macchina-btn");
+
+umanoBtn.addEventListener("click", async()=>{
+    umanoBtn.classList.add("selected-btn");
+    macchinaBtn.classList.remove("selected-btn");
     await send_verdict(false);
 });
 
-document.getElementById("macchina-btn").addEventListener("click", async()=>{
+macchinaBtn.addEventListener("click", async()=>{
+    macchinaBtn.classList.add("selected-btn");
+    umanoBtn.classList.remove("selected-btn");
     await send_verdict(true);
 });
 

@@ -61,3 +61,40 @@ CREATE TABLE Q_A (
 
 INSERT INTO Users(id, user_name, email, hashed_password) VALUES (1, "AI", "--", "--");
 INSERT INTO Stats(user_id) VALUES (1);
+
+
+-- Trigger per update
+DELIMITER $$
+
+CREATE TRIGGER prevent_negative_scores
+BEFORE UPDATE ON Stats
+FOR EACH ROW
+BEGIN
+    IF NEW.score_part < 0 THEN
+        SET NEW.score_part = 0;
+    END IF;
+
+    IF NEW.score_judge < 0 THEN
+        SET NEW.score_judge = 0;
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- Trigger per insert
+DELIMITER $$
+
+CREATE TRIGGER prevent_negative_scores_insert
+BEFORE INSERT ON Stats
+FOR EACH ROW
+BEGIN
+    IF NEW.score_part < 0 THEN
+        SET NEW.score_part = 0;
+    END IF;
+
+    IF NEW.score_judge < 0 THEN
+        SET NEW.score_judge = 0;
+    END IF;
+END$$
+
+DELIMITER ;
