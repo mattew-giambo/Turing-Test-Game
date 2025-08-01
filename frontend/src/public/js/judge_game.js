@@ -17,7 +17,7 @@ document.getElementById("form-partita").addEventListener("submit", async(e)=>{
         questions_list: new Array(domanda1, domanda2, domanda3)
     }
 
-    const response = await fetch(`/send-questions-judge-game/${game_id}`, {
+   /* const response = await fetch(`/send-questions-judge-game/${game_id}`, {
        method: "POST",
        headers: {"Content-Type": "application/json"},
        body: JSON.stringify(data)
@@ -38,7 +38,7 @@ document.getElementById("form-partita").addEventListener("submit", async(e)=>{
 
     document.getElementById("sessione-risposta-1").innerText = answers_list[0];
     document.getElementById("sessione-risposta-2").innerText = answers_list[1];
-    document.getElementById("sessione-risposta-3").innerText = answers_list[2];
+    document.getElementById("sessione-risposta-3").innerText = answers_list[2];*/
 
     partita_section.style.display = "none";
     sessione_section.style.display = "flex";
@@ -49,7 +49,7 @@ async function send_verdict(is_ai){
     const data ={
         is_ai: is_ai
     }
-    const response = await fetch(`/send-judge-answer/${game_id}`, {
+   const response = await fetch(`/send-judge-answer/${game_id}`, {
        method: "POST",
        headers: {"Content-Type": "application/json"},
        body: JSON.stringify(data)
@@ -74,7 +74,7 @@ async function send_verdict(is_ai){
         document.getElementById("azione-punti").innerText = "perso";
     }
     document.getElementById("punti-valore").innerText = response_data.points;
-    document.getElementById("label-punti").innerText = (response_data.points == 1)? "punto":"punti";
+    document.getElementById("label-punti").innerText = "TuringCoin"
 
     sessione_section.style.display = "none";
     partita_terminata_section.style.display = "block";

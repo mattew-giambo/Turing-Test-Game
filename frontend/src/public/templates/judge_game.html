@@ -13,7 +13,7 @@
             <div class="header-container">
                 <div class="logo">
                     <h1>The Imitation Game</h1>
-                    <h2>Modalità Classica</h2>
+                    <h2>Modalita' Classica</h2>
                 </div>
             </div>
     </header>
@@ -84,24 +84,24 @@
         </section>
 
         <section id="partita-terminata-section" class="partita-terminata-section"> <!-- Default invisibile, mostra al player se ha vinto o meno -->
-            <div id="vittoria-div" style="display: none;">
+            <div id="vittoria-div">
                 <div class="img-container">
                     <img src="assets/victory.png">
                 </div>
-                <div>
-                    <p id="vittoria-msg"></p>
+                <div class="text-div">
+                    <p id="vittoria-msg">Congratulazioni Hai vinto!</p>
                 </div>
             </div>
-            <div id="sconfitta-div" style="display: none;">
+            <div id="sconfitta-div">
                 <div class="img-container">
-                    <img src="assets/victory.png">
+                    <img src="assets/defeat.png">
                 </div>
                 <div>
                     <p id="sconfitta-msg"></p>
                 </div>
             </div>
             <div class="punti-div">
-                <p>Hai <strong id="azione-punti"></strong> <strong id="punti-valore"></strong> <span id="label-punti"></span>.</p>
+                <p>Hai <span id="azione-punti">vinto</span> <span id="punti-valore">3</span> <span id="label-punti">punti</span>.</p>
             </div>
 
             <div>
