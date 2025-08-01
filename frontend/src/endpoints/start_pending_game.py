@@ -1,3 +1,5 @@
+import asyncio
+import random
 from fastapi import HTTPException
 import requests
 from models.player_info import PlayerInfo
@@ -5,7 +7,7 @@ from models.confirm_game import ConfirmGame
 from config.constants import API_BASE_URL
 from urllib.parse import urljoin
 
-def start_pending_game(payload: PlayerInfo):
+async def start_pending_game(payload: PlayerInfo):
     payload.player_role = "judge"
     
     try:
@@ -26,5 +28,8 @@ def start_pending_game(payload: PlayerInfo):
                 detail = e.response.text or detail
 
         raise HTTPException(status_code=status_code, detail=detail)
+    
+    # Attendi un tempo randomico tra 0 e 30s
+    await asyncio.sleep(random.randint(0, 30))
     
     return confirm_game

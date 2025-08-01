@@ -19,6 +19,20 @@ const verdict_mod = document.getElementById("verdict_mod");
 
 const popup = document.getElementById("popup");
 
+const popup_errore = document.getElementById("popup-errore");
+const hMessage = document.getElementById("hMessage");
+const pMessage = document.getElementById("pMessage");
+
+const showPopup_errore = (title, message) => {
+        hMessage.textContent = title;
+        pMessage.textContent = message;
+        popup_errore.style.display = "flex";
+};
+
+const hidePopup_errore = () => {
+    popup_errore.style.display = "none";
+};
+
 judge_btn.addEventListener("click", () => {
     generic_game.style.display = "none";
     judge_game.style.display = "flex";
@@ -55,13 +69,19 @@ part_btn.addEventListener("click", async () => {
         newUrl.searchParams.set("player_id", user_id);
         newUrl.searchParams.set("token", token);
 
-        setTimeout(()=>{
-            window.location.href = newUrl.toString();
-        }, 5000);
+        setTimeout(()=>{window.location.href = newUrl.toString();}, Math.floor(Math.random() * 6)*1000); // wait randomico tra 0 e 6sec
         
     } catch (error) {
-        alert("Errore: " + error.message);
-        console.error("Errore avvio partita partecipante:", error);
+        console.error("Errore avvio partita:", error);
+        showPopup_errore(
+            "Errore",
+            "Si è verificato un errore."
+        );
+
+        setTimeout(() => {
+            hidePopup_errore();
+            window.href = (new URL("/", window.href.origin)).toString();
+        }, 3000);
     }
 });
 
@@ -97,12 +117,18 @@ classic_mod.addEventListener("click", async () => {
         newUrl.searchParams.set("player_id", user_id);
         newUrl.searchParams.set("token", token);
 
-        setTimeout(()=>{
-            window.location.href = newUrl.toString();
-        }, 5000);
+        setTimeout(()=>{window.location.href = newUrl.toString();}, Math.floor(Math.random() * 6)*1000); // wait randomico tra 0 e 6sec
     } catch (error) {
-        alert("Errore: " + error.message);
-        console.error("Errore avvio partita partecipante:", error);
+        console.error("Errore avvio partita:", error);
+        showPopup_errore(
+            "Errore",
+            "Si è verificato un errore."
+        );
+
+        setTimeout(() => {
+            hidePopup_errore();
+            window.href = (new URL("/", window.href.origin)).toString();
+        }, 3000);
     }
 });
 
@@ -138,11 +164,18 @@ verdict_mod.addEventListener("click", async () => {
         newUrl.searchParams.set("player_id", user_id);
         newUrl.searchParams.set("token", token);
 
-        setTimeout(()=>{
-            window.location.href = newUrl.toString();
-        }, 5000);
+        setTimeout(()=>{window.location.href = newUrl.toString();}, Math.floor(Math.random() * 6)*1000); // wait randomico tra 0 e 6sec
     } catch (error) {
-        alert("Errore: " + error.message);
-        console.error("Errore avvio partita partecipante:", error);
+        console.error("Errore avvio partita:", error);
+
+        showPopup_errore(
+            "Errore",
+            "Si è verificato un errore."
+        );
+
+        setTimeout(() => {
+            hidePopup_errore();
+            window.href = (new URL("/", window.href.origin)).toString();
+        }, 3000);
     }
 });

@@ -1,3 +1,17 @@
+const popup = document.getElementById("popup");
+const hMessage = document.getElementById("hMessage");
+const pMessage = document.getElementById("pMessage");
+
+const showPopup = (title, message) => {
+        hMessage.textContent = title;
+        pMessage.textContent = message;
+        popup.style.display = "flex";
+};
+
+const hidePopup = () => {
+    popup.style.display = "none";
+};
+
 document.getElementById("participant-form").addEventListener("submit", async (e) => {
     e.preventDefault(); 
 
@@ -7,24 +21,7 @@ document.getElementById("participant-form").addEventListener("submit", async (e)
         form.answer2.value,
         form.answer3.value
     ];
-
-    const popup = document.getElementById("popup");
-    const hMessage = document.getElementById("hMessage");
-    const pMessage = document.getElementById("pMessage");
-    const closeBtn = document.getElementById("close-popup-btn");
     const game_id = window.location.pathname.split("/")[2];
-
-    const showPopup = (title, message) => {
-        hMessage.textContent = title;
-        pMessage.textContent = message;
-        popup.style.display = "flex";
-    };
-
-    const hidePopup = () => {
-        popup.style.display = "none";
-    };
-
-    closeBtn.addEventListener("click", hidePopup);
 
     try {
         const response = await fetch(`/send-answers-participant-game/${game_id}`, {
@@ -59,7 +56,7 @@ document.getElementById("participant-form").addEventListener("submit", async (e)
         }, 3000);
 
     } catch (error) {
-        console.error("Errore invio risposte:", error);
+        console.error("Errore:", error);
 
         showPopup(
             "Errore",
@@ -68,6 +65,7 @@ document.getElementById("participant-form").addEventListener("submit", async (e)
 
         setTimeout(() => {
             hidePopup();
+            window.location.href = (new URL("/", window.location.origin)).toString();
         }, 3000);
     }
 });

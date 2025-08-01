@@ -117,8 +117,8 @@ def send_answers_participant_game_endpoint(game_id: int, payload: AnswerInput):
     return send_answers_participant_game(game_id, payload)
 
 @app.post("/start-pending-game")
-def start_pending_game_endpoint(payload: PlayerInfo):
-    return start_pending_game(payload)
+async def start_pending_game_endpoint(payload: PlayerInfo):
+    return await start_pending_game(payload)
 
 @app.get("/verdict-game/{game_id}")
 def get_verdict_game_endpoint(game_id: int, player_id: int, token: str, request: Request):

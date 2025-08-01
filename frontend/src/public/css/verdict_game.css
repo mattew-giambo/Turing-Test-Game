@@ -306,3 +306,44 @@ a:hover {
 .footer-text{
     margin: 0.5rem;
 }
+
+/* Popup ERRORE*/
+.popup-container-errore {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-content-errore {
+  background: var(--bianco-crema);
+  border: 3px solid var(--retro-fg);
+  box-shadow: 4px 4px var(--retro-shadow);
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  font-family: 'Press Start 2P', cursive;
+  color: var(--retro-fg);
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.popup-content-errore h2 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: var(--retro-red);
+  text-shadow: 2px 2px 0 var(--retro-shadow);
+}
+
+.popup-content-errore p {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--retro-fg);
+  margin-bottom: 1.5rem;
+}

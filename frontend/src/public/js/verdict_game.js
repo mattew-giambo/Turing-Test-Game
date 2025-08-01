@@ -4,39 +4,68 @@ const game_id = window.location.pathname.split("/")[2]; // /verdict-game/id
 const vittoria = document.getElementById("vittoria-div");
 const sconfitta = document.getElementById("sconfitta-div");
 
+
+const popup_errore = document.getElementById("popup-errore");
+const hMessage = document.getElementById("hMessage");
+const pMessage = document.getElementById("pMessage");
+
+const showPopup_errore = (title, message) => {
+        hMessage.textContent = title;
+        pMessage.textContent = message;
+        popup_errore.style.display = "flex";
+};
+
+const hidePopup_errore = () => {
+    popup_errore.style.display = "none";
+};
+
+
 async function send_verdict(is_ai){
-    const data ={
-        is_ai: is_ai
-    }
-    const response = await fetch(`/send-pending-verdict/${game_id}`, {
-       method: "POST",
-       headers: {"Content-Type": "application/json"},
-       body: JSON.stringify(data)
-    });
+    try{
+        const data ={
+            is_ai: is_ai
+        }
+        const response = await fetch(`/send-pending-verdict/${game_id}`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+        });
 
-    if(!response.ok){
-        const errorData = await response.json();
-        console.error(errorData.detail)
-        return window.location.pathname = "/";
-    }
+        if(!response.ok){
+            const errorData = await response.json();
+            throw new Error(errorData.detail || "Errore nell'invio del verdetto");
+        }
 
-    const response_data = await response.json();
+        const response_data = await response.json();
 
-    if(response_data.is_won){
-        vittoria.style.display = "flex";
-        document.getElementById("vittoria-msg").innerText = response_data.message;
-        document.getElementById("azione-punti").innerText = "vinto";
-    }
-    else{
-        sconfitta.style.display = "flex";
-        document.getElementById("sconfitta-msg").innerText = response_data.message;
-        document.getElementById("azione-punti").innerText = "perso";
-    }
-    document.getElementById("punti-valore").innerText = response_data.points;
-    document.getElementById("label-punti").innerText = (response_data.points == 1)? "punto":"punti";
+        if(response_data.is_won){
+            vittoria.style.display = "flex";
+            document.getElementById("vittoria-msg").innerText = response_data.message;
+            document.getElementById("azione-punti").innerText = "vinto";
+        }
+        else{
+            sconfitta.style.display = "flex";
+            document.getElementById("sconfitta-msg").innerText = response_data.message;
+            document.getElementById("azione-punti").innerText = "perso";
+        }
+        document.getElementById("punti-valore").innerText = response_data.points;
+        document.getElementById("label-punti").innerText = (response_data.points == 1)? "punto":"punti";
 
-    sessione_section.style.display = "none";
-    partita_terminata_section.style.display = "block";
+        sessione_section.style.display = "none";
+        partita_terminata_section.style.display = "block";
+    }
+    catch (error){
+        console.log("Errore: ", error);
+        showPopup_errore(
+            "Errore",
+            "Si è verificato un errore."
+        );
+
+        setTimeout(() => {
+            hidePopup_errore();
+            window.location.href = (new URL("/", window.location.origin)).toString();
+        }, 3000);
+    } 
 }
 
 document.getElementById("umano-btn").addEventListener("click", async()=>{

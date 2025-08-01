@@ -3,7 +3,7 @@ from fastapi import HTTPException
 from urllib.parse import urljoin
 from typing import Dict
 import requests
-
+import random
 from models.judge_game import JudgeGameInput, JudgeGameOutput
 from config.constants import API_BASE_URL
 
@@ -28,7 +28,7 @@ async def send_questions_judge_game(game_id: int, payload: JudgeGameInput):
 
         raise HTTPException(status_code=status_code, detail=detail)
 
-    # Attendi 30 secondi
-    await asyncio.sleep(30)
+    # Attendi un tempo randomico tra 0 e 30s
+    await asyncio.sleep(random.randint(0, 30))
 
     return JudgeGameOutput.model_validate(response.json())

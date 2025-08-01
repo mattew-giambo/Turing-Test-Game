@@ -319,25 +319,3 @@ a:hover {
   margin-bottom: 1.5rem;
 }
 
-.submit-btn {
-  font-family: 'Press Start 2P', cursive;
-  font-size: 0.7rem;
-  background-color: var(--retro-red);
-  color: var(--retro-fg);
-  border: 3px solid var(--retro-fg);
-  padding: 0.6rem 1.2rem;
-  cursor: pointer;
-  box-shadow: 4px 4px 0px var(--retro-shadow);
-  transition: all 0.1s ease-in-out;
-}
-
-.submit-btn:hover {
-  background-color: var(--retro-highlight);
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0px var(--retro-shadow);
-}
-
-.close-btn-wrapper {
-  display: flex;
-  justify-content: center;
-}
