@@ -16,7 +16,13 @@ def generate_ai_questions() -> Tuple[List[str], List[bool]]:
     Raises:
         HTTPException: se la generazione non produce abbastanza domande
     """
-    ai_answer: str = get_ai_answer(flag_judge=False)
+    prompt: str = "Genera tre domande semplici e naturali, ciascuna su un argomento diverso. " \
+        "Scegli liberamente argomenti comuni che possano emergere in una conversazione informale tra persone. " \
+        "Evita domande tecniche, difficili o filosofiche. " \
+        "Non aggiungere introduzioni, commenti, spiegazioni o riferimenti al motivo per cui le domande sono state generate. " \
+        "Restituisci solo le tre domande, numerate da 1 a 3."
+    
+    ai_answer: str = get_ai_answer(prompt)
     questions: List[str] = parse_ai_questions(ai_answer)
 
     if len(questions) < 3:
