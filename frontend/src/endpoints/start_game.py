@@ -7,7 +7,7 @@ from models.player_info import PlayerInfo
 from models.confirm_game import ConfirmGame
 from config.constants import API_BASE_URL
 
-def start_game(payload: PlayerInfo):
+def start_game(payload: PlayerInfo) -> ConfirmGame:
     try:
         response = requests.post(urljoin(API_BASE_URL, "/start-game-api"), json=payload.model_dump())
         response.raise_for_status()

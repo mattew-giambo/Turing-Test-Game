@@ -10,17 +10,35 @@ import mariadb
 from typing import Dict
 
 def get_pending_game_api(game_id: int) -> GameReviewOutput:
+    """
+    Gestisce l'invio della partita 'pending'. Vengono selezionate le domande e le risposte che il giudice dovrà
+    giudiucare.
+
+    Args:
+        game_id (int): Identificativo della partita
+
+    Returns:
+        GameReviewOutput: Oggetto che contiene il game_id della partita e la sessione del giocatore
+
+    Raises:
+        HTTPException: 
+            - 404: Se il `game_id` è associato a una partita inesistente.
+            - 403: Se il `game_id` è associato a una partita già terminata.
+            - 500: In caso di errore interno durante l’accesso al database.
+    """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        query: str = "SELECT id FROM Games WHERE id = %s AND is_terminated = FALSE"
+        query: str = "SELECT id, is_terminated FROM Games WHERE id = %s"
         cursor.execute(query, (game_id,))
         result = cursor.fetchone()
 
         if not result:
-            raise HTTPException(status_code=404, detail="Partita non trovata o già terminata.")
-
+            raise HTTPException(status_code=404, detail="Partita non trovata")
+        if result[1] is True:
+            raise HTTPException(status_code=403, detail="Partita già terminata")
+        
         query = """
             SELECT question_id, question, answer
             FROM Q_A

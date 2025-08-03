@@ -17,7 +17,9 @@ def get_user_stats_api(user_id: int) -> UserStats:
         UserStats: Oggetto contenente le statistiche complete dell'utente.
 
     Raises:
-        HTTPException: Se l'utente non è presente nella tabella delle statistiche.
+        HTTPException: 
+            - 404: Se l'utente associato a `user_id` è inesistente.
+            - 500: In caso di errore interno durante l’accesso al database.
     """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)

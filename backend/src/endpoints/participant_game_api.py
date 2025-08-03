@@ -25,17 +25,26 @@ def participant_game_api(game_id: int) -> ParticipantGameOutput:
 
     Returns:
         ParticipantGameOutput: Output contenente le 3 domande generate o recuperate
+
+    Raises:
+        HTTPException: 
+            - 404: Se il `game_id` è associato a una partita inesistente.
+            - 403: Se il `game_id` è associato a una partita già terminata.
+            - 500: in caso di errore interno durante l’accesso al database.
+
     """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        query: str = "SELECT id FROM Games WHERE id = %s AND is_terminated = FALSE"
+        query: str = "SELECT id, is_terminated FROM Games WHERE id = %s"
         cursor.execute(query, (game_id,))
         result = cursor.fetchone()
 
-        if not result:
-            raise HTTPException(status_code=404, detail="Partita non trovata o già terminata.")
+        if result is None:
+            raise HTTPException(status_code=404, detail="Partita non trovata")
+        if result[1] is True:
+            raise HTTPException(status_code=403, detail="Partita già terminata")
         
         use_ai: bool = random.choice([True, False])
 

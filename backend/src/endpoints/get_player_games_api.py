@@ -19,12 +19,20 @@ def get_player_games_api(user_id: int) -> UserGames:
         UserGames: Oggetto contenente l'ID utente e la lista delle sue partite.
 
     Raises:
-        HTTPException: Se l'utente non ha partite registrate o in caso di errore del database.
+        HTTPException: 
+            - 404: In caso l'utente associato a `user_id` è inesistente
+            - 500: In caso di errore interno durante l’accesso al database.
     """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
+        cursor.execute("SELECT id FROM Users WHERE id= %s", (user_id,))
+        result = cursor.fetchone()
+
+        if result is None:
+            raise HTTPException(status_code= 404, detail="Utente non trovato")
+        
         query: str = """
             SELECT g.id, g.game_date, ug.player_role, g.is_terminated, ug.is_won, ug.points
             FROM Games AS g

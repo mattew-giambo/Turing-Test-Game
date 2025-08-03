@@ -9,7 +9,7 @@ import mariadb
 from typing import Literal
 
 
-def start_game_api(payload: PlayerInfo):
+def start_game_api(payload: PlayerInfo) -> ConfirmGame:
     """
     Avvia una nuova partita associando un utente a un nuovo game.
 
@@ -25,7 +25,7 @@ def start_game_api(payload: PlayerInfo):
     Raises:
         HTTPException:
             - 404: se l'utente non è trovato.
-            - 500: se si verifica un errore durante l'interazione con il database.
+            - 500: in caso di errore interno durante l’accesso al database.
     """
     player_id: int = payload.player_id
     player_role: Literal['judge', 'participant'] = payload.player_role

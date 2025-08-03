@@ -26,6 +26,12 @@ def start_pending_game_api(payload: PlayerInfo) -> ConfirmGame:
 
     Returns:
         ConfirmGame: Dati riepilogativi della partita appena avviata.
+
+    Raises:
+        HTTPException: 
+            - 404: Se il player_id è inesistente
+            - 500: In caso di errore del database.
+
     """
     player_id: int = payload.player_id
     player_role: str = "judge"
@@ -40,7 +46,7 @@ def start_pending_game_api(payload: PlayerInfo) -> ConfirmGame:
         result = cursor.fetchone()
 
         if not result:
-            raise HTTPException(status_code= 403, detail= "Utente non trovato")
+            raise HTTPException(status_code= 404, detail= "Utente non trovato")
         
         query = "SELECT user_name FROM Users WHERE id = %s"
         cursor.execute(query, (player_id,))

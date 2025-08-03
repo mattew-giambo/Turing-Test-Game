@@ -5,7 +5,7 @@ from models.participant_game import AnswerInput, ResponseSubmit
 from config.constants import API_BASE_URL
 from urllib.parse import urljoin
 
-def send_answers_participant_game(game_id: int, payload: AnswerInput):
+def send_answers_participant_game(game_id: int, payload: AnswerInput) -> ResponseSubmit:
     try:
         response = requests.post(
             urljoin(API_BASE_URL, f"/submit-participant-answers-api/{game_id}"),

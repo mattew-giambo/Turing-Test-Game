@@ -7,7 +7,7 @@ from config.constants import API_BASE_URL
 from typing import *
 from urllib.parse import urljoin
 
-def send_pending_verdict(game_id: int, request: Request, payload: JudgeGameAnswer, templates: Jinja2Templates):
+def send_pending_verdict(game_id: int, request: Request, payload: JudgeGameAnswer, templates: Jinja2Templates) -> EndPendingGame:
     try:
         response = requests.post(
             urljoin(API_BASE_URL, f"/end-pending-game-api/{game_id}"),

@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from config.constants import API_BASE_URL
 from urllib.parse import urljoin
 
-def game_info(payload: GameInfoInput):
+def game_info(payload: GameInfoInput) -> GameInfoOutput:
     try:
         response = requests.post(urljoin(API_BASE_URL, "/game-info-api"), json= payload.model_dump())
         response.raise_for_status()

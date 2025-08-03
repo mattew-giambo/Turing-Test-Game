@@ -23,6 +23,12 @@ def judge_game_api(payload: JudgeGameInput, game_id: int) -> JudgeGameOutput:
 
     Returns:
         JudgeGameOutput: Lista di risposte generate per le domande.
+
+    Raises:
+        HTTPException: 
+            - 404: Se il `game_id` è associato a una partita inesistente.
+            - 403: Se il `game_id` è associato a una partita già terminata.
+            - 500: in caso di errore interno durante l’accesso al database.
     """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)

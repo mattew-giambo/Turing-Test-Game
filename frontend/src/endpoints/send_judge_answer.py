@@ -5,7 +5,7 @@ from config.constants import API_BASE_URL
 from typing import Dict
 from urllib.parse import urljoin
 
-def send_judge_answer(game_id: int, payload: JudgeGameAnswer):
+def send_judge_answer(game_id: int, payload: JudgeGameAnswer) -> EndJudgeGameOutput:
     try:
         response = requests.post(
             urljoin(API_BASE_URL, f"/end-judge-game-api/{game_id}"),

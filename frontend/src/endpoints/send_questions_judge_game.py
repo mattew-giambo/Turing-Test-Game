@@ -7,7 +7,7 @@ import random
 from models.judge_game import JudgeGameInput, JudgeGameOutput
 from config.constants import API_BASE_URL
 
-async def send_questions_judge_game(game_id: int, payload: JudgeGameInput):
+async def send_questions_judge_game(game_id: int, payload: JudgeGameInput) -> JudgeGameOutput:
     try:
         response = requests.post(
             urljoin(API_BASE_URL, f"/judge-game-api/{game_id}"),

@@ -7,7 +7,7 @@ from models.confirm_game import ConfirmGame
 from config.constants import API_BASE_URL
 from urllib.parse import urljoin
 
-async def start_pending_game(payload: PlayerInfo):
+async def start_pending_game(payload: PlayerInfo) -> ConfirmGame:
     payload.player_role = "judge"
     
     try:

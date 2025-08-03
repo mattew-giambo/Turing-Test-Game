@@ -6,7 +6,7 @@ from utility.close_cursor import close_cursor
 from utility.connect_to_database import connect_to_database
 from utility.get_cursor import get_cursor
 
-def game_info_api(payload: GameInfoInput):
+def game_info_api(payload: GameInfoInput) -> GameInfoOutput:
     """
     Restituisce le informazioni dettagliate su una partita specifica,
     identificata tramite game_id e player_id. Utilizzato per visualizzare
@@ -19,7 +19,9 @@ def game_info_api(payload: GameInfoInput):
         GameInfoOutput: Oggetto contenente le informazioni della partita.
 
     Raises:
-        HTTPException: Se la partita non esiste o non appartiene all'utente specificato.
+        HTTPException: 
+            - 404: Se non esiste nessuna partita identificata da `game_id` e giocata da `player_id`
+            - 500: In caso di errore interno durante l’accesso al database.
     """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)

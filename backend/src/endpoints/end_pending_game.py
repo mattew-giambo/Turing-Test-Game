@@ -23,7 +23,10 @@ def end_pending_game_api(judge_answer: JudgeGameAnswer, game_id: int) -> EndPend
         EndPendingJudgeGameOutput: Esito della valutazione, punteggio e messaggio da mostrare al giudice.
 
     Raises:
-        HTTPException: Se la partita non esiste, è già terminata o c'è un errore del database.
+        HTTPException: 
+            - 404: Se il `game_id` è associato a una partita inesistente.
+            - 403: Se il `game_id` è associato a una partita già terminata.
+            - 500: In caso di errore interno durante l’accesso al database.
     """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
