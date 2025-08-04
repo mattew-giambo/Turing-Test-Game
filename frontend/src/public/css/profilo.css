@@ -130,10 +130,21 @@ nav a:hover {
     border: 3px solid var(--retro-fg);
     text-align: center;
     letter-spacing: 0.04em;
-    box-shadow: 4px 4px 0px #391a15;
 
-    position: relative;
     z-index: 1;
+
+    animation: box-shadow-move 2s ease-in-out infinite;
+}
+
+@keyframes box-shadow-move {
+  0%, 100% {
+    filter: drop-shadow(4px 4px 0 #391a15);
+    transform: translateX(0);
+  }
+  50% {
+    filter: drop-shadow(6px 6px 0 #391a15);
+    transform: translateY(-3px);
+  }
 }
 
 .highlight-pink {
@@ -161,7 +172,6 @@ nav a:hover {
     gap: 3rem;
     width: 100%;
     justify-content: center;
-    border-bottom: 4px dashed var(--retro-border);
     padding-bottom: 2rem;
 }
 
@@ -268,8 +278,9 @@ nav a:hover {
 .partite-giocate h1{
     margin-bottom: 2.2rem;
     color: var(--retro-red);
-    text-shadow:  2px 2px 0 #f3f3be;
+    text-shadow:  2px 2px 0 #ffffff;
     user-select: none;
+    text-transform: uppercase;
 }
 
 .table-wrapper{

@@ -146,8 +146,8 @@ def user_disconnect_endpoint(user_id: int):
 def game_info_endpoint(payload: GameInfoInput):
     return game_info(payload)
 
-@app.exception_handler(404)
-def not_found_handler(request: Request, exc):
+@app.get("/{full_path:path}")
+def catch_all(full_path: str, request: Request):
     return templates.TemplateResponse(
         "404.html", {"request": request}
     )
