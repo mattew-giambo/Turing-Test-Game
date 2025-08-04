@@ -17,7 +17,7 @@ document.getElementById("login-form").addEventListener("submit", async(e)=>{
         });
 
         const response_data = await response.json();
-        console.log("response_data.detail:", response_data.detail);
+        console.log(response_data);
 
         if (!response.ok) {
             document.getElementById("msg-error").innerText = response_data.detail;

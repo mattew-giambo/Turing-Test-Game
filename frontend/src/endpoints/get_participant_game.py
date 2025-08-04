@@ -59,7 +59,7 @@ def get_participant_game(game_id: int, player_id: int, player_token: str, reques
             if status_code == 404:
                 return templates.TemplateResponse("game_not_found.html", {"request": request})
 
-        return templates.TemplateResponse("home.html", {"request": request})
+        raise HTTPException( status_code=status_code, detail=detail )
     
     # 4 Renderizza il template con le domande e le info
     return templates.TemplateResponse(

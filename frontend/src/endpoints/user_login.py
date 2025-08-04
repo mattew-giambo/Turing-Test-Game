@@ -23,7 +23,7 @@ def user_login(user: UserLogin, request: Request, sessioni_attive: Dict[int, Dic
             except ValueError:
                 # Il body non è in formato JSON
                 detail = e.response.text
-
+        print(status_code, detail)
         raise HTTPException(
             status_code=status_code,
             detail=detail

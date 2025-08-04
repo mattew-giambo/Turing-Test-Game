@@ -41,11 +41,15 @@ async function send_verdict(is_ai){
             vittoria.style.display = "flex";
             document.getElementById("vittoria-msg").innerText = response_data.message;
             document.getElementById("azione-punti").innerText = "vinto";
+
+            document.getElementById("gain-img").style.display = "inline";
         }
         else{
             sconfitta.style.display = "flex";
             document.getElementById("sconfitta-msg").innerText = response_data.message;
             document.getElementById("azione-punti").innerText = "perso";
+
+            document.getElementById("lost-img").style.display = "inline";
         }
         document.getElementById("punti-valore").innerText = response_data.points;
         document.getElementById("label-punti").innerText = (response_data.points == 1)? "punto":"punti";

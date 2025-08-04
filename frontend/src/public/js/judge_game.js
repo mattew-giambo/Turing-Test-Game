@@ -56,7 +56,7 @@ document.getElementById("form-partita").addEventListener("submit", async(e)=>{
             sessione_section.style.display = "flex";
             popup.style.display = "none";
         }, Math.floor(Math.random() * 6)*1000); // wait randomico tra 0 e 6sec
-    }catch(error){
+    } catch(error){
         console.log("Errore: ", error);
         showPopup_errore(
             "Errore",
@@ -92,18 +92,22 @@ async function send_verdict(is_ai){
             vittoria.style.display = "flex";
             document.getElementById("vittoria-msg").innerText = response_data.message;
             document.getElementById("azione-punti").innerText = "vinto";
+
+            document.getElementById("gain-img").style.display = "inline";
         }
         else{
             sconfitta.style.display = "flex";
             document.getElementById("sconfitta-msg").innerText = response_data.message;
             document.getElementById("azione-punti").innerText = "perso";
+
+            document.getElementById("lost-img").style.display = "inline";
         }
         document.getElementById("punti-valore").innerText = response_data.points;
         document.getElementById("label-punti").innerText = "TuringCoin"
 
         sessione_section.style.display = "none";
         partita_terminata_section.style.display = "block";
-    }catch(error){
+    } catch(error){
         console.log("Errore: ", error);
         showPopup_errore(
             "Errore",
