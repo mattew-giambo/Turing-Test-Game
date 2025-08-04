@@ -33,11 +33,13 @@ def generate_full_ai_session(player_id: int) -> int:
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        prompt: str = "Genera tre domande semplici e naturali, ciascuna su un argomento diverso. " \
-        "Scegli liberamente argomenti comuni che possano emergere in una conversazione informale tra persone. " \
-        "Evita domande tecniche, difficili o filosofiche. " \
-        "Non aggiungere introduzioni, commenti, spiegazioni o riferimenti al motivo per cui le domande sono state generate. " \
-        "Restituisci solo le tre domande, numerate da 1 a 3."
+        prompt = (
+                "Genera tre domande semplici e naturali, ciascuna su un argomento diverso. "
+                "Scegli liberamente argomenti comuni che possano emergere in una conversazione informale tra persone.\n"
+                "Evita domande tecniche, difficili o filosofiche.\n"
+                "Non aggiungere introduzioni, commenti, spiegazioni o riferimenti al motivo per cui le domande sono state generate.\n"
+                "Restituisci solo le tre domande, numerate da 1 a 3."
+            )
 
         query: str = "INSERT INTO Games () VALUES ()"
         cursor.execute(query)
@@ -97,11 +99,13 @@ def generate_full_ai_session(player_id: int) -> int:
 
         risposte_ai: List[str] = []
         for question in selected_questions:
-            prompt: str = f"""Rispondi in modo naturale come se fossi un essere umano alla domanda: {question}
-                    Scrivi solo la risposta, senza meta-commenti, spiegazioni o riferimenti alla domanda stessa.
-                    Rispondi in modo emotivo e spontaneo, come in una vera conversazione tra due persone.
-                    Non usare asterischi per indicare azioni o pensieri. 
-                    La risposta deve essere breve, massimo 1-2 frasi."""
+            prompt = (
+                f"Rispondi in modo naturale come se fossi un essere umano alla domanda: {question}\n"
+                "Scrivi solo la risposta, senza meta-commenti, spiegazioni o riferimenti alla domanda stessa.\n"
+                "Rispondi in modo emotivo e spontaneo, come in una vera conversazione tra due persone.\n"
+                "Non usare asterischi per indicare azioni o pensieri.\n"
+                "La risposta deve essere breve, massimo 1-2 frasi."
+            )
             risposta_ai = get_ai_answer(prompt)
             if not risposta_ai:
                 raise HTTPException(status_code=500, detail="Errore nella risposta dell'AI")

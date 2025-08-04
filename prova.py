@@ -29,6 +29,7 @@ for q_fuzzy in questions_fuzzy:
                 "Rispondi solo con il numero corrispondente (ad esempio '1').\n\n"
                 f"Domanda: {question_input}\n"
             ) 
+    
     for idx, qa in enumerate(lista_domande_risposta, start= 1):
         prompt+=f"{idx}. {qa['answer']}\n"
     print(prompt)
