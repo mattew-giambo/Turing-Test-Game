@@ -245,24 +245,7 @@ input:focus::placeholder{
     font-size: 0.6rem;
     text-align: left;
     margin-top: 1rem;
-    display: none;
 }
-
-/*
-#error-wrapper {
-    margin-top: 1.5rem;
-}
-
-#msg-error {
-    color: var(--retro-red);
-    font-size: 0.6rem;
-    text-align: center;
-    padding: 1rem;
-    background: rgba(255, 76, 76, 0.1);
-    border: 2px solid var(--retro-red);
-    border-radius: 4px;
-}
-*/
 
 /* FOOTER */
 .footer {
