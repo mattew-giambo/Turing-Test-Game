@@ -8,11 +8,10 @@ def judge_game_api_ai(questions_input: List[str]) -> List[str]:
     answers_output: List[str] = []
     for question in questions_input:
         prompt = (
-            f"Rispondi in modo naturale come se fossi un essere umano alla domanda: {question}\n"
-            "Scrivi solo la risposta, senza meta-commenti, spiegazioni o riferimenti alla domanda stessa.\n"
-            "Rispondi in modo emotivo e spontaneo, come in una vera conversazione tra due persone.\n"
-            "Non usare asterischi per indicare azioni o pensieri.\n"
-            "La risposta deve essere breve, massimo 1-2 frasi."
+            f"Sei un concorrente di un quiz televisivo. Rispondi alla domanda: {question}.\n"
+            "La risposta deve essere naturale, colloquiale e breve (1-2 frasi massimo).\n"
+            "Evita esclamazioni, introduzioni, spiegazioni o commenti extra.\n"
+            "Scrivi solo la risposta."
         )
         ai_answer = get_ai_answer(prompt)
         if ai_answer:

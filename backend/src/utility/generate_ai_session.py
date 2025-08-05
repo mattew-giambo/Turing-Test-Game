@@ -34,12 +34,11 @@ def generate_full_ai_session(player_id: int) -> int:
 
     try:
         prompt = (
-                "Genera tre domande semplici e naturali, ciascuna su un argomento diverso. "
-                "Scegli liberamente argomenti comuni che possano emergere in una conversazione informale tra persone.\n"
-                "Evita domande tecniche, difficili o filosofiche.\n"
-                "Non aggiungere introduzioni, commenti, spiegazioni o riferimenti al motivo per cui le domande sono state generate.\n"
-                "Restituisci solo le tre domande, numerate da 1 a 3."
-            )
+            "Sei l'autore di un quiz show (programma televisivo). Devo scrivere tre domande da porre ai concorrenti durante una sessione di gioco.\n"
+            "Scegli tre argomenti distinti che possono emergere in una conversazione informale tra persone. Per ciascun argomento, formula una domanda in tono naturale e colloquiale.\n"
+            "Evita domande tecniche, filosofiche o troppo complesse. Niente introduzioni, spiegazioni o commenti.\n"
+            "Restituisci solo le tre domande, numerate da 1 a 3."
+        )
 
         query: str = "INSERT INTO Games () VALUES ()"
         cursor.execute(query)
@@ -100,11 +99,10 @@ def generate_full_ai_session(player_id: int) -> int:
         risposte_ai: List[str] = []
         for question in selected_questions:
             prompt = (
-                f"Rispondi in modo naturale come se fossi un essere umano alla domanda: {question}\n"
-                "Scrivi solo la risposta, senza meta-commenti, spiegazioni o riferimenti alla domanda stessa.\n"
-                "Rispondi in modo emotivo e spontaneo, come in una vera conversazione tra due persone.\n"
-                "Non usare asterischi per indicare azioni o pensieri.\n"
-                "La risposta deve essere breve, massimo 1-2 frasi."
+                f"Sei un concorrente di un quiz televisivo. Rispondi alla domanda: {question}.\n"
+                "La risposta deve essere naturale, colloquiale e breve (1-2 frasi massimo).\n"
+                "Evita esclamazioni, introduzioni, spiegazioni o commenti extra.\n"
+                "Scrivi solo la risposta."
             )
             risposta_ai = get_ai_answer(prompt)
             if not risposta_ai:
