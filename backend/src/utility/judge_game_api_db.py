@@ -57,6 +57,7 @@ def judge_game_api_db(questions_input: List[str]) -> List[str]:
             for idx, qa in enumerate(lista_domande_risposta, start= 1):
                 prompt+=f"{idx}. {qa['answer']}\n"
 
+            print(prompt)
             ai_answer: str = get_ai_answer(prompt)
             try:
                 answer_idx = int(ai_answer)

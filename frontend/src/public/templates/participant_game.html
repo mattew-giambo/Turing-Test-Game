@@ -18,6 +18,10 @@
     </header>
     <main>
         <section class="partita-section">
+            <div class="partita-section-text">
+                <h1>Il palcoscenico e' tuo.</h1>
+                <p>Il giudice osserva, valuta ogni parola. <br>Niente trucchi, niente maschere.</p>
+            </div>
             <form class="participant-form" id="participant-form">
                 {% for q in questions %}
                 <div class="form-elem">
@@ -33,7 +37,7 @@
                 </div>
                 {% endfor %}
                 <div class="btn-form">
-                    <button id="btn-form" type="submit">Invia e attendi il verdetto</button>
+                    <button id="btn-form" type="submit">Invia</button>
                 </div>
             </form>
         </section>

@@ -413,3 +413,25 @@ a:hover {
   color: var(--retro-fg);
   margin-bottom: 1.5rem;
 }
+
+@media screen and (min-width: 1800px) {
+    .partita-section {
+        margin: 3rem 30rem;
+    }
+    .domande-risposte{
+        margin-top: 3rem;
+    }
+    .sessione-section{
+        padding: 3rem 6rem;
+    }
+    .sessione-section-text{
+        font-size: 1.4rem;
+        text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+    }
+    .sessione-section-text h1{
+        font-size: 2.4rem;
+    }
+    .partita-terminata-section{
+        margin: 4rem 40rem;
+    }
+}

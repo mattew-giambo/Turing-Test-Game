@@ -98,6 +98,25 @@ main {
     margin: 3rem 14rem;
 }
 
+.partita-section-text{
+    overflow-wrap: break-word;
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+    margin-top: 1.2rem;
+    font-size: 1rem;
+    color: var(--retro-red);
+    -webkit-text-stroke: 1px var(--retro-fg);
+    text-transform: uppercase;
+    text-align: center;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.partita-section-text h1{
+    color: #d84040;
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+}
+
 #mod-img-partita {
     position: absolute;
     top: -5px;
@@ -109,6 +128,7 @@ main {
 
 .form-elem {
     margin-bottom: 2rem;
+    margin-top: 3rem;
 }
 
 label {
@@ -196,7 +216,6 @@ button:hover {
 .sessione-section-text h1{
     color: #d84040;
     font-size: 1.4rem;
-    margin-bottom: 0.5rem;
     margin-bottom: 2rem;
 }
 
@@ -511,4 +530,31 @@ a:hover {
   line-height: 1.6;
   color: var(--retro-fg);
   margin-bottom: 1.5rem;
+}
+
+@media screen and (min-width: 1800px) {
+    .partita-section {
+        margin: 3rem 30rem;
+    }
+    .partita-section-text{
+        font-size: 1.4rem;
+        text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+    }
+    .partita-section-text h1{
+        font-size: 2rem;
+    }
+
+    .sessione-section{
+        padding: 3rem 6rem;
+    }
+    .sessione-section-text{
+        font-size: 1.4rem;
+        text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+    }
+    .sessione-section-text h1{
+        font-size: 2.4rem;
+    }
+    .partita-terminata-section{
+        margin: 4rem 40rem;
+    }
 }

@@ -79,9 +79,30 @@ main {
     box-shadow: 4px 4px 0 var(--retro-shadow);
 }
 
+.partita-section-text{
+    overflow-wrap: break-word;
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+    margin-top: 1.2rem;
+    font-size: 1rem;
+    color: var(--retro-red);
+    -webkit-text-stroke: 1px var(--retro-fg);
+    text-transform: uppercase;
+    text-align: center;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.partita-section-text h1{
+    color: #d84040;
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+}
+
 .participant-form {
     display: flex;
     flex-direction: column;
+    margin-top: 3rem;
+    gap: 1.3rem
 }
 
 .form-elem {
@@ -203,54 +224,6 @@ button:hover {
     word-break: break-word; 
 }
 
-/* Sezione partita terminata */
-.partita-terminata-section {
-    background: linear-gradient(90deg, var(--bianco-crema) 0%, #fff 100%);
-    border: 2px solid var(--retro-fg);
-    padding: 3rem;
-    box-shadow: 4px 4px var(--retro-shadow);
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.img-container {
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-.img-container img {
-    width: 150px;
-    image-rendering: pixelated;
-    border: 3px solid var(--border);
-}
-
-.punti-div {
-    margin-top: 1rem;
-    font-size: 0.8rem;
-}
-
-a {
-    display: inline-block;
-    text-decoration: none;
-    color: var(--retro-fg);
-    background-color: var(--retro-red);
-    padding: 0.5rem 1.2rem;
-
-    border: 3px solid var(--retro-fg);
-    box-shadow: 4px 4px 0px #391a15;
-    
-    transition: all 0.1s ease-in-out;
-    cursor: pointer;
-}
-
-a:hover {
-    color: var(--retro-fg);
-    background-color: var(--retro-highlight);
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0px var(--retro-shadow);
-}
-
 /* FOOTER */
 .footer {
     background: linear-gradient(135deg, #FAE149, #FFEB5B);
@@ -319,3 +292,16 @@ a:hover {
   margin-bottom: 1.5rem;
 }
 
+
+@media screen and (min-width: 1800px) {
+    .partita-section {
+        margin: 3rem 10rem;
+    }
+    .partita-section-text{
+        font-size: 1.4rem;
+        text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+    }
+    .partita-section-text h1{
+        font-size: 2rem;
+    }
+}
