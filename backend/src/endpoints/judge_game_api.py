@@ -66,7 +66,6 @@ def judge_game_api(payload: JudgeGameInput, game_id: int) -> JudgeGameOutput:
             except mariadb.Error:
                 raise HTTPException(status_code= 500, detail= "Errore del server")
 
-        print(use_ai)
     except mariadb.Error as e:
         raise HTTPException(
             status_code=500, 
