@@ -2,18 +2,19 @@ import mariadb
 from fastapi import HTTPException
 
 def close_cursor(cursor: mariadb.Cursor) -> None:
-    """ 
-        Chiude il cursore di mariadb
+    """
+    Chiude in modo sicuro il cursore del database MariaDB.
 
-        Return
-        `None`
+    Args:
+        cursor (mariadb.Cursor): Il cursore attivo da chiudere.
+
+    Raises:
+        HTTPException: Se si verifica un errore durante la chiusura del cursore.
     """
     try:
         cursor.close()
-    except mariadb.Error as e:
+    except mariadb.Error:
         raise HTTPException(
-            status_code= 500,
-            detail= "Errore nella chiusura del cursore"
+            status_code=500,
+            detail="Errore nella chiusura del cursore del database."
         )
-
-    return None

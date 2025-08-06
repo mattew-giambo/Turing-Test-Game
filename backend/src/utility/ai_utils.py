@@ -6,14 +6,16 @@ from typing import List, Optional, Dict
 
 def get_ai_answer(prompt: str) -> Optional[str]:
     """
-    Richiede una risposta dall'AI Ollama. 
-    Il comportamento cambia a seconda del ruolo (giudice o partecipante).
+    Invia un prompt al modello AI Ollama e ritorna la risposta testuale.
+
+    Args:
+        prompt (str): Prompt testuale da inviare all'AI.
 
     Returns:
-        Optional[str]: Risposta testuale dell'AI, o None in caso di errore.
+        Optional[str]: Testo della risposta AI, None se errore o risposta non valida.
 
     Raises:
-        HTTPException: In caso di errore irreversibile nella comunicazione con l'AI.
+        HTTPException: se si verifica un errore irreversibile nella comunicazione con Ollama.
     """
     message = OllamaMessage(role= "user", content= prompt)
     ollama_input = OllamaInput(model= MODEL, messages= [message], stream= False)
@@ -23,7 +25,7 @@ def get_ai_answer(prompt: str) -> Optional[str]:
         response.raise_for_status()
         result: Dict = response.json()
     except requests.RequestException as e:
-        print(f"Errore nella chiamata API: {e}")
+        print(f"Errore nella chiamata API Ollama: {e}")
         return None
     
     answer: Optional[str] = result.get("message", {}).get("content")
@@ -31,18 +33,16 @@ def get_ai_answer(prompt: str) -> Optional[str]:
 
 def parse_ai_questions(answer: str) -> List[str]:
     """
-    Estrae una lista di domande dalla risposta generata dall'AI.
+    Estrae una lista di domande numerate da una risposta testuale generata dall'AI.
 
-    L'AI riceve un prompt che la invita a generare esattamente tre domande numerate da 1 a 3,
-    separate da ritorni a capo. Questa funzione processa il testo generato ed estrae solo
-    il contenuto testuale delle domande, scartando la numerazione.
+    L'AI genera esattamente tre domande numerate da 1 a 3, separate da linee.
+    Questa funzione estrae solo il testo delle domande, rimuovendo la numerazione.
 
     Args:
-        answer (str): Risposta generata dall'AI, contenente tre domande numerate.
+        answer (str): Testo generato dall'AI contenente le domande numerate.
 
     Returns:
-        List[str]: Lista di domande estratte come stringhe. La lista può essere vuota se
-                   la risposta è assente o malformata.
+        List[str]: Lista di domande pulite; lista vuota se input mancante o malformato.
     """
     if not answer or not isinstance(answer, str):
         return []

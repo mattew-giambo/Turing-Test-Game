@@ -10,7 +10,16 @@ from utility.ai_utils import get_ai_answer
 
 def judge_game_api_db(questions_input: List[str]) -> List[str]:
     """
-    Recupera risposte umane esistenti dal database usando fuzzy matching sulle domande.
+    Recupera dal database domande e risposte non generate da AI, esegue
+    un fuzzy matching tra domande input e domande salvate, e seleziona
+    tramite AI la risposta migliore per ciascuna domanda input.
+
+    Args:
+        questions_input (List[str]): Lista di domande fornite dal client (giudice).
+
+    Returns:
+        List[str]: Lista di risposte selezionate dall'AI corrispondenti alle domande input.
+                   Lista vuota se non si trovano corrispondenze o in caso di errore.
     """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
@@ -22,30 +31,36 @@ def judge_game_api_db(questions_input: List[str]) -> List[str]:
 
         qa_list = [{"question": q, "answer": a} for q, a in result]
         random.shuffle(qa_list)
+
         questions_db = [qa["question"] for qa in qa_list]
 
         answers_fuzzy: List[str] = []
-
         questions_fuzzy: List[Dict[str, List[Dict[str, str]]]] = []
 
-        seen_ids = set()
+        seen_indices = set() # per evitare di usare la stessa domanda+risposta
+
         for question_input in questions_input:
             q_fuzzy = {question_input: []}
+            matches = process.extract(
+                question_input,
+                questions_db,
+                scorer=fuzz.token_sort_ratio,
+                limit=10
+            )
 
-            # Fuzzy matching con domande esistenti
-            result_fuzz = process.extract(question_input, questions_db, scorer=fuzz.token_sort_ratio, limit= 10)
-            if result_fuzz:
-                for match, score, index in result_fuzz:
-                    if score >= 50 and index not in seen_ids:
-                        seen_ids.add(index) # per evitare di usare la stessa domanda+risposta
-                        q_fuzzy[question_input].append(qa_list[index])
-                questions_fuzzy.append(q_fuzzy)
-            else:
+            if not matches:
                 return []
+            
+            for match, score, index in matches:
+                if score >= 50 and index not in seen_indices:
+                    seen_indices.add(index)
+                    q_fuzzy[question_input].append(qa_list[index])
+
+            questions_fuzzy.append(q_fuzzy)
 
         for q_fuzzy in questions_fuzzy:
-            question_input = list(q_fuzzy.keys())[0] # question_input è l'unica chiave
-            lista_domande_risposta = q_fuzzy[question_input]
+            question_input = next(iter(q_fuzzy)) # question_input è l'unica chiave
+            candidate_answers = q_fuzzy[question_input]
 
             prompt = (
                 "Ti darò una domanda e una lista di risposte. "
@@ -54,7 +69,8 @@ def judge_game_api_db(questions_input: List[str]) -> List[str]:
                 "Se nessuna risposta è adeguata, rispondi '0'.\n"
                 f"Domanda: {question_input}\n"
             )
-            for idx, qa in enumerate(lista_domande_risposta, start= 1):
+            
+            for idx, qa in enumerate(candidate_answers, start=1):
                 prompt+=f"{idx}. {qa['answer']}\n"
 
             print(prompt)
@@ -62,13 +78,13 @@ def judge_game_api_db(questions_input: List[str]) -> List[str]:
             try:
                 answer_idx = int(ai_answer)
                 if answer_idx == 0:
-                    raise ValueError(f"Nessuna risposta adeguata")
-                if 1 <= answer_idx and answer_idx <= len(lista_domande_risposta):
-                    answers_fuzzy.append(lista_domande_risposta[answer_idx - 1]["answer"])
+                    raise ValueError("Nessuna risposta adeguata selezionata dall'AI")
+                if 1 <= answer_idx <= len(candidate_answers):
+                    answers_fuzzy.append(candidate_answers[answer_idx - 1]["answer"])
                 else:
-                    raise ValueError(f"Indice fuori dal range {answer_idx}")
-            except ValueError as e:
-                print(e)
+                    raise ValueError(f"Indice risposta AI fuori range: {answer_idx}")
+            except (ValueError, TypeError) as e:
+                print(f"Errore interpretazione risposta AI: {e}")
                 return []
             
         return answers_fuzzy

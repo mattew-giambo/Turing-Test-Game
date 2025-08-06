@@ -13,22 +13,23 @@ import random
 
 def judge_game_api(payload: JudgeGameInput, game_id: int) -> JudgeGameOutput:
     """
-    Gestisce la generazione delle risposte per la modalità Giudice.
-    A partire da una lista di domande fornite dall'utente, recupera risposte da altri utenti (se disponibili)
-    o le genera tramite AI. Salva la sessione nel database Q_A.
+    Endpoint per la modalità Giudice del gioco. A partire da una lista di domande 
+    fornite dal giudice, tenta di ottenere risposte da utenti precedenti nel database 
+    (tramite fuzzy matching), oppure le genera tramite AI. Le domande e risposte vengono
+    poi salvate nella tabella Q_A associate al game_id.
 
     Args:
-        payload (JudgeGameInput): Input contenente le domande del giudice.
-        game_id (int): Identificativo della partita.
+        payload (JudgeGameInput): Input contenente la lista di domande del giudice.
+        game_id (int): Identificativo univoco della partita in corso.
 
     Returns:
-        JudgeGameOutput: Lista di risposte generate per le domande.
+        JudgeGameOutput: Lista delle risposte generate o recuperate.
 
     Raises:
-        HTTPException: 
-            - 404: Se il `game_id` è associato a una partita inesistente.
-            - 403: Se il `game_id` è associato a una partita già terminata.
-            - 500: in caso di errore interno durante l’accesso al database.
+        HTTPException:
+            - 404: se il game_id non corrisponde a una partita esistente.
+            - 403: se la partita è già terminata.
+            - 500: in caso di errore nel database o risposta non valida da AI.
     """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
@@ -67,8 +68,10 @@ def judge_game_api(payload: JudgeGameInput, game_id: int) -> JudgeGameOutput:
 
         print(use_ai)
     except mariadb.Error as e:
-        print(e)
-        raise HTTPException(status_code=500, detail="Errore del server nella gestione della partita")
+        raise HTTPException(
+            status_code=500, 
+            detail="Errore del server nella gestione della partita"
+            )
 
     finally:
         close_cursor(cursor)

@@ -10,30 +10,33 @@ from utility.connect_to_database import connect_to_database
 from utility.get_cursor import get_cursor
 from utility.ai_utils import get_ai_answer, parse_ai_questions
 
+from config import NUM_QUESTIONS_PER_GAME
+
 def generate_full_ai_session(player_id: int) -> int:
     """
-    Genera una sessione di gioco completamente gestita dall'intelligenza artificiale (AI).
-    La funzione viene usata quando non esistono partite pendenti adeguate, o si vuole 
-    simulare un'intera sessione con domande e risposte generate dall'AI.
-
-    Il giudice sarà il giocatore specificato tramite `player_id`, il partecipante sarà l'AI (id = 1).
-    Le domande e risposte AI vengono inserite nella tabella Q_A associate al nuovo game.
-
+    Genera una nuova sessione di gioco completamente gestita dall'intelligenza artificiale (AI).
+    
+    La funzione crea una partita nella quale il giocatore `player_id` assume il ruolo di giudice
+    mentre il partecipante è un'entità AI (player_id=1). Vengono generate 3 domande distinte con
+    relative risposte da parte dell'AI, e inserite nella tabella `Q_A` associate alla partita.
+    
+    Il metodo cerca di utilizzare domande già presenti nel database per varietà e distinzione, 
+    ricorrendo all'AI solo in caso di domande insufficienti o troppo simili.
+    
     Args:
-        player_id (int): ID del giocatore che ricopre il ruolo di giudice.
-
+        player_id (int): ID del giocatore che assume il ruolo di giudice.
+    
     Returns:
-        Dict[str, int]: Un dizionario contenente l'ID della partita creata.
+        Dict[str, int]: Dizionario contenente l'ID della partita creata, ad es. {"game_id": 123}.
     
     Raises:
-        HTTPException: In caso di errore nella generazione delle domande/risposte
-                       o in caso di problemi col database.
+        HTTPException: Se si verificano errori nella generazione delle domande/risposte o nell'accesso al database.
     """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        prompt = (
+        prompt: str = (
             "Sei l'autore di un quiz show (programma televisivo). Devo scrivere tre domande da porre ai concorrenti durante una sessione di gioco.\n"
             "Scegli tre argomenti distinti che possono emergere in una conversazione informale tra persone. Per ciascun argomento, formula una domanda in tono naturale e colloquiale.\n"
             "Evita domande tecniche, filosofiche o troppo complesse. Niente introduzioni, spiegazioni o commenti.\n"
@@ -58,10 +61,10 @@ def generate_full_ai_session(player_id: int) -> int:
             ai_answer: str = get_ai_answer(prompt)
             selected_questions: List[str] = parse_ai_questions(ai_answer)
 
-            if len(selected_questions) < 3:
+            if len(selected_questions) < NUM_QUESTIONS_PER_GAME:
                 raise HTTPException(status_code=500, detail="L'AI non ha generato abbastanza domande")
             
-            ai_flags: List[bool] = [True] * len(selected_questions)
+            ai_flags: List[bool] = [True] * NUM_QUESTIONS_PER_GAME
         
         else:
             all_questions = [(elem[0].strip(), elem[1]) for elem in result]
@@ -84,17 +87,17 @@ def generate_full_ai_session(player_id: int) -> int:
                     selected_questions.append(question)
                     ai_flags.append(flag)
 
-                if len(selected_questions) == 3:
+                if len(selected_questions) == NUM_QUESTIONS_PER_GAME:
                     break # abbiamo trovato abbastanza domande distinte
 
-            if len(selected_questions) < 3:
+            if len(selected_questions) < NUM_QUESTIONS_PER_GAME:
                 ai_answer: str = get_ai_answer(prompt)
                 selected_questions: List[str] = parse_ai_questions(ai_answer)
 
-                if len(selected_questions) < 3:
+                if len(selected_questions) < NUM_QUESTIONS_PER_GAME:
                     raise HTTPException(status_code=500, detail="AI fallback fallito: domande insufficienti.")
                 
-                ai_flags = [True] * len(selected_questions)
+                ai_flags = [True] * NUM_QUESTIONS_PER_GAME
 
         risposte_ai: List[str] = []
         for question in selected_questions:
@@ -123,6 +126,7 @@ def generate_full_ai_session(player_id: int) -> int:
     except mariadb.Error as e:
         connection.rollback()
         raise HTTPException(status_code=500, detail=f"Errore DB: {e}")
+    
     finally:
         close_cursor(cursor)
         close_connection(connection)

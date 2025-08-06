@@ -17,7 +17,7 @@ def register_api(user: UserRegister) -> RegisterResponse:
         user (UserRegister): Oggetto contenente username, email e password in chiaro dell'utente.
 
     Returns:
-        RegisterResponse: Oggetto con messaggio di conferma e ID dell'utente appena creato.
+        RegisterResponse: Identificativo dell'utente registrato.
 
     Raises:
         HTTPException: 
@@ -28,29 +28,44 @@ def register_api(user: UserRegister) -> RegisterResponse:
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        query: str = "SELECT id FROM Users WHERE email = %s OR user_name = %s"
+        query: str = """
+            SELECT id FROM Users 
+            WHERE email = %s OR user_name = %s
+        """
         cursor.execute(query, (user.email, user.user_name))
+
         if cursor.fetchone():
-            raise HTTPException(status_code=400, detail="Utente già registrato con questa email o username")
+            raise HTTPException(
+                status_code=400,
+                detail="Utente già registrato con questa email o username"
+            )
 
         hashed_password: str = hash_password(user.password)
 
-        query = "INSERT INTO Users (user_name, email, hashed_password) VALUES (%s, %s, %s)"
+        query = """
+            INSERT INTO Users (user_name, email, hashed_password)
+            VALUES (%s, %s, %s)
+        """
         cursor.execute(query, (user.user_name, user.email, hashed_password))
         connection.commit()
 
         user_id: int = cursor.lastrowid
 
-        query = "INSERT INTO Stats (user_id) VALUES (%s)"
+        query = """
+            INSERT INTO Stats (user_id)
+            VALUES (%s)
+        """
         cursor.execute(query, (user_id,))
         connection.commit()
-
 
         return RegisterResponse(user_id=user_id)
     
     except mariadb.Error as e:
         connection.rollback()
-        raise HTTPException(status_code=500, detail=f"Errore durante la registrazione: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Errore durante la registrazione: {e}"
+        )
 
     finally:
         close_cursor(cursor)

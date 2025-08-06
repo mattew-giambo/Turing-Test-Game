@@ -9,14 +9,15 @@ import mariadb
 
 def get_player_games_api(user_id: int) -> UserGames:
     """
-    Restituisce la lista delle partite giocate da un determinato utente,
-    con informazioni dettagliate su ogni sessione (ruolo, punteggio, esito, ecc.).
+    Recupera tutte le partite giocate da un utente (sia come partecipante che come giudice),
+    ordinate per data decrescente. Le partite in cui l'utente è giudice e non terminate 
+    vengono considerate abbandonate e quindi eliminate dal database.
 
     Args:
-        user_id (int): ID dell'utente di cui si vogliono recuperare le partite.
+        user_id (int): Identificativo univoco dell'utente.
 
     Returns:
-        UserGames: Oggetto contenente l'ID utente e la lista delle sue partite.
+        UserGames: Oggetto contenente l'elenco delle partite associate all'utente.
 
     Raises:
         HTTPException: 
@@ -50,31 +51,35 @@ def get_player_games_api(user_id: int) -> UserGames:
             )
 
         games: List[Game] = []
-        query = "DELETE FROM UserGames WHERE game_id= %s and player_role= %s"
+
+        query = """
+            DELETE FROM UserGames 
+            WHERE game_id = %s AND player_role = %s
+        """
+        
         for game_id, game_date, player_role, is_terminated, is_won, points in result:
-            if player_role == "judge" and is_terminated == 0:
+            if player_role == "judge" and not is_terminated:
                 cursor.execute(query, (game_id, player_role))
             else:
-                print(game_id, player_role, game_date, is_terminated, is_won, points)
                 games.append(Game(
-                        game_id= game_id,
-                        player_role= player_role,
-                        data= game_date,
-                        is_terminated= is_terminated,
-                        is_won= is_won,
-                        points= points
-                    ))
+                    game_id=game_id,
+                    player_role=player_role,
+                    data=game_date,
+                    is_terminated=is_terminated,
+                    is_won=is_won,
+                    points=points
+                ))
         connection.commit()
+
         return UserGames(
                 user_id=user_id,
                 user_games=games
             )
 
-    except mariadb.Error as e:
-        print(e)
+    except mariadb.Error:
         raise HTTPException(
             status_code=500,
-            detail="Errore del server."
+            detail="Errore del server durante il recupero delle partite dell'utente."
         )
 
     finally:

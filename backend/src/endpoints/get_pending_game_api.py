@@ -11,20 +11,22 @@ from typing import Dict
 
 def get_pending_game_api(game_id: int) -> GameReviewOutput:
     """
-    Gestisce l'invio della partita 'pending'. Vengono selezionate le domande e le risposte che il giudice dovrà
-    giudiucare.
+    Recupera la sessione di gioco associata a una partita pendente specificata dal suo ID.
+
+    La funzione verifica l'esistenza e lo stato della partita, quindi estrae tutte le domande e risposte
+    associate, ordinandole per question_id, e le restituisce come dizionario indicizzato.
 
     Args:
-        game_id (int): Identificativo della partita
+        game_id (int): Identificativo univoco della partita pendente.
 
     Returns:
-        GameReviewOutput: Oggetto che contiene il game_id della partita e la sessione del giocatore
+        GameReviewOutput: Modello contenente l'ID della partita e la sessione di gioco completa.
 
     Raises:
-        HTTPException: 
-            - 404: Se il `game_id` è associato a una partita inesistente.
-            - 403: Se il `game_id` è associato a una partita già terminata.
-            - 500: In caso di errore interno durante l’accesso al database.
+        HTTPException:
+            - 404 se la partita non esiste o non contiene sessioni valide.
+            - 403 se la partita è già terminata.
+            - 500 per errori di accesso al database o problemi imprevisti.
     """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)

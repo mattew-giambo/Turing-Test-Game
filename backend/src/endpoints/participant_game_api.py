@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import HTTPException
 from models.participant_game import ParticipantGameOutput, QADict
 from utility.close_connection import close_connection
@@ -9,29 +10,29 @@ from utility.participant_functions import generate_ai_questions, select_unique_q
 import mariadb
 import random
 
+from config import NUM_QUESTIONS_PER_GAME
+
 def participant_game_api(game_id: int) -> ParticipantGameOutput:
     """
-    Gestisce la logica della modalità participant.
-    Recupera o genera domande da mostrare al partecipante della partita identificata da game_id.
+    Gestisce la modalità 'participant' del gioco.
 
-    La logica prevede:
-    - verifica validità della partita
-    - generazione casuale di domande tramite AI o recupero da DB
-    - verifica unicità semantica delle domande (con filtro fuzzy)
-    - inserimento delle domande nel database
+    A partire dal game_id fornito:
+    - verifica che la partita esista e non sia già terminata
+    - genera o recupera 3 domande (via AI o da database)
+    - garantisce che le domande siano semanticamente distinte (via filtro fuzzy)
+    - salva le domande nel database con i relativi flag AI
 
     Args:
-        game_id (int): Identificativo della partita
+        game_id (int): Identificativo univoco della partita.
 
     Returns:
-        ParticipantGameOutput: Output contenente le 3 domande generate o recuperate
+        ParticipantGameOutput: Modello contenente la lista delle domande per il partecipante.
 
     Raises:
-        HTTPException: 
-            - 404: Se il `game_id` è associato a una partita inesistente.
-            - 403: Se il `game_id` è associato a una partita già terminata.
-            - 500: in caso di errore interno durante l’accesso al database.
-
+        HTTPException:
+            - 404: Se la partita non esiste.
+            - 403: Se la partita è già terminata.
+            - 500: In caso di errore nella comunicazione con il database.
     """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
@@ -48,24 +49,28 @@ def participant_game_api(game_id: int) -> ParticipantGameOutput:
         
         use_ai: bool = random.choice([True, False])
 
-        if use_ai:
-            questions, flags = generate_ai_questions()
-        
-        else:
+        questions: List[str] = []
+        flags: List[bool] = []
+
+        if not use_ai:
             questions, flags = select_unique_questions_from_db(cursor)
 
-            if len(questions) < 3:
-                # Fallback se il DB non ha abbastanza domande distinte
-                questions, flags = generate_ai_questions()
+        if use_ai or len(questions) < NUM_QUESTIONS_PER_GAME:
+            questions, flags = generate_ai_questions()
+
+            if len(questions) != NUM_QUESTIONS_PER_GAME:
+                raise HTTPException(status_code=500, detail="Errore durante la generazione delle domande AI")
+
+            use_ai = True
         
-        # Costruzione e inserimento nel database
-        qa_list = build_qa_list(questions, flags)
+        qa_list: List[QADict] = build_qa_list(questions, flags)
         insert_q_a_participant_api(game_id, qa_list)
 
         return ParticipantGameOutput(questions=questions)
 
     except mariadb.Error as e:
         raise HTTPException(status_code=500, detail=f"Errore database: {e}")
+    
     finally:
         close_cursor(cursor)
         close_connection(connection)

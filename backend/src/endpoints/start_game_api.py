@@ -11,21 +11,17 @@ from typing import Literal
 
 def start_game_api(payload: PlayerInfo) -> ConfirmGame:
     """
-    Avvia una nuova partita associando un utente a un nuovo game.
-
-    Verifica l'esistenza dell'utente, crea una nuova riga nella tabella `Games`,
-    e inserisce il giocatore (judge o participant) nella tabella `UserGames`.
+    Avvia una nuova partita assegnando il ruolo (judge o participant) a un utente esistente.
 
     Args:
-        payload (PlayerInfo): Informazioni sul giocatore che inizia la partita.
+        payload (PlayerInfo): Oggetto contenente l'ID dell'utente e il suo ruolo nella partita.
 
     Returns:
-        ConfirmGame: Dati riepilogativi della partita creata e del giocatore associato.
-
+        ConfirmGame: Oggetto con i dettagli della partita appena creata.
+    
     Raises:
-        HTTPException:
-            - 404: se l'utente non è trovato.
-            - 500: in caso di errore interno durante l’accesso al database.
+        HTTPException: 404 se l'utente non esiste,
+                       500 se si verifica un errore a livello di database.
     """
     player_id: int = payload.player_id
     player_role: Literal['judge', 'participant'] = payload.player_role
@@ -46,7 +42,10 @@ def start_game_api(payload: PlayerInfo) -> ConfirmGame:
         cursor.execute("INSERT INTO Games () VALUES ()")
         game_id: int = cursor.lastrowid
 
-        query = "INSERT INTO UserGames (game_id, player_id, player_role) VALUES (%s, %s, %s)"
+        query = """
+            INSERT INTO UserGames (game_id, player_id, player_role)
+            VALUES (%s, %s, %s)
+        """
         cursor.execute(query, (game_id, player_id, player_role))
         connection.commit()
 

@@ -16,26 +16,25 @@ def insert_q_a_participant_api(game_id: int, qa_list: List[QADict]) -> None:
     L'ordine fornito nella lista viene mantenuto, e viene usato per assegnare question_id (1, 2, 3).
 
     Args:
-        game_id (int): Identificativo della partita a cui associare le Q&A.
-        qa_list (List[QADict]): Lista di dizionari contenenti:
-            - question (str): testo della domanda
-            - answer (str): testo della risposta
-            - ai_question (bool): True se la domanda è stata generata dall'AI
-            - ai_answer (bool): True se la risposta è stata generata dall'AI
+        game_id (int): ID della partita alla quale associare le Q&A
+        qa_list (List[QADict]): Lista di oggetti QADict contenenti le domande e metadati
 
     Raises:
-        HTTPException: in caso di errore durante l'inserimento nel database.
+        HTTPException: 
+            - 400: Se la lista è vuota o non valida
+            - 500: In caso di errore durante l'inserimento nel database
     """
     if not qa_list:
-        raise ValueError("La lista delle domande e risposte è vuota.")
+        raise HTTPException(status_code=400, detail="La lista delle domande è vuota.")
+    
+    connection: mariadb.Connection = connect_to_database()
+    cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        connection: mariadb.Connection = connect_to_database()
-        cursor: mariadb.Cursor = get_cursor(connection)
-
-        query = """
-        INSERT INTO Q_A (game_id, question_id, question, answer, ai_question, ai_answer)
-        VALUES (%s, %s, %s, %s, %s, %s)
+        query: str = """
+        INSERT INTO Q_A (
+            game_id, question_id, question, answer, ai_question, ai_answer
+        ) VALUES (%s, %s, %s, %s, %s, %s)
         """
 
         for idx, qa in enumerate(qa_list, start=1):

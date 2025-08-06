@@ -3,17 +3,17 @@ from fastapi import HTTPException
 from config.constants import HOST_DB, PORT_DB, USER_DB, DATABASE_NAME_DB, USER_PASSWORD_DB
 
 def connect_to_database() -> mariadb.Connection:
-    """ 
-        Effettua la connessione al database di mariadb
-
-        Return
-            - `connection`: mariadb.Connection
     """
-    
+    Stabilisce una connessione al database MariaDB utilizzando i parametri di configurazione.
 
-    connection: mariadb.Connection
+    Returns:
+        mariadb.Connection: Oggetto connessione attivo verso il database.
+
+    Raises:
+        HTTPException: Errore HTTP 500 in caso di problemi nella connessione al database.
+    """
     try:
-        connection = mariadb.connect(
+        connection: mariadb.Connection = mariadb.connect(
             host= HOST_DB,
             port= PORT_DB,
             user= USER_DB,

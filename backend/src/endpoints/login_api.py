@@ -10,26 +10,32 @@ from typing import Optional, Tuple
 
 def login_api(user: UserLogin) -> LoginResponse:
     """
-    Esegue l'autenticazione dell'utente sulla base dell'email e della password forniti.
-    Verifica l'esistenza dell'utente e la corrispondenza dell'hash della password.
-    
+    Autentica un utente sulla base dello username e della password forniti.
+
+    Recupera l'utente dal database, verifica la correttezza della password e,
+    in caso di successo, restituisce i dati essenziali del profilo.
+
     Args:
-        user (UserLogin): Oggetto contenente email e password dell'utente.
+        user (UserLogin): Dati dell’utente in fase di login (username e password).
 
     Returns:
-        LoginResponse: Oggetto con messaggio di successo, ID e username dell’utente autenticato.
+        LoginResponse: Oggetto contenente l'ID, username e email dell'utente autenticato.
 
     Raises:
         HTTPException:
-            - 404 se l'utente non è registrato con l'email fornita.
-            - 401 se la password non è corretta.
-            - 500 in caso di errore interno durante l’accesso al database.
+            - 404 se lo username non esiste nel sistema.
+            - 401 se la password è errata o non verificabile.
+            - 500 in caso di errore interno durante l'accesso al database.
     """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        query: str = "SELECT id, email, hashed_password FROM Users WHERE user_name = %s"
+        query: str = """
+            SELECT id, email, hashed_password
+            FROM Users
+            WHERE user_name = %s
+        """
         cursor.execute(query, (user.user_name,))
         result: Optional[Tuple[int, str, str]] = cursor.fetchone()
 
@@ -50,8 +56,10 @@ def login_api(user: UserLogin) -> LoginResponse:
         )
 
     except mariadb.Error as e:
-        print(e)
-        raise HTTPException(status_code=500, detail="Errore durante il login")
+        raise HTTPException(
+            status_code=500,
+            detail="Errore durante il login"
+        )
 
     finally:
         close_cursor(cursor)

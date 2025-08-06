@@ -1,20 +1,25 @@
 from fastapi import HTTPException
 import mariadb
+
 from models.user_stats import UserStats
-from utility.close_connection import close_connection
-from utility.close_cursor import close_cursor
 from utility.connect_to_database import connect_to_database
 from utility.get_cursor import get_cursor
+from utility.close_cursor import close_cursor
+from utility.close_connection import close_connection
 
 def get_user_stats_api(user_id: int) -> UserStats:
     """
-    Recupera le statistiche di gioco associate a un determinato utente.
+    Recupera le statistiche di gioco di un utente specifico, includendo:
+    - numero totale di partite giocate
+    - partite giocate come giudice e partecipante
+    - punteggi totali per ciascun ruolo
+    - vittorie e sconfitte per ciascun ruolo
 
     Args:
-        user_id (int): ID dell'utente di cui si vogliono ottenere le statistiche.
+        user_id (int): Identificativo univoco dell'utente.
 
     Returns:
-        UserStats: Oggetto contenente le statistiche complete dell'utente.
+        UserStats: Oggetto contenente tutte le statistiche aggregate.
 
     Raises:
         HTTPException: 
@@ -25,12 +30,12 @@ def get_user_stats_api(user_id: int) -> UserStats:
     cursor: mariadb.Cursor = get_cursor(connection)
 
     try:
-        query = """
-                SELECT user_id, n_games, score_part, score_judge, 
-                    won_part, won_judge, lost_part, lost_judge
-                FROM Stats
-                WHERE user_id = %s
-            """
+        query: str = """
+            SELECT user_id, n_games, score_part, score_judge, 
+                   won_part, won_judge, lost_part, lost_judge
+            FROM Stats
+            WHERE user_id = %s
+        """
         cursor.execute(query, (user_id,))
         result = cursor.fetchone()
 
@@ -40,9 +45,9 @@ def get_user_stats_api(user_id: int) -> UserStats:
                 detail= "Utente non trovato."
             )
         
-        # Calcolo del numero di partite giocate come partecipante e come giudice
-        n_games_part = result[4] + result[6]
-        n_games_judge = result[5] + result[7]
+        # Calcolo delle partite giocate come partecipante e come giudice
+        n_games_part: int = result[4] + result[6]
+        n_games_judge: int = result[5] + result[7]
         
         return UserStats(
                 user_id=result[0],
@@ -56,6 +61,7 @@ def get_user_stats_api(user_id: int) -> UserStats:
                 lost_part=result[6],
                 lost_judge=result[7]
             )
+    
     except mariadb.Error:
         raise HTTPException(
             status_code=500,
