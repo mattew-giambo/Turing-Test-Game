@@ -1,14 +1,14 @@
-HOST = "127.0.0.1"
+HOST = "0.0.0.0"
 PORT = 8003
 
-HOST_DB = "127.0.0.1"
-PORT_DB = 3307
+HOST_DB = "mariadb"
+PORT_DB = 3306
 USER_DB = "user_db"
 USER_PASSWORD_DB = "userpw"
 DATABASE_NAME_DB = "turing_db"
 
-OLLAMA_CHAT_URL = "http://127.0.0.1:11434/api/chat"
-MODEL = "gemma3:12b"
+OLLAMA_CHAT_URL = "http://ollama:11434/api/chat"
+MODEL = "gemma3:1b"
 
 NUM_QUESTIONS_PER_GAME = 3
 

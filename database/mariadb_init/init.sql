@@ -1,10 +1,3 @@
-DROP DATABASE IF EXISTS turing_db;
-CREATE DATABASE turing_db;
-CREATE OR REPLACE USER 'user_db'@'%' IDENTIFIED BY 'userpw';
-GRANT ALL PRIVILEGES ON turing_db.* TO 'user_db'@'%';
-FLUSH PRIVILEGES;
-USE turing_db;
-
 -- Table: Users
 CREATE TABLE Users (
     id INT AUTO_INCREMENT PRIMARY KEY,

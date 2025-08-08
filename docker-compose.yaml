@@ -1,0 +1,54 @@
+services:
+  mariadb:
+    image: mariadb:11.7.2-ubi9
+    container_name: mariadb_container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpw
+      MYSQL_DATABASE: turing_db
+      MYSQL_USER: user_db
+      MYSQL_PASSWORD: userpw
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./database/mariadb_data:/var/lib/mysql
+      - ./database/mariadb_init/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-prootpw"]
+      interval: 10s
+      timeout: 5s        
+      retries: 5
+  
+  ollama:
+    image: ollama/ollama
+    container_name: ollama_container
+    restart: always
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./Ollama:/root/.ollama:rw
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+  backend:
+    build: ./backend
+    container_name: backend_container
+    restart: always
+    ports:
+      - "8003:8003"
+    depends_on:
+      ollama:
+        condition: service_started
+
+  frontend:
+    build: ./frontend
+    container_name: frontend_container
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      backend:
+        condition: service_started
+
+  

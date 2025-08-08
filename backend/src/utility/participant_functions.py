@@ -6,7 +6,7 @@ from typing import List, Tuple
 import random
 from rapidfuzz import fuzz
 
-from config import NUM_QUESTIONS_PER_GAME
+from config.constants import NUM_QUESTIONS_PER_GAME
 
 def generate_ai_questions() -> Tuple[List[str], List[bool]]:
     """

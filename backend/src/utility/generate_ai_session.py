@@ -10,7 +10,7 @@ from utility.connect_to_database import connect_to_database
 from utility.get_cursor import get_cursor
 from utility.ai_utils import get_ai_answer, parse_ai_questions
 
-from config import NUM_QUESTIONS_PER_GAME
+from config.constants import NUM_QUESTIONS_PER_GAME
 
 def generate_full_ai_session(player_id: int) -> int:
     """

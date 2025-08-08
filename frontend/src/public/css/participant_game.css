@@ -68,13 +68,13 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 2rem 18rem;
+    padding: 2rem 10rem;
 }
 
 .partita-section {
     background: linear-gradient(90deg, var(--bianco-crema) 0%, #fff 100%);
     padding: 3rem;
-    margin-bottom: 2rem;
+    margin: 2rem 0;
     border: 2px solid var(--retro-fg);
     box-shadow: 4px 4px 0 var(--retro-shadow);
 }
@@ -84,7 +84,7 @@ main {
     line-height: 1.6;
     margin-bottom: 1.2rem;
     margin-top: 1.2rem;
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: var(--retro-red);
     -webkit-text-stroke: 1px var(--retro-fg);
     text-transform: uppercase;
@@ -94,7 +94,7 @@ main {
 
 .partita-section-text h1{
     color: #d84040;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     margin-bottom: 2rem;
 }
 
@@ -167,32 +167,10 @@ button:hover {
 }
 
 /* Sessione section */
-.sessione-section {
-    background: linear-gradient(90deg, var(--bianco-crema) 0%, #fff 100%);
-    border: 2px solid var(--retro-fg);
-    padding: 3rem;
-    box-shadow: 4px 4px var(--retro-shadow);
-    margin-bottom: 2rem;
+.label-domanda{
     display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
-
-.sessione-section-text{
-    overflow-wrap: break-word;
-    line-height: 1.6;
-
-}
-
-.domande-risposte{
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
-
-.domande-risposte-elem{
-    display: flex;
-    flex-direction: column;
+    flex: 1;
+    justify-content: left;
     gap: 1rem;
 }
 
@@ -202,13 +180,6 @@ button:hover {
 
 .label-domanda p{
     margin: 0;
-}
-
-.label-domanda{
-    display: flex;
-    flex: 1;
-    justify-content: left;
-    gap: 1rem;
 }
 
 .sessione-risposta{

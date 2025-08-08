@@ -10,7 +10,7 @@ from utility.participant_functions import generate_ai_questions, select_unique_q
 import mariadb
 import random
 
-from config import NUM_QUESTIONS_PER_GAME
+from config.constants import NUM_QUESTIONS_PER_GAME
 
 def participant_game_api(game_id: int) -> ParticipantGameOutput:
     """

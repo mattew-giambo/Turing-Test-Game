@@ -41,7 +41,7 @@ main {
     padding: 2rem;
     background-color: #ffffff;
 
-    background-image: url('/assets/404.PNG');
+    background-image: url('/assets/404.png');
     background-repeat: no-repeat;
     background-position: bottom center;
     background-size: 400px; /* Adatta la dimensione in base alla tua immagine */
