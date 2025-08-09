@@ -2,7 +2,20 @@ import asyncio
 from datetime import datetime, timedelta
 from typing import Dict
 
-async def rimuovi_sessioni_scadute(sessioni_attive: Dict[int, Dict[str, str]]):
+async def rimuovi_sessioni_scadute(sessioni_attive: Dict[int, Dict[str, str]]) -> None:
+    """
+    Task asincrono che rimuove periodicamente le sessioni utente scadute.
+
+    Controlla ogni minuto le sessioni attive e rimuove quelle con timestamp più vecchio
+    di 20 minuti, garantendo così la pulizia automatica delle sessioni inattive.
+
+    Args:
+        sessioni_attive (Dict[int, Dict[str, str]]): Dizionario delle sessioni attive,
+            con timestamp associato a ciascun user_id.
+    
+    Returns:
+        None
+    """
     while True:
         now = datetime.now()
         scaduti = []
@@ -12,4 +25,4 @@ async def rimuovi_sessioni_scadute(sessioni_attive: Dict[int, Dict[str, str]]):
         for user_id in scaduti:
             sessioni_attive.pop(user_id)
         
-        await asyncio.sleep(60)  # controlla ogni minuto
+        await asyncio.sleep(60)  # Attende 60 secondi prima del prossimo controllo

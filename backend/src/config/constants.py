@@ -2,7 +2,7 @@ HOST = "127.0.0.1" # "0.0.0.0"
 PORT = 8003
 
 HOST_DB = "127.0.0.1" # "mariadb"
-PORT_DB = "3307" # 3306
+PORT_DB = 3307 # 3306
 USER_DB = "user_db"
 USER_PASSWORD_DB = "userpw"
 DATABASE_NAME_DB = "turing_db"

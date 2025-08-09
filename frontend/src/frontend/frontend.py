@@ -37,6 +37,7 @@ app = FastAPI()
 BASE_DIR = os.path.dirname(__file__)
 
 class NoCacheStaticFiles(StaticFiles):
+    """Classe custom per disabilitare caching su file statici."""
     async def get_response(self, path: str, scope):
         response = await super().get_response(path, scope)
         response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
@@ -44,7 +45,7 @@ class NoCacheStaticFiles(StaticFiles):
         response.headers["Expires"] = "0"
         return response
 
-# MIDDLEWARE PER LA GESTIONE DEI FILE STATICI
+# Setup Jinja2 templates e mount directory per file statici con no-cache
 templates = Jinja2Templates(directory= os.path.join(BASE_DIR, "../public/templates"))
 
 app.mount("/assets", NoCacheStaticFiles(directory= os.path.join(BASE_DIR, "../public/assets")))
@@ -54,7 +55,11 @@ app.mount("/js", NoCacheStaticFiles(directory= os.path.join(BASE_DIR, "../public
 sessioni_attive: Dict[int, Dict[str, str]] = {}
 
 @app.on_event("startup")
-async def on_startup():
+async def on_startup() -> None:
+    """
+    Evento startup FastAPI per avviare task asincrono
+    che rimuove periodicamente sessioni scadute.
+    """
     asyncio.create_task(rimuovi_sessioni_scadute(sessioni_attive))
 
 @app.get("/", response_class=HTMLResponse)
@@ -146,8 +151,21 @@ def user_disconnect_endpoint(user_id: int):
 def game_info_endpoint(payload: GameInfoInput):
     return game_info(payload)
 
-@app.get("/{full_path:path}")
-def catch_all(full_path: str, request: Request):
+@app.get("/{full_path:path}", response_class=HTMLResponse)
+def catch_all(full_path: str, request: Request) -> HTMLResponse:
+    """
+    Endpoint catch-all per intercettare tutte le richieste verso percorsi non definiti.
+
+    Questo endpoint viene utilizzato per gestire richieste a URL non mappati da altri endpoint
+    restituendo una pagina HTML personalizzata 404 (pagina non trovata).
+
+    Args:
+        full_path (str): Percorso richiesto dal client, intercettato da questo catch-all.
+        request (Request): Oggetto richiesta HTTP di FastAPI, passato al template per il rendering.
+
+    Returns:
+        HTMLResponse: Risposta HTML che renderizza la pagina "404.html" con il contesto della richiesta.
+    """
     return templates.TemplateResponse(
         "404.html", {"request": request}
     )
