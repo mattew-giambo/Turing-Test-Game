@@ -8,7 +8,6 @@ from utility.get_cursor import get_cursor
 import mariadb
 from typing import Literal
 
-
 def start_game_api(payload: PlayerInfo) -> ConfirmGame:
     """
     Avvia una nuova partita assegnando il ruolo (judge o participant) a un utente esistente.

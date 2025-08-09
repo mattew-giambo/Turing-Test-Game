@@ -6,6 +6,25 @@ from typing import Dict
 from urllib.parse import urljoin
 
 def send_judge_answer(game_id: int, payload: JudgeGameAnswer) -> EndJudgeGameOutput:
+    """
+    Invia la risposta del giudice all'API per terminare la partita.
+
+    Questa funzione comunica con l'endpoint '/end-judge-game-api/{game_id}' inviando
+    la risposta del giudice (se ha individuato correttamente l'intelligenza artificiale).
+    Gestisce eventuali errori di comunicazione con il backend e restituisce l'esito
+    della partita, comprensivo di messaggio, esito e punteggio assegnato.
+
+    Args:
+        game_id (int): Identificativo univoco della partita da terminare.
+        payload (JudgeGameAnswer): Oggetto contenente la risposta del giudice.
+
+    Returns:
+        EndJudgeGameOutput: Oggetto con il messaggio, l'esito e i punti guadagnati.
+
+    Raises:
+        HTTPException: Errore HTTP generato in caso di fallimento della richiesta
+        al backend (es. 404, 500, timeout, ecc.).
+    """
     try:
         response = requests.post(
             urljoin(API_BASE_URL, f"/end-judge-game-api/{game_id}"),
@@ -14,8 +33,8 @@ def send_judge_answer(game_id: int, payload: JudgeGameAnswer) -> EndJudgeGameOut
         response.raise_for_status()
 
     except requests.RequestException as e:
-        status_code = 500
-        detail = "Errore sconosciuto"
+        status_code: int = 500
+        detail: str = "Errore sconosciuto nella comunicazione con il backend"
 
         if e.response is not None:
             status_code = e.response.status_code
