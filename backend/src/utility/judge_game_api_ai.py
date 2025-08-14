@@ -24,7 +24,7 @@ def judge_game_api_ai(questions_input: List[str]) -> List[str]:
         prompt = (
             f"Sei un concorrente di un quiz televisivo. Rispondi alla domanda: {question}.\n"
             "La risposta deve essere naturale, colloquiale e breve (1-2 frasi massimo).\n"
-            "Evita esclamazioni, introduzioni, spiegazioni o commenti extra.\n"
+            "Evita esclamazioni, introduzioni o commenti extra.\n"
             "Scrivi solo la risposta."
         )
         

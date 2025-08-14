@@ -63,17 +63,19 @@ def judge_game_api_db(questions_input: List[str]) -> List[str]:
             candidate_answers = q_fuzzy[question_input]
 
             prompt = (
-                "Ti darò una domanda e una lista di risposte. "
-                "Scegli la risposta migliore per la domanda fornita.\n"
-                "Rispondi solo con il numero corrispondente (ad esempio '1').\n"
-                "Se nessuna risposta è adeguata, rispondi '0'.\n"
-                f"Domanda: {question_input}\n"
+                "Sei l'autore di un gioco a quiz.\n"
+                "Ti fornirò una domanda e una lista di risposte.\n"
+                "Le risposte possono essere corrette, parzialmente pertinenti o completamente sbagliate.\n"
+                "Analizza attentamente il significato di ogni risposta e scegli quella che risponde meglio alla domanda.\n"
+                "Rispondi SOLO con il numero della risposta scelta (es. '1').\n"
+                "Se nessuna risposta è adeguata, scrivi '0'.\n"
+                f"\nDOMANDA:\n{question_input}\n\nRISPOSTE:\n"
+                + "\n".join(f"{idx}. {qa['answer']}" for idx, qa in enumerate(candidate_answers, start=1))
+
             )
-            
-            for idx, qa in enumerate(candidate_answers, start=1):
-                prompt+=f"{idx}. {qa['answer']}\n"
 
             ai_answer: str = get_ai_answer(prompt)
+
             try:
                 answer_idx = int(ai_answer)
                 if answer_idx == 0:

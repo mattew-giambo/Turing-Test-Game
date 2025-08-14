@@ -6,7 +6,7 @@ from utility.close_connection import close_connection
 from utility.close_cursor import close_cursor
 from utility.connect_to_database import connect_to_database
 from utility.get_cursor import get_cursor
-from utility.generate_ai_session import generate_full_ai_session
+from utility.generate_ai_session import generate_ai_session
 
 import mariadb
 from typing import List, Tuple
@@ -56,7 +56,7 @@ def start_pending_game_api(payload: PlayerInfo) -> ConfirmGame:
         ai: bool = random.choice([True, False])
 
         if ai:
-            ai_session = generate_full_ai_session(player_id)
+            ai_session = generate_ai_session(player_id)
             return ConfirmGame(
                 game_id=ai_session["game_id"],
                 player_id=player_id,
@@ -88,7 +88,7 @@ def start_pending_game_api(payload: PlayerInfo) -> ConfirmGame:
         pending_games: List[Tuple[int]] = cursor.fetchall()
 
         if not pending_games:
-            ai_session = generate_full_ai_session(player_id)
+            ai_session = generate_ai_session(player_id)
             return ConfirmGame(
                 game_id=ai_session["game_id"],
                 player_id=player_id,

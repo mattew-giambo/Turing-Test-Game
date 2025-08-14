@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List
 from fastapi import HTTPException
 from rapidfuzz import fuzz
 import random
@@ -9,10 +9,11 @@ from utility.close_cursor import close_cursor
 from utility.connect_to_database import connect_to_database
 from utility.get_cursor import get_cursor
 from utility.ai_utils import get_ai_answer, parse_ai_questions
+from utility.is_distinct import is_distinct
 
 from config.constants import NUM_QUESTIONS_PER_GAME
 
-def generate_full_ai_session(player_id: int) -> int:
+def generate_ai_session(player_id: int) -> Dict[str, int]:
     """
     Genera una nuova sessione di gioco completamente gestita dall'intelligenza artificiale (AI).
     
@@ -35,76 +36,66 @@ def generate_full_ai_session(player_id: int) -> int:
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)
 
-    try:
-        prompt: str = (
-            "Sei l'autore di un quiz show (programma televisivo). Devo scrivere tre domande da porre ai concorrenti durante una sessione di gioco.\n"
-            "Scegli tre argomenti distinti che possono emergere in una conversazione informale tra persone. Per ciascun argomento, formula una domanda in tono naturale e colloquiale.\n"
-            "Evita domande tecniche, filosofiche o troppo complesse. Niente introduzioni, spiegazioni o commenti.\n"
-            "Restituisci solo le tre domande, numerate da 1 a 3."
-        )
+    # Prompt base per generare le domande dall'AI in fallback
+    prompt: str = (
+        "Sei l'autore di un quiz show (programma televisivo). Devo scrivere tre domande da porre ai concorrenti durante una sessione di gioco.\n"
+        "Scegli tre argomenti distinti che possono emergere in una conversazione informale tra persone. Per ciascun argomento, formula una domanda in tono naturale e colloquiale.\n"
+        "Evita domande tecniche, filosofiche o troppo complesse. Niente introduzioni, spiegazioni o commenti.\n"
+        "Restituisci solo le tre domande, numerate da 1 a 3."
+    )
 
+    try:
+        # Creo una nuova partita
         query: str = "INSERT INTO Games () VALUES ()"
         cursor.execute(query)
         game_id: int = cursor.lastrowid
 
+        # Associo il giudice umano alla partita
         query = "INSERT INTO UserGames (game_id, player_id, player_role) VALUES (%s, %s, 'judge')"
         cursor.execute(query, (game_id, player_id))
 
+        # Associo il partecipante AI (user_id = 1)
         query = "INSERT INTO UserGames (game_id, player_id, player_role) VALUES (%s, %s, 'participant')"
         cursor.execute(query, (game_id, 1))
 
+        # Prendo domande esistenti
         query = "SELECT DISTINCT question, ai_question FROM Q_A"
         cursor.execute(query)
-        result = cursor.fetchall()
+        all_questions = cursor.fetchall()
 
-        if not result:
-            ai_answer: str = get_ai_answer(prompt)
-            selected_questions: List[str] = parse_ai_questions(ai_answer)
+        selected_questions: List[str] = []
+        ai_flags: List[bool] = []
 
-            if len(selected_questions) < NUM_QUESTIONS_PER_GAME:
-                raise HTTPException(status_code=500, detail="L'AI non ha generato abbastanza domande")
-            
-            ai_flags: List[bool] = [True] * NUM_QUESTIONS_PER_GAME
-        
-        else:
-            all_questions = [(elem[0].strip(), elem[1]) for elem in result]
-            random.shuffle(all_questions)
+        if all_questions:
+            # Mescolo domande per casualità
+            questions = [(q.strip(), flag) for q, flag in all_questions]
+            random.shuffle(questions)
 
-            selected_questions: List[str] = []
-            ai_flags: List[bool] = []
-
-            for question, flag in all_questions:
-                is_distinct = True # supponiamo che la domanda sia valida
-
-                for existing in selected_questions:
-                    similarity = fuzz.token_sort_ratio(question.lower(), existing.lower())
-
-                    if similarity >= 85:
-                        is_distinct = False # troppo simile a una domanda già presente
-                        break # non serve continuare a confrontare con le altre
-
-                if is_distinct:
+            for question, flag in questions:
+                if is_distinct(question, selected_questions):
                     selected_questions.append(question)
                     ai_flags.append(flag)
 
                 if len(selected_questions) == NUM_QUESTIONS_PER_GAME:
-                    break # abbiamo trovato abbastanza domande distinte
+                    break
+        
+        # Se non ho abbastanza domande distinte, chiedo all'AI di generare
+        if len(selected_questions) < NUM_QUESTIONS_PER_GAME:
+            ai_answer = get_ai_answer(prompt)
+            selected_questions = parse_ai_questions(ai_answer)
 
             if len(selected_questions) < NUM_QUESTIONS_PER_GAME:
-                ai_answer: str = get_ai_answer(prompt)
-                selected_questions: List[str] = parse_ai_questions(ai_answer)
+                raise HTTPException(status_code=500, detail="AI fallback fallito: domande insufficienti.")
 
-                if len(selected_questions) < NUM_QUESTIONS_PER_GAME:
-                    raise HTTPException(status_code=500, detail="AI fallback fallito: domande insufficienti.")
-                
-                ai_flags = [True] * NUM_QUESTIONS_PER_GAME
+            ai_flags = [True] * NUM_QUESTIONS_PER_GAME
 
+        # Genero risposte AI per ciascuna domanda selezionata
         risposte_ai: List[str] = []
         for question in selected_questions:
             prompt = (
                 f"Sei un concorrente di un quiz televisivo. Rispondi alla domanda: {question}.\n"
                 "La risposta deve essere naturale, colloquiale e breve (1-2 frasi massimo).\n"
-                "Evita esclamazioni, introduzioni, spiegazioni o commenti extra.\n"
+                "Evita esclamazioni, introduzioni o commenti extra.\n"
                 "Scrivi solo la risposta."
             )
             risposta_ai = get_ai_answer(prompt)
@@ -112,9 +103,10 @@ def generate_full_ai_session(player_id: int) -> int:
                 raise HTTPException(status_code=500, detail="Errore nella risposta dell'AI")
             risposte_ai.append(risposta_ai.strip())
 
+        # Inserisco domande e risposte nel DB
         query = """
-        INSERT INTO Q_A (game_id, question_id, question, answer, ai_question, ai_answer)
-        VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO Q_A (game_id, question_id, question, answer, ai_question, ai_answer)
+            VALUES (%s, %s, %s, %s, %s, %s)
         """
         for idx, (question, answer, ai_flag) in enumerate(zip(selected_questions, risposte_ai, ai_flags), start=1):
             cursor.execute(query, (game_id, idx, question, answer, ai_flag, True))

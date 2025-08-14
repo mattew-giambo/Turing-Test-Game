@@ -47,7 +47,6 @@ def register_api(user: UserRegister) -> RegisterResponse:
             VALUES (%s, %s, %s)
         """
         cursor.execute(query, (user.user_name, user.email, hashed_password))
-        connection.commit()
 
         user_id: int = cursor.lastrowid
 
