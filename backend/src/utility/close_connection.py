@@ -9,7 +9,8 @@ def close_connection(connection: mariadb.Connection) -> None:
         connection (mariadb.Connection): La connessione aperta al database.
 
     Raises:
-        HTTPException: Se si verifica un errore durante la chiusura della connessione.
+        HTTPException: 
+            - 500: se si verifica un errore durante la chiusura della connessione.
     """
     try:
         connection.close()

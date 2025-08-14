@@ -66,6 +66,9 @@ def judge_game_api(payload: JudgeGameInput, game_id: int) -> JudgeGameOutput:
             except mariadb.Error:
                 raise HTTPException(status_code= 500, detail= "Errore del server")
 
+        insert_q_a_judge_api(game_id, use_ai, questions_input, answers_output)
+        return JudgeGameOutput(answers_list=answers_output)
+    
     except mariadb.Error as e:
         raise HTTPException(
             status_code=500, 
@@ -75,7 +78,3 @@ def judge_game_api(payload: JudgeGameInput, game_id: int) -> JudgeGameOutput:
     finally:
         close_cursor(cursor)
         close_connection(connection)
-
-    insert_q_a_judge_api(game_id, use_ai, questions_input, answers_output)
-
-    return JudgeGameOutput(answers_list=answers_output)

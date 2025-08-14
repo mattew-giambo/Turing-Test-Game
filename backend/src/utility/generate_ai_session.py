@@ -31,7 +31,8 @@ def generate_ai_session(player_id: int) -> Dict[str, int]:
         Dict[str, int]: Dizionario contenente l'ID della partita creata, ad es. {"game_id": 123}.
     
     Raises:
-        HTTPException: Se si verificano errori nella generazione delle domande/risposte o nell'accesso al database.
+        HTTPException: 
+            - 500: se si verifica un errore durante la comunicazione con Ollama o In caso di errore interno durante al database. 
     """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)

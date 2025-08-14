@@ -10,7 +10,8 @@ def connect_to_database() -> mariadb.Connection:
         mariadb.Connection: Oggetto connessione attivo verso il database.
 
     Raises:
-        HTTPException: Errore HTTP 500 in caso di problemi nella connessione al database.
+        HTTPException: 
+            - 500: In caso di errore interno durante l’accesso al database.
     """
     try:
         connection: mariadb.Connection = mariadb.connect(

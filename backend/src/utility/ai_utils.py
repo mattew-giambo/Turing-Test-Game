@@ -13,9 +13,6 @@ def get_ai_answer(prompt: str) -> Optional[str]:
 
     Returns:
         Optional[str]: Testo della risposta AI, None se errore o risposta non valida.
-
-    Raises:
-        HTTPException: se si verifica un errore irreversibile nella comunicazione con Ollama.
     """
     message = OllamaMessage(role= "user", content= prompt)
     ollama_input = OllamaInput(model= MODEL, messages= [message], stream= False)

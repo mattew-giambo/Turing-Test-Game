@@ -12,7 +12,8 @@ def get_cursor(connection: mariadb.Connection) -> mariadb.Cursor:
         mariadb.Cursor: Oggetto cursore per esecuzione di comandi SQL.
 
     Raises:
-        HTTPException: Errore HTTP 500 in caso di fallimento nella creazione del cursore.
+         HTTPException: 
+            - 500: In caso di errore interno durante al database. 
     """
     try:
         cursor: mariadb.Cursor = connection.cursor()

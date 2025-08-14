@@ -14,9 +14,6 @@ def judge_game_api_ai(questions_input: List[str]) -> List[str]:
 
     Returns:
         List[str]: Lista di risposte generate dall'AI, una per ogni domanda.
-
-    Note:
-        - Solo risposte non vuote vengono incluse nell'output.
     """
     answers_output: List[str] = []
 

@@ -18,8 +18,7 @@ def judge_game_api_db(questions_input: List[str]) -> List[str]:
         questions_input (List[str]): Lista di domande fornite dal client (giudice).
 
     Returns:
-        List[str]: Lista di risposte selezionate dall'AI corrispondenti alle domande input.
-                   Lista vuota se non si trovano corrispondenze o in caso di errore.
+        List[str]: Lista di risposte selezionate dall'AI corrispondenti alle domande input. Lista vuota se non si trovano corrispondenze o in caso di errore.
     """
     connection: mariadb.Connection = connect_to_database()
     cursor: mariadb.Cursor = get_cursor(connection)

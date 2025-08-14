@@ -9,7 +9,8 @@ def close_cursor(cursor: mariadb.Cursor) -> None:
         cursor (mariadb.Cursor): Il cursore attivo da chiudere.
 
     Raises:
-        HTTPException: Se si verifica un errore durante la chiusura del cursore.
+        HTTPException: 
+            - 500: se si verifica un errore durante la chiusura della connessione.
     """
     try:
         cursor.close()
