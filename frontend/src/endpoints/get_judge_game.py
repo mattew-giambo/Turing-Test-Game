@@ -29,7 +29,8 @@ def get_judge_game(game_id: int, player_id: int, player_token: str, request: Req
 
     Raises:
         HTTPException:
-            - 4xx o 5xx in caso di errori di rete o risposta errata dall'API `/game-info-api`.
+            - 404 se la partita non esiste o non è associata al giocatore.
+            - 500 in caso di errori di rete o errori non gestiti.
     """
     if not verify_user_token(player_id, player_token, sessioni_attive):
         return templates.TemplateResponse("login.html", {"request": request})

@@ -38,6 +38,8 @@ services:
     ports:
       - "8003:8003"
     depends_on:
+      mariadb:
+        condition: service_healthy
       ollama:
         condition: service_started
 

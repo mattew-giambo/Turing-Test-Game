@@ -22,8 +22,10 @@ def send_judge_answer(game_id: int, payload: JudgeGameAnswer) -> EndJudgeGameOut
         EndJudgeGameOutput: Oggetto con il messaggio, l'esito e i punti guadagnati.
 
     Raises:
-        HTTPException: Errore HTTP generato in caso di fallimento della richiesta
-        al backend (es. 404, 500, timeout, ecc.).
+        HTTPException: 
+            - 404 se partita, giudice o partecipante non trovati.
+            - 403 se partita già terminata.
+            - 500 in caso di errori di rete o errori non gestiti.
     """
     try:
         response = requests.post(

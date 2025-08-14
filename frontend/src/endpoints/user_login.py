@@ -27,7 +27,8 @@ def user_login(user: UserLogin, request: Request, sessioni_attive: Dict[int, Dic
 
     Raises:
         HTTPException:
-            - 4xx in caso di errore restituito dall'endpoint /login-api.
+            - 404 se lo username non esiste nel sistema.
+            - 401 se la password è errata o non verificabile.
             - 500 in caso di errori di rete o errori non gestiti.
     """
     try:

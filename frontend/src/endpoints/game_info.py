@@ -22,7 +22,8 @@ def game_info(payload: GameInfoInput) -> GameInfoOutput:
 
     Raises:
         HTTPException:
-            - 4xx o 5xx in caso di errori HTTP o di comunicazione con l'endpoint interno.
+            - 404 se la partita non esiste o non è associata al giocatore.
+            - 500 in caso di errori di rete o errori non gestiti.
     """
     try:
         response = requests.post(

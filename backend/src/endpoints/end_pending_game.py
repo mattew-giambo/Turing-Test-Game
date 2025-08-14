@@ -115,6 +115,7 @@ def end_pending_game_api(judge_answer: JudgeGameAnswer, game_id: int) -> EndPend
 
     except mariadb.Error as e:
         raise HTTPException(status_code=500, detail="Errore del server.")
+    
     finally:
         close_cursor(cursor)
         close_connection(connection)

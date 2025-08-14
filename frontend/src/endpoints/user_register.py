@@ -21,7 +21,7 @@ def user_register(user: UserRegister, request: Request) -> RegisterResponse:
     Raises:
         HTTPException:
             - 400 se l’utente è già registrato.
-            - 500 in caso di errori di rete o errore non gestito nel backend.
+            - 500 in caso di errori di rete o errori non gestiti.
     """
     try:
         response = requests.post(

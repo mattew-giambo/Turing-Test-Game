@@ -23,7 +23,9 @@ async def send_questions_judge_game(game_id: int, payload: JudgeGameInput) -> Ju
     
     Raises:
     HTTPException:
-        - 4xx o 5xx in caso di errore durante la comunicazione con il backend.
+        - 404 se il game_id non corrisponde a una partita esistente.
+        - 403 se la partita è già terminata.
+        - 500 in caso di errori di rete o errori non gestiti.
     """
     try:
         response = requests.post(

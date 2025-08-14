@@ -29,7 +29,9 @@ def get_participant_game(game_id: int, player_id: int, player_token: str, reques
         TemplateResponse: Pagina HTML con i dati della partita, oppure pagina di errore/login.
     
     Raises:
-        HTTPException: In caso di errori di comunicazione con il backend o problemi di elaborazione.
+        HTTPException: 
+            - 404 se la partita non esiste o non è associata al giocatore.
+            - 500 in caso di errori di rete o errori non gestiti.
     """
     if not verify_user_token(player_id, player_token, sessioni_attive):
         return templates.TemplateResponse("login.html", {"request": request})

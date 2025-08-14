@@ -17,8 +17,10 @@ def send_answers_participant_game(game_id: int, payload: AnswerInput) -> Respons
         ResponseSubmit: Oggetto che rappresenta l'esito dell'operazione di invio risposte.
 
     Raises:
-        HTTPException: Errore HTTP con codice e dettaglio derivati dalla risposta remota
-                       o da un problema di connessione.
+        HTTPException: 
+            - 404 se partita, giudice o partecipante non trovati.
+            - 403 se partita già terminata.
+            - 500 in caso di errori di rete o errori non gestiti.
     """
     try:
         response = requests.post(

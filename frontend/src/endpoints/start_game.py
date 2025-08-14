@@ -19,8 +19,8 @@ def start_game(payload: PlayerInfo) -> ConfirmGame:
 
     Raises:
         HTTPException:
-            - 4xx in caso di errori lato client (es. utente non trovato).
-            - 5xx in caso di errori lato server o problemi di rete.
+            - 404 se l'utente non esiste
+            - 500 in caso di errori di rete o errori non gestiti.
     """
     try:
         response = requests.post(

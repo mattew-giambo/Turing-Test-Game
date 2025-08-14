@@ -21,7 +21,10 @@ def send_pending_verdict(game_id: int, request: Request, payload: JudgeGameAnswe
         EndPendingGame: Oggetto con l'esito della partita (vittoria/sconfitta, messaggio e punti).
 
     Raises:
-        HTTPException: Se si verificano errori di comunicazione o di validazione della risposta.
+        HTTPException: 
+            - 404: Se il `game_id` è associato a una partita inesistente.
+            - 403: Se il `game_id` è associato a una partita già terminata.
+            - 500 in caso di errori di rete o errori non gestiti.
     """
     try:
         response = requests.post(

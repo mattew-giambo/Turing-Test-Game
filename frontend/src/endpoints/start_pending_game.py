@@ -24,7 +24,8 @@ async def start_pending_game(payload: PlayerInfo) -> ConfirmGame:
 
     Raises:
         HTTPException:
-            - 4xx o 5xx in caso di errore durante la comunicazione con l'endpoint interno.
+            - 404 se il giocatore non è presente nel database.
+            - 500 in caso di errori di rete o errori non gestiti.
     """
     payload.player_role = "judge"
     
