@@ -1,6 +1,6 @@
 from fastapi import Request, HTTPException
 from fastapi.templating import Jinja2Templates
-from typing import Dict, Union
+from typing import Dict
 import requests
 
 from models.user_stats import UserStats

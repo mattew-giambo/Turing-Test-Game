@@ -100,7 +100,6 @@ def get_start_game_page(request: Request, user_id: int, token: str):
             "login.html", {"request": request}
         )
 
-# Endpoint per gestire l'avvio effettivo della partita classica
 @app.post("/start-game", response_model=ConfirmGame)
 def start_game_endpoint(payload: PlayerInfo):
     return start_game(payload)
@@ -138,7 +137,6 @@ def get_verdict_game_endpoint(game_id: int, player_id: int, token: str, request:
 def send_pending_verdict_endpoint(game_id: int, request: Request, payload: JudgeGameAnswer):
     return send_pending_verdict(game_id, request, payload, templates)
 
-# USER 
 @app.get("/profilo/{user_id}", response_class=HTMLResponse)
 def get_profilo_endpoint(user_id: int, token: str, request: Request):
     return get_profilo(user_id, token, request, templates, sessioni_attive)
