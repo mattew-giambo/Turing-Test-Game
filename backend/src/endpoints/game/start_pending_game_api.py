@@ -2,11 +2,11 @@ from fastapi import HTTPException
 
 from models.player_info import PlayerInfo
 from models.confirm_game import ConfirmGame
-from utility.close_connection import close_connection
-from utility.close_cursor import close_cursor
-from utility.connect_to_database import connect_to_database
-from utility.get_cursor import get_cursor
-from utility.generate_ai_session import generate_ai_session
+from utility.db.close_connection import close_connection
+from utility.db.close_cursor import close_cursor
+from utility.db.connect_to_database import connect_to_database
+from utility.db.get_cursor import get_cursor
+from utility.game.generate_ai_session import generate_ai_session
 
 import mariadb
 from typing import List, Tuple

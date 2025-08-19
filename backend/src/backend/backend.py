@@ -12,20 +12,20 @@ from models.user_stats import UserStats
 from models.user_games import UserGames
 from models.user_info import UserInfo
 
-from endpoints.register_api import register_api
-from endpoints.login_api import login_api
-from endpoints.start_game_api import start_game_api
-from endpoints.judge_game_api import judge_game_api
-from endpoints.participant_game_api import participant_game_api
-from endpoints.submit_answers_api import submit_answers_api
-from endpoints.start_pending_game_api import start_pending_game_api
-from endpoints.get_pending_game_api import get_pending_game_api
-from endpoints.end_judge_game_api import end_judge_game_api
-from endpoints.end_pending_game import end_pending_game_api
-from endpoints.get_user_stats_api import get_user_stats_api
-from endpoints.get_player_games_api import get_player_games_api
-from endpoints.game_info_api import game_info_api
-from endpoints.get_user_info_api import get_user_info_api
+from endpoints.auth.register_api import register_api
+from endpoints.auth.login_api import login_api
+from endpoints.game.start_game_api import start_game_api
+from endpoints.game.judge_game_api import judge_game_api
+from endpoints.game.participant_game_api import participant_game_api
+from endpoints.game.submit_answers_api import submit_answers_api
+from endpoints.game.start_pending_game_api import start_pending_game_api
+from endpoints.game.get_pending_game_api import get_pending_game_api
+from endpoints.game.end_judge_game_api import end_judge_game_api
+from endpoints.game.end_pending_game import end_pending_game_api
+from endpoints.user.get_user_stats_api import get_user_stats_api
+from endpoints.game.get_player_games_api import get_player_games_api
+from endpoints.game.game_info_api import game_info_api
+from endpoints.user.get_user_info_api import get_user_info_api
 
 app = FastAPI()
 

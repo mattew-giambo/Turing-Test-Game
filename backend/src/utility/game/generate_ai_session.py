@@ -4,12 +4,12 @@ from rapidfuzz import fuzz
 import random
 import mariadb
 
-from utility.close_connection import close_connection
-from utility.close_cursor import close_cursor
-from utility.connect_to_database import connect_to_database
-from utility.get_cursor import get_cursor
+from utility.db.close_connection import close_connection
+from utility.db.close_cursor import close_cursor
+from utility.db.connect_to_database import connect_to_database
+from utility.db.get_cursor import get_cursor
 from utility.ai_utils import get_ai_answer, parse_ai_questions
-from utility.is_distinct import is_distinct
+from utility.game.is_distinct import is_distinct
 
 from config.constants import NUM_QUESTIONS_PER_GAME
 

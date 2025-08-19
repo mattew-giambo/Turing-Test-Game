@@ -1,12 +1,12 @@
 from fastapi import HTTPException
 from models.judge_game import JudgeGameInput, JudgeGameOutput
-from utility.judge_game_api_ai import judge_game_api_ai
-from utility.judge_game_api_db import judge_game_api_db
-from utility.insert_q_a_judge_api import insert_q_a_judge_api
-from utility.connect_to_database import connect_to_database
-from utility.close_connection import close_connection
-from utility.get_cursor import get_cursor
-from utility.close_cursor import close_cursor
+from utility.game.judge_game_api_ai import judge_game_api_ai
+from utility.game.judge_game_api_db import judge_game_api_db
+from utility.db.insert_q_a_judge_api import insert_q_a_judge_api
+from utility.db.connect_to_database import connect_to_database
+from utility.db.close_connection import close_connection
+from utility.db.get_cursor import get_cursor
+from utility.db.close_cursor import close_cursor
 from typing import List
 import mariadb
 import random

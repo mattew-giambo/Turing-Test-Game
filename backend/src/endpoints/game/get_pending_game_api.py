@@ -1,10 +1,10 @@
 from fastapi import HTTPException
 
 from models.pending_game import QA, GameReviewOutput
-from utility.close_connection import close_connection
-from utility.close_cursor import close_cursor
-from utility.connect_to_database import connect_to_database
-from utility.get_cursor import get_cursor
+from utility.db.close_connection import close_connection
+from utility.db.close_cursor import close_cursor
+from utility.db.connect_to_database import connect_to_database
+from utility.db.get_cursor import get_cursor
 
 import mariadb
 from typing import Dict

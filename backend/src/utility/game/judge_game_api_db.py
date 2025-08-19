@@ -1,12 +1,13 @@
 import mariadb
-from utility.close_connection import close_connection
-from utility.close_cursor import close_cursor
-from utility.connect_to_database import connect_to_database
-from utility.get_cursor import get_cursor
+from utility.db.close_connection import close_connection
+from utility.db.close_cursor import close_cursor
+from utility.db.connect_to_database import connect_to_database
+from utility.db.get_cursor import get_cursor
+from utility.ai_utils import get_ai_answer
 from typing import List, Dict
 from rapidfuzz import process, fuzz
 import random
-from utility.ai_utils import get_ai_answer
+
 
 def judge_game_api_db(questions_input: List[str]) -> List[str]:
     """

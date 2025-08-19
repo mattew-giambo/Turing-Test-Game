@@ -1,12 +1,12 @@
 from typing import List
 from fastapi import HTTPException
 from models.participant_game import ParticipantGameOutput, QADict
-from utility.close_connection import close_connection
-from utility.close_cursor import close_cursor
-from utility.connect_to_database import connect_to_database
-from utility.get_cursor import get_cursor
-from utility.insert_q_a_participant_api import insert_q_a_participant_api
-from utility.participant_functions import generate_ai_questions, select_unique_questions_from_db, build_qa_list
+from utility.db.close_connection import close_connection
+from utility.db.close_cursor import close_cursor
+from utility.db.connect_to_database import connect_to_database
+from utility.db.get_cursor import get_cursor
+from utility.db.insert_q_a_participant_api import insert_q_a_participant_api
+from utility.game.participant_functions import generate_ai_questions, select_unique_questions_from_db, build_qa_list
 import mariadb
 import random
 
