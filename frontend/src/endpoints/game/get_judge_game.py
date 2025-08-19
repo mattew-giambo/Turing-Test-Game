@@ -6,7 +6,7 @@ import requests
 
 from models.game_info import GameInfoInput, GameInfoOutput
 from config.constants import API_BASE_URL
-from utility.verify_user_token import verify_user_token
+from utility.auth.verify_user_token import verify_user_token
 
 def get_judge_game(game_id: int, player_id: int, player_token: str, request: Request, templates: Jinja2Templates, sessioni_attive: Dict[int, Dict[str, str]]):
     """

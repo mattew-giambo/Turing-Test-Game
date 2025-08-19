@@ -5,7 +5,7 @@ from datetime import datetime
 from urllib.parse import urljoin
 
 from models.authentication import UserLogin, LoginResponse
-from utility.generate_random_string import generate_random_string
+from utility.auth.generate_random_string import generate_random_string
 from config.constants import API_BASE_URL
 
 def user_login(user: UserLogin, request: Request, sessioni_attive: Dict[int, Dict[str, str]]) -> LoginResponse:

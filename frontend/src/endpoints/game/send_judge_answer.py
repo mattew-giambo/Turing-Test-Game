@@ -1,4 +1,4 @@
-from fastapi import Request, HTTPException
+from fastapi import HTTPException
 import requests
 from models.judge_game import JudgeGameAnswer, EndJudgeGameOutput
 from config.constants import API_BASE_URL

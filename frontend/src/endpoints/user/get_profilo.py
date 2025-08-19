@@ -6,10 +6,10 @@ import requests
 from models.user_stats import UserStats
 from models.user_games import UserGames
 from models.user_info import UserInfo
-from utility.get_user_stats import get_user_stats
-from utility.get_user_info import get_user_info
-from utility.get_user_games import get_user_games
-from utility.verify_user_token import verify_user_token
+from utility.user.get_user_stats import get_user_stats
+from utility.user.get_user_info import get_user_info
+from utility.game.get_user_games import get_user_games
+from utility.auth.verify_user_token import verify_user_token
 
 def get_profilo(user_id: int, token: str, request: Request, templates: Jinja2Templates, sessioni_attive: Dict[int, Dict[str, str]]):
     """

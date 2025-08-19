@@ -15,23 +15,23 @@ from models.participant_game import AnswerInput, ResponseSubmit
 from models.authentication import LoginResponse, RegisterResponse, UserLogin, UserRegister
 from models.game_info import GameInfoInput, GameInfoOutput
 
-from endpoints.start_game import start_game
-from endpoints.get_judge_game import get_judge_game
-from endpoints.send_questions_judge_game import send_questions_judge_game
-from endpoints.send_judge_answer import send_judge_answer
-from endpoints.get_participant_game import get_participant_game
-from endpoints.send_answers_participant_game import send_answers_participant_game
-from endpoints.start_pending_game import start_pending_game
-from endpoints.get_verdict_game import get_verdict_game
-from endpoints.send_pending_verdict import send_pending_verdict
-from endpoints.user_disconnect import user_disconnect
-from endpoints.user_login import user_login
-from endpoints.get_profilo import get_profilo
-from endpoints.user_register import user_register
-from endpoints.game_info import game_info
+from endpoints.game.start_game import start_game
+from endpoints.game.get_judge_game import get_judge_game
+from endpoints.game.send_questions_judge_game import send_questions_judge_game
+from endpoints.game.send_judge_answer import send_judge_answer
+from endpoints.game.get_participant_game import get_participant_game
+from endpoints.game.send_answers_participant_game import send_answers_participant_game
+from endpoints.game.start_pending_game import start_pending_game
+from endpoints.game.get_verdict_game import get_verdict_game
+from endpoints.game.send_pending_verdict import send_pending_verdict
+from endpoints.auth.user_disconnect import user_disconnect
+from endpoints.auth.user_login import user_login
+from endpoints.user.get_profilo import get_profilo
+from endpoints.auth.user_register import user_register
+from endpoints.game.game_info import game_info
 
-from utility.rimuovi_sessioni_scadute import rimuovi_sessioni_scadute
-from utility.verify_user_token import verify_user_token
+from utility.auth.rimuovi_sessioni_scadute import rimuovi_sessioni_scadute
+from utility.auth.verify_user_token import verify_user_token
 
 app = FastAPI()
 BASE_DIR = os.path.dirname(__file__)
