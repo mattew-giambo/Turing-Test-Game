@@ -3,7 +3,7 @@ from utility.db.close_connection import close_connection
 from utility.db.close_cursor import close_cursor
 from utility.db.connect_to_database import connect_to_database
 from utility.db.get_cursor import get_cursor
-from utility.ai_utils import get_ai_answer
+from utility.ai.ai_utils import get_ai_answer
 from typing import List, Dict
 from rapidfuzz import process, fuzz
 import random

@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from models.participant_game import QADict
-from utility.ai_utils import get_ai_answer, parse_ai_questions
+from utility.ai.ai_utils import get_ai_answer, parse_ai_questions
 import mariadb
 from typing import List, Tuple
 import random
