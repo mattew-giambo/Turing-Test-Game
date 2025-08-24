@@ -1,6 +1,5 @@
 from typing import Dict, List
 from fastapi import HTTPException
-from rapidfuzz import fuzz
 import random
 import mariadb
 

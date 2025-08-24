@@ -2,7 +2,7 @@ from typing import List
 from rapidfuzz import fuzz
 
 def is_distinct(question: str, selected_questions: List[str], threshold: int = 85) -> bool:
-        """
+    """
     Verifica se una nuova domanda è sufficientemente diversa dalle domande già selezionate,
     confrontando la similarità testuale tramite `token_sort_ratio` di RapidFuzz.
 
@@ -20,8 +20,8 @@ def is_distinct(question: str, selected_questions: List[str], threshold: int = 8
             - True se la domanda è considerata distinta (similarità < threshold con tutte le altre).
             - False se la domanda è troppo simile ad almeno una già selezionata.
     """
-        for existing in selected_questions:
-            similarity = fuzz.token_sort_ratio(question.lower(), existing.lower())
-            if similarity >= threshold:
-                return False
-        return True
+    for existing in selected_questions:
+        similarity = fuzz.token_sort_ratio(question.lower(), existing.lower())
+        if similarity >= threshold:
+            return False
+    return True
