@@ -23,7 +23,7 @@ from endpoints.game.get_pending_game_api import get_pending_game_api
 from endpoints.game.end_judge_game_api import end_judge_game_api
 from endpoints.game.end_pending_game import end_pending_game_api
 from endpoints.user.get_user_stats_api import get_user_stats_api
-from endpoints.game.get_player_games_api import get_player_games_api
+from endpoints.user.get_player_games_api import get_player_games_api
 from endpoints.game.game_info_api import game_info_api
 from endpoints.user.get_user_info_api import get_user_info_api
 
