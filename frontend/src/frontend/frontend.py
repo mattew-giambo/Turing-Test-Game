@@ -8,8 +8,8 @@ from typing import *
 
 from models.confirm_game import ConfirmGame
 from models.disconnect_response import DisconnectResponse
-from models.pending_game import EndPendingGame
-from models.player_info import PlayerInfo
+from models.verdict_game import EndVerdictGame
+from models.start_game_info import StartGameInfo
 from models.judge_game import EndJudgeGameOutput, JudgeGameAnswer, JudgeGameInput, JudgeGameOutput
 from models.participant_game import AnswerInput, ResponseSubmit
 from models.authentication import LoginResponse, RegisterResponse, UserLogin, UserRegister
@@ -21,9 +21,8 @@ from endpoints.game.send_questions_judge_game import send_questions_judge_game
 from endpoints.game.send_judge_answer import send_judge_answer
 from endpoints.game.get_participant_game import get_participant_game
 from endpoints.game.send_answers_participant_game import send_answers_participant_game
-from endpoints.game.start_pending_game import start_pending_game
 from endpoints.game.get_verdict_game import get_verdict_game
-from endpoints.game.send_pending_verdict import send_pending_verdict
+from endpoints.game.send_verdict_answer import send_verdict_answer
 from endpoints.auth.user_disconnect import user_disconnect
 from endpoints.auth.user_login import user_login
 from endpoints.user.get_profilo import get_profilo
@@ -36,26 +35,17 @@ from utility.auth.verify_user_token import verify_user_token
 app = FastAPI()
 BASE_DIR = os.path.dirname(__file__)
 
-class NoCacheStaticFiles(StaticFiles):
-    """Classe custom per disabilitare caching su file statici."""
-    async def get_response(self, path: str, scope):
-        response = await super().get_response(path, scope)
-        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-        response.headers["Pragma"] = "no-cache"
-        response.headers["Expires"] = "0"
-        return response
-
 # Setup Jinja2 templates e mount directory per file statici con no-cache
 templates = Jinja2Templates(directory= os.path.join(BASE_DIR, "../public/templates"))
 
-app.mount("/assets", NoCacheStaticFiles(directory= os.path.join(BASE_DIR, "../public/assets")))
-app.mount("/css", NoCacheStaticFiles(directory= os.path.join(BASE_DIR, "../public/css")))
-app.mount("/js", NoCacheStaticFiles(directory= os.path.join(BASE_DIR, "../public/js")))
+app.mount("/assets", StaticFiles(directory= os.path.join(BASE_DIR, "../public/assets")))
+app.mount("/css", StaticFiles(directory= os.path.join(BASE_DIR, "../public/css")))
+app.mount("/js", StaticFiles(directory= os.path.join(BASE_DIR, "../public/js")))
 
 sessioni_attive: Dict[int, Dict[str, str]] = {}
 
 @app.on_event("startup")
-async def on_startup() -> None:
+async def on_startup():
     """
     Evento startup FastAPI per avviare task asincrono
     che rimuove periodicamente sessioni scadute.
@@ -101,7 +91,7 @@ def get_start_game_page(request: Request, user_id: int, token: str):
         )
 
 @app.post("/start-game", response_model=ConfirmGame)
-def start_game_endpoint(payload: PlayerInfo):
+def start_game_endpoint(payload: StartGameInfo):
     return start_game(payload)
 
 # player_id è query param /game/{game_id}?player_id={}, token={}
@@ -125,17 +115,13 @@ def get_participant_game_endpoint(game_id: int, player_id: int, token: str, requ
 def send_answers_participant_game_endpoint(game_id: int, payload: AnswerInput):
     return send_answers_participant_game(game_id, payload)
 
-@app.post("/start-pending-game", response_model=ConfirmGame)
-async def start_pending_game_endpoint(payload: PlayerInfo):
-    return await start_pending_game(payload)
-
 @app.get("/verdict-game/{game_id}", response_class=HTMLResponse)
 def get_verdict_game_endpoint(game_id: int, player_id: int, token: str, request: Request):
     return get_verdict_game(game_id, player_id, token, request, templates, sessioni_attive)
 
-@app.post("/send-pending-verdict/{game_id}", response_model=EndPendingGame)
-def send_pending_verdict_endpoint(game_id: int, request: Request, payload: JudgeGameAnswer):
-    return send_pending_verdict(game_id, request, payload, templates)
+@app.post("/send-verdict-answer/{game_id}", response_model=EndVerdictGame)
+def send_verdict_verdict_endpoint(game_id: int, request: Request, payload: JudgeGameAnswer):
+    return send_verdict_answer(game_id, request, payload, templates)
 
 @app.get("/profilo/{user_id}", response_class=HTMLResponse)
 def get_profilo_endpoint(user_id: int, token: str, request: Request):

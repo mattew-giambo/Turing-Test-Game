@@ -24,10 +24,10 @@ async function send_verdict(is_ai){
         const data ={
             is_ai: is_ai
         }
-        const response = await fetch(`/send-pending-verdict/${game_id}`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(data)
+        const response = await fetch(`/send-verdict-answer/${game_id}`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
         });
 
         if(!response.ok){

@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 
-from models.player_info import PlayerInfo
+from models.start_game_info import StartGameInfo
 from models.confirm_game import ConfirmGame
 from utility.db.close_connection import close_connection
 from utility.db.close_cursor import close_cursor
@@ -12,9 +12,9 @@ import mariadb
 from typing import List, Tuple
 import random
 
-def start_pending_game_api(payload: PlayerInfo) -> ConfirmGame:
+def start_verdict_game(payload: StartGameInfo) -> ConfirmGame:
     """
-    Avvia una nuova partita in modalità 'pending' per il ruolo di giudice.
+    Avvia una nuova partita in modalità 'verdict' per il ruolo di giudice.
 
     La funzione verifica l'esistenza dell'utente, recupera il nome, e tenta di assegnare il giocatore
     a una partita pendente esistente che rispetti determinati criteri. Se non sono disponibili partite 

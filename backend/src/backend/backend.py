@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 from typing import *
 
-from models.player_info import PlayerInfo
+from models.start_game_info import StartGameInfo
 from models.judge_game import JudgeGameInput, JudgeGameAnswer, JudgeGameOutput, EndJudgeGameOutput
 from models.participant_game import ParticipantGameOutput, AnswerInput, ResponseSubmit
 from models.game_info import GameInfoInput, GameInfoOutput
 from models.authentication import UserRegister, UserLogin, RegisterResponse, LoginResponse
-from models.pending_game import GameReviewOutput, EndPendingJudgeGameOutput
+from models.verdict_game import GameReviewOutput, EndVerdictGame
 from models.confirm_game import ConfirmGame
 from models.user_stats import UserStats
 from models.user_games import UserGames
@@ -18,10 +18,9 @@ from endpoints.game.start_game_api import start_game_api
 from endpoints.game.judge_game_api import judge_game_api
 from endpoints.game.participant_game_api import participant_game_api
 from endpoints.game.submit_answers_api import submit_answers_api
-from endpoints.game.start_pending_game_api import start_pending_game_api
-from endpoints.game.get_pending_game_api import get_pending_game_api
+from endpoints.game.get_verdict_game_api import get_verdict_game_api
 from endpoints.game.end_judge_game_api import end_judge_game_api
-from endpoints.game.end_pending_game import end_pending_game_api
+from endpoints.game.end_verdict_game import end_verdict_game_api
 from endpoints.user.get_user_stats_api import get_user_stats_api
 from endpoints.user.get_player_games_api import get_player_games_api
 from endpoints.game.game_info_api import game_info_api
@@ -38,7 +37,7 @@ def login_api_endpoint(user: UserLogin):
     return login_api(user)
 
 @app.post("/start-game-api", response_model=ConfirmGame)
-def start_game_endpoint(payload: PlayerInfo):
+def start_game_endpoint(payload: StartGameInfo):
     return start_game_api(payload)
 
 @app.post("/judge-game-api/{game_id}", response_model=JudgeGameOutput)
@@ -53,21 +52,17 @@ def participant_game_endpoint(game_id: int):
 def submit_answers_endpoint(game_id: int, input_data: AnswerInput):
     return submit_answers_api(game_id, input_data)
 
-@app.post("/start-pending-game-api", response_model=ConfirmGame)
-def start_pending_game_endpoint(payload: PlayerInfo) -> ConfirmGame:
-    return start_pending_game_api(payload)
-
-@app.get("/pending-game-session/{game_id}", response_model=GameReviewOutput)
+@app.get("/verdict-game-session/{game_id}", response_model=GameReviewOutput)
 def get_pending_game_endpoint(game_id: int) -> GameReviewOutput:
-    return get_pending_game_api(game_id)
+    return get_verdict_game_api(game_id)
 
 @app.post("/end-judge-game-api/{game_id}", response_model=EndJudgeGameOutput)
 def end_judge_game_endpoint(judge_answer: JudgeGameAnswer, game_id: int):
     return end_judge_game_api(judge_answer, game_id)
 
-@app.post("/end-pending-game-api/{game_id}", response_model=EndPendingJudgeGameOutput)
+@app.post("/end-verdict-game-api/{game_id}", response_model=EndVerdictGame)
 def end_pending_game_endpoint(judge_answer: JudgeGameAnswer, game_id: int):
-    return end_pending_game_api(judge_answer, game_id)
+    return end_verdict_game_api(judge_answer, game_id)
 
 @app.get("/user-stats-api/{user_id}", response_model=UserStats)
 def get_user_stats_endpoint(user_id: int):

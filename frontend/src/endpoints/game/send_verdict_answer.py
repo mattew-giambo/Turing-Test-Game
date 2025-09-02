@@ -4,10 +4,10 @@ from fastapi.templating import Jinja2Templates
 import requests
 from urllib.parse import urljoin
 from models.judge_game import JudgeGameAnswer
-from models.pending_game import EndPendingGame
+from models.verdict_game import EndVerdictGame
 from config.constants import API_BASE_URL
 
-def send_pending_verdict(game_id: int, request: Request, payload: JudgeGameAnswer, templates: Jinja2Templates) -> EndPendingGame:
+def send_verdict_answer(game_id: int, request: Request, payload: JudgeGameAnswer, templates: Jinja2Templates) -> EndVerdictGame:
     """
     Invia il verdetto del giudice per una partita in modalità 'pending' al backend.
 
@@ -28,11 +28,11 @@ def send_pending_verdict(game_id: int, request: Request, payload: JudgeGameAnswe
     """
     try:
         response = requests.post(
-            urljoin(API_BASE_URL, f"/end-pending-game-api/{game_id}"),
+            urljoin(API_BASE_URL, f"/end-verdict-game-api/{game_id}"),
             json=payload.model_dump()
         )
         response.raise_for_status()
-        result = EndPendingGame.model_validate(response.json())
+        result = EndVerdictGame.model_validate(response.json())
 
     except requests.RequestException as e:
         status_code: int = 500

@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 
-from models.pending_game import QA, GameReviewOutput
+from models.verdict_game import QA, GameReviewOutput
 from utility.db.close_connection import close_connection
 from utility.db.close_cursor import close_cursor
 from utility.db.connect_to_database import connect_to_database
@@ -9,7 +9,7 @@ from utility.db.get_cursor import get_cursor
 import mariadb
 from typing import Dict
 
-def get_pending_game_api(game_id: int) -> GameReviewOutput:
+def get_verdict_game_api(game_id: int) -> GameReviewOutput:
     """
     Recupera la sessione di gioco associata a una partita pendente specificata dal suo ID.
 

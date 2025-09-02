@@ -43,7 +43,8 @@ part_btn.addEventListener("click", async () => {
     try{
         const data = {
             player_id: parseInt(user_id),
-            player_role: "participant"
+            player_role: "participant",
+            mode: "classic"
         };
 
         const response = await fetch("/start-game", {
@@ -90,7 +91,8 @@ classic_mod.addEventListener("click", async () => {
     try{
         const data = {
             player_id: parseInt(user_id),
-            player_role: "judge"
+            player_role: "judge",
+            mode: "classic"
         };
 
         const response = await fetch("/start-game", {
@@ -137,11 +139,12 @@ verdict_mod.addEventListener("click", async () => {
     try{
         const data = {
             player_id: parseInt(user_id),
-            player_role: "judge"
+            player_role: "judge",
+            mode: "verdict"
         };
         console.log(data);
 
-        const response = await fetch("/start-pending-game", {
+        const response = await fetch("/start-game", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

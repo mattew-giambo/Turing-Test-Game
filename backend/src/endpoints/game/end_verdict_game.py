@@ -1,7 +1,7 @@
 from typing import Dict
 from fastapi import HTTPException
 from models.judge_game import JudgeGameAnswer
-from models.pending_game import EndPendingJudgeGameOutput
+from models.verdict_game import EndVerdictGame
 from utility.db.close_connection import close_connection
 from utility.db.close_cursor import close_cursor
 from utility.db.connect_to_database import connect_to_database
@@ -9,7 +9,7 @@ from utility.db.get_cursor import get_cursor
 from config.constants import JUDGE_WON_POINTS, PART_WON_POINTS, PART_LOST_POINTS, JUDGE_LOST_POINTS
 import mariadb
 
-def end_pending_game_api(judge_answer: JudgeGameAnswer, game_id: int) -> EndPendingJudgeGameOutput:
+def end_verdict_game_api(judge_answer: JudgeGameAnswer, game_id: int) -> EndVerdictGame:
     """
     Termina una partita in modalità 'pending' gestendo la risposta del giudice,
     calcola l'esito (vittoria o sconfitta), assegna i punti a giudice e partecipante,
@@ -106,7 +106,7 @@ def end_pending_game_api(judge_answer: JudgeGameAnswer, game_id: int) -> EndPend
 
         connection.commit()
 
-        return EndPendingJudgeGameOutput(
+        return EndVerdictGame(
             game_id=game_id,
             is_won=is_won,
             message=message,

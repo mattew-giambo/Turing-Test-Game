@@ -1,8 +1,9 @@
 import asyncio
 from datetime import datetime, timedelta
 from typing import Dict
+from config.constants import SESSION_DURATION
 
-async def rimuovi_sessioni_scadute(sessioni_attive: Dict[int, Dict[str, str]]) -> None:
+async def rimuovi_sessioni_scadute(sessioni_attive: Dict[int, Dict[str, str]]):
     """
     Task asincrono che rimuove periodicamente le sessioni utente scadute.
 
@@ -20,7 +21,7 @@ async def rimuovi_sessioni_scadute(sessioni_attive: Dict[int, Dict[str, str]]) -
         now = datetime.now()
         scaduti = []
         for user_id in sessioni_attive.keys():
-            if now - sessioni_attive[user_id]["timestamp"] > timedelta(minutes= 20):
+            if now - sessioni_attive[user_id]["timestamp"] > timedelta(minutes= SESSION_DURATION):
                 scaduti.append(user_id)
         for user_id in scaduti:
             sessioni_attive.pop(user_id)

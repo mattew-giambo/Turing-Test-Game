@@ -9,7 +9,7 @@ class GameReviewOutput(BaseModel):
     game_id: int
     session: Dict[int, QA]
 
-class EndPendingGame(BaseModel):
+class EndVerdictGame(BaseModel):
     game_id: int
     is_won: bool
     message: str

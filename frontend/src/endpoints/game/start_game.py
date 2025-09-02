@@ -3,11 +3,11 @@ from urllib.parse import urljoin
 from typing import Dict
 import requests
 
-from models.player_info import PlayerInfo
+from models.start_game_info import StartGameInfo
 from models.confirm_game import ConfirmGame
 from config.constants import API_BASE_URL
 
-def start_game(payload: PlayerInfo) -> ConfirmGame:
+def start_game(payload: StartGameInfo) -> ConfirmGame:
     """
     Invia i dati del giocatore all’endpoint '/start-game-api' per avviare una nuova partita.
 

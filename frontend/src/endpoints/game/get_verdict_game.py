@@ -3,7 +3,7 @@ from fastapi.templating import Jinja2Templates
 import requests
 from urllib.parse import urljoin
 from models.game_info import GameInfoInput, GameInfoOutput
-from models.pending_game import GameReviewOutput
+from models.verdict_game import GameReviewOutput
 from config.constants import API_BASE_URL
 from typing import Dict
 from utility.auth.verify_user_token import verify_user_token
@@ -66,7 +66,7 @@ def get_verdict_game(game_id: int, player_id: int, player_token: str, request: R
 
     try:
         response = requests.get(
-            urljoin(API_BASE_URL, f"/pending-game-session/{game_id}")
+            urljoin(API_BASE_URL, f"/verdict-game-session/{game_id}")
         )
         response.raise_for_status()
         game_data = GameReviewOutput.model_validate(response.json())
