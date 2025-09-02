@@ -53,7 +53,7 @@ def submit_answers_endpoint(game_id: int, input_data: AnswerInput):
     return submit_answers_api(game_id, input_data)
 
 @app.get("/verdict-game-session/{game_id}", response_model=GameReviewOutput)
-def get_pending_game_endpoint(game_id: int) -> GameReviewOutput:
+def get_verdict_game_endpoint(game_id: int) -> GameReviewOutput:
     return get_verdict_game_api(game_id)
 
 @app.post("/end-judge-game-api/{game_id}", response_model=EndJudgeGameOutput)
@@ -61,7 +61,7 @@ def end_judge_game_endpoint(judge_answer: JudgeGameAnswer, game_id: int):
     return end_judge_game_api(judge_answer, game_id)
 
 @app.post("/end-verdict-game-api/{game_id}", response_model=EndVerdictGame)
-def end_pending_game_endpoint(judge_answer: JudgeGameAnswer, game_id: int):
+def end_verdict_game_endpoint(judge_answer: JudgeGameAnswer, game_id: int):
     return end_verdict_game_api(judge_answer, game_id)
 
 @app.get("/user-stats-api/{user_id}", response_model=UserStats)
