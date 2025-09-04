@@ -10,7 +10,6 @@ class GameReviewOutput(BaseModel):
     session: Dict[int, QA]
 
 class EndVerdictGame(BaseModel):
-    game_id: int
     is_won: bool
     message: str
     points: int

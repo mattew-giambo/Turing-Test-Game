@@ -107,7 +107,6 @@ def end_verdict_game_api(judge_answer: JudgeGameAnswer, game_id: int) -> EndVerd
         connection.commit()
 
         return EndVerdictGame(
-            game_id=game_id,
             is_won=is_won,
             message=message,
             points=judge_points
