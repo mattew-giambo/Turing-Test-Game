@@ -116,8 +116,8 @@ def send_answers_participant_game_endpoint(game_id: int, payload: AnswerInput):
     return send_answers_participant_game(game_id, payload)
 
 @app.get("/verdict-game/{game_id}", response_class=HTMLResponse)
-def get_verdict_game_endpoint(game_id: int, player_id: int, token: str, request: Request):
-    return get_verdict_game(game_id, player_id, token, request, templates, sessioni_attive)
+async def get_verdict_game_endpoint(game_id: int, player_id: int, token: str, request: Request):
+    return await get_verdict_game(game_id, player_id, token, request, templates, sessioni_attive)
 
 @app.post("/send-verdict-answer/{game_id}", response_model=EndVerdictGame)
 def send_verdict_verdict_endpoint(game_id: int, request: Request, payload: JudgeGameAnswer):

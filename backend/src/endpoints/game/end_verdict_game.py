@@ -11,7 +11,7 @@ import mariadb
 
 def end_verdict_game_api(judge_answer: JudgeGameAnswer, game_id: int) -> EndVerdictGame:
     """
-    Termina una partita in modalità 'pending' gestendo la risposta del giudice,
+    Termina una partita in modalità 'Verdict' gestendo la risposta del giudice,
     calcola l'esito (vittoria o sconfitta), assegna i punti a giudice e partecipante,
     e aggiorna lo stato della partita e le statistiche nel database.
 

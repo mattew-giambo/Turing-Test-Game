@@ -7,8 +7,10 @@ from models.verdict_game import GameReviewOutput
 from config.constants import API_BASE_URL
 from typing import Dict
 from utility.auth.verify_user_token import verify_user_token
+import asyncio
+import random
 
-def get_verdict_game(game_id: int, player_id: int, player_token: str, request: Request, templates: Jinja2Templates, sessioni_attive: Dict[int, Dict[str, str]]):
+async def get_verdict_game(game_id: int, player_id: int, player_token: str, request: Request, templates: Jinja2Templates, sessioni_attive: Dict[int, Dict[str, str]]):
     """
     Recupera e visualizza la schermata del verdetto di una partita in corso o terminata.
     Verifica innanzitutto l'autenticità del token del giocatore; se non valido, reindirizza alla pagina di login.
@@ -88,6 +90,9 @@ def get_verdict_game(game_id: int, player_id: int, player_token: str, request: R
 
         raise HTTPException(status_code=status_code, detail=detail)
     
+    # Simula un ritardo tra 0 e 30 secondi per imitare il tempo di risposta AI o umana
+    await asyncio.sleep(random.randint(0, 30))
+
     return templates.TemplateResponse(
         "verdict_game.html",
         {
