@@ -34,6 +34,7 @@ CREATE TABLE UserGames(
     is_won BOOLEAN DEFAULT NULL,
     points int DEFAULT 0,
     PRIMARY KEY (game_id, player_role),
+    UNIQUE (game_id, player_ id),
     CHECK (player_role IN ('judge', 'participant')),
     FOREIGN KEY(game_id) REFERENCES Games(id) ON DELETE CASCADE,
     FOREIGN KEY(player_id) REFERENCES Users(id) ON DELETE CASCADE
