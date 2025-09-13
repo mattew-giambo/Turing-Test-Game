@@ -63,8 +63,8 @@ def get_profilo(user_id: int, token: str, request: Request, templates: Jinja2Tem
 
         raise HTTPException(status_code=status_code, detail=detail)
 
-    perc_won_judge = round(user_stats.won_judge / user_stats.n_games_judge, 2) * 100 if user_stats.n_games_judge > 0 else 0
-    perc_won_part = round(user_stats.won_part / user_stats.n_games_part, 2) * 100 if user_stats.n_games_part > 0 else 0
+    perc_won_judge = round(round(user_stats.won_judge / user_stats.n_games_judge, 2) * 100) if user_stats.n_games_judge > 0 else 0
+    perc_won_part = round(round(user_stats.won_part / user_stats.n_games_part, 2) * 100) if user_stats.n_games_part > 0 else 0
 
     return templates.TemplateResponse(
         "profilo.html",

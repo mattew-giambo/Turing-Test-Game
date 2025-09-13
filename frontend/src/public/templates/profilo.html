@@ -162,6 +162,8 @@
                                         {% if game.is_terminated == 1 %}
                                             {% if game.points < 0 %}
                                                 <p style="color: var(--retro-red);"> {{ game.points }} </p>
+                                            {% elif  game.points == 0%}
+                                                <p style="color: var(--retro-fg);"> {{ game.points }} </p>
                                             {% else %}
                                                 <p style="color: var(--green);"> +{{ game.points }} </p>
                                             {% endif %}
